@@ -8,6 +8,10 @@ $positive-color: rgba(29, 159, 152, 1);
 
 @import "bootstrap/bootstrap";
 
+.small-caps {
+  font-variant: small-caps;
+}
+
 nav.my-navbar {
   position: relative;
 

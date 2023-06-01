@@ -11858,6 +11858,10 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+.small-caps {
+  font-variant: small-caps;
+}
+
 nav.my-navbar {
   position: relative;
 }
