@@ -31,6 +31,8 @@ if 'SECRET_KEY' in os.environ:
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
+DEBUG_PROPAGATE_EXCEPTIONS = True
+
 if not IS_HEROKU_APP:
     DEBUG = True
 
