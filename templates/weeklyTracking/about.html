@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}About{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <div class="bg-warning-subtle p-2 rounded" id="club-description">
+            {% autoescape off %}
+                {{ club_description }}
+            {% endautoescape %}
+        </div>
+    </div>
+{% endblock %}
