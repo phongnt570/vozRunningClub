@@ -22,11 +22,7 @@
                     <span class="text-secondary">Last updated: {{ last_updated }} ({{ TIME_ZONE }})</span>
                 {% endtimezone %}
                 {% if is_last_week or is_this_week %}
-                    <button class="btn btn-outline-success btn-sm"
-                            onclick="updateLeaderboard()"
-                            type="button">
-                        Update
-                    </button>
+                    (<a href="#" onclick="updateLeaderboard()">Update now</a>)
                 {% endif %}
             </p>
         </div>
