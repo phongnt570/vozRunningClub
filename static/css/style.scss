@@ -8,6 +8,10 @@ $positive-color: rgba(29, 159, 152, 1);
 
 @import "bootstrap/bootstrap";
 
+body {
+  overflow-y: scroll; /* Show vertical scrollbar */
+}
+
 .small-caps {
   font-variant: small-caps;
 }
@@ -29,6 +33,14 @@ nav.my-navbar {
     top: -4px;
     right: 0;
   }
+}
+
+img.nav-logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 7rem;
+  margin-bottom: 1rem;
 }
 
 hr.big-hr {

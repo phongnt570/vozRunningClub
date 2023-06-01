@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="icon" href="{% static 'img/favicon-white.png' %}"/>
+
     <title>{% block pagetitle %}{% endblock %}</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -15,37 +17,49 @@
 <body>
 
 <div class="container mt-3 mb-4">
-    <nav class="my-navbar">
+    <div>
         <div>
-            <div class="nav-items">
-                {% if not custom_home %}
-                    <a href="{% url 'index' %}"
-                       class="nav-item-link">
-                        <span class="small-caps h5"><strong>Voz Running Club</strong></span>
-                    </a>
-                {% else %}
-                    <a href="{{ custom_home.url }}" class="nav-item-link">
-                        <span class="small-caps h5"><strong>{{ custom_home.name }}</strong></span>
-                    </a>
-                {% endif %}
-
-                {% for link in custom_nav_links %}
-                    <a href="{{ link.url }}" class="nav-item-link">
-                        {{ link.name }}
-                    </a>
-                {% endfor %}
-                <a href="{% url 'top-donates' %}"
-                   class="nav-item-link">
-                    Top donates
-                </a>
-                <a href="{% url 'about' %}"
-                   class="nav-item-link">
-                    About
-                </a>
-            </div>
+            <img src="{% static 'img/logo-color.png' %}" alt="logo" class="nav-logo">
         </div>
-    </nav>
-    <hr class="big-hr">
+
+        <div class="my-3 text-center">
+            <nav class="my-navbar">
+                <div>
+                    <div class="nav-items">
+                        {#                        {% if not custom_home %}#}
+                        {#                            <a href="{% url 'index' %}"#}
+                        {#                               class="nav-item-link">#}
+                        {#                                <span class="small-caps h5"><strong>Leaderboard</strong></span>#}
+                        {#                            </a>#}
+                        {#                        {% else %}#}
+                        {#                            <a href="{{ custom_home.url }}" class="nav-item-link">#}
+                        {#                                <span class="small-caps h5"><strong>{{ custom_home.name }}</strong></span>#}
+                        {#                            </a>#}
+                        {#                        {% endif %}#}
+                        {##}
+                        {#                        {% for link in custom_nav_links %}#}
+                        {#                            <a href="{{ link.url }}" class="nav-item-link">#}
+                        {#                                {{ link.name }}#}
+                        {#                            </a>#}
+                        {#                        {% endfor %}#}
+                        <a href="{% url 'index' %}"
+                           class="nav-item-link">
+                            Leaderboard
+                        </a>
+                        <a href="{% url 'top-donates' %}"
+                           class="nav-item-link">
+                            Top donates
+                        </a>
+                        <a href="{% url 'about' %}"
+                           class="nav-item-link">
+                            About
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            <hr class="big-hr">
+        </div>
+    </div>
 </div>
 
 {% block body %}{% endblock %}

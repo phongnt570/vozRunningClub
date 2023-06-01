@@ -11858,6 +11858,10 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+body {
+  overflow-y: scroll; /* Show vertical scrollbar */
+}
+
 .small-caps {
   font-variant: small-caps;
 }
@@ -11876,6 +11880,14 @@ nav.my-navbar .search-bar {
   position: absolute;
   top: -4px;
   right: 0;
+}
+
+img.nav-logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 7rem;
+  margin-bottom: 1rem;
 }
 
 hr.big-hr {
