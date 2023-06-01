@@ -6,33 +6,6 @@
 
 {% block body %}
     <div class="container my-4">
-        <div class="mb-2">
-            <h1>Voz Running Club</h1>
-        </div>
-
-        <div class="mb-4">
-            <button type="button" class="btn btn-outline-info btn-sm" onclick="hideShowDescription()">
-                Info
-            </button>
-            <div class="my-4 bg-warning-subtle p-2 rounded d-none" id="club-description">
-                {% autoescape off %}
-                    {{ club_description }}
-                {% endautoescape %}
-            </div>
-        </div>
-
-        <div class="mb-4">
-            <select id="select-week" class="form-select" aria-label="Select week" onchange="changeWeek()">
-                {% for key, value in available_weeks.items %}
-                    {% if key.0 == requested_year and key.1 == requested_week_num %}
-                        <option value="{{ key.0 }}-{{ key.1 }}" selected>{{ value }}</option>
-                    {% else %}
-                        <option value="{{ key.0 }}-{{ key.1 }}">{{ value }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-        </div>
-
         <div class="mb-4">
             <h4>Leaderboard
                 {% if is_this_week %}
@@ -56,6 +29,18 @@
                     </button>
                 {% endif %}
             </p>
+        </div>
+
+        <div class="mb-4">
+            <select id="select-week" class="form-select" aria-label="Select week" onchange="changeWeek()">
+                {% for key, value in available_weeks.items %}
+                    {% if key.0 == requested_year and key.1 == requested_week_num %}
+                        <option value="{{ key.0 }}-{{ key.1 }}" selected>{{ value }}</option>
+                    {% else %}
+                        <option value="{{ key.0 }}-{{ key.1 }}">{{ value }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
         </div>
 
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">

@@ -94,7 +94,6 @@ def index(request):
         available_weeks[(year, week_num)] = value
 
     context = {
-        "club_description": SettingClubDescription.objects.get().club_description,
         "requested_year": requested_year,
         "requested_week_num": requested_week_num,
         "requested_week_data": requested_week_data,
@@ -132,3 +131,12 @@ def upload_file(request):
         form = UploadFileForm()
 
     return render(request, "weeklyTracking/upload.html", {"form": form})
+
+
+def about(request):
+    return render(request, "weeklyTracking/about.html", context={
+        "club_description": SettingClubDescription.objects.get().club_description})
+
+
+def top_donates(request):
+    return render(request, "weeklyTracking/top_donates.html")

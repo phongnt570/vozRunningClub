@@ -14,6 +14,40 @@
 </head>
 <body>
 
+<div class="container mt-3 mb-4">
+    <nav class="my-navbar">
+        <div>
+            <div class="nav-items">
+                {% if not custom_home %}
+                    <a href="{% url 'index' %}"
+                       class="nav-item-link">
+                        <span class="small-caps h5"><strong>Voz Running Club</strong></span>
+                    </a>
+                {% else %}
+                    <a href="{{ custom_home.url }}" class="nav-item-link">
+                        <span class="small-caps h5"><strong>{{ custom_home.name }}</strong></span>
+                    </a>
+                {% endif %}
+
+                {% for link in custom_nav_links %}
+                    <a href="{{ link.url }}" class="nav-item-link">
+                        {{ link.name }}
+                    </a>
+                {% endfor %}
+                <a href="{% url 'top-donates' %}"
+                   class="nav-item-link">
+                    Top donates
+                </a>
+                <a href="{% url 'about' %}"
+                   class="nav-item-link">
+                    About
+                </a>
+            </div>
+        </div>
+    </nav>
+    <hr class="big-hr">
+</div>
+
 {% block body %}{% endblock %}
 
 <script src="{% static 'js/popper.min.js' %}"></script>
