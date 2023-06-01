@@ -14,14 +14,38 @@ class StravaRunner(models.Model):
         return f"{self.strava_id} | {self.strava_name} | {self.voz_name}"
 
 
-class SettingRegisteredMileage(models.Model):
+class SettingWeekBaseDonation(models.Model):
+    year = models.IntegerField()
+    week_num = models.IntegerField()
+    distance = models.IntegerField()
+    base_donation = models.IntegerField()
+
+    last_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ["distance", "year", "week_num"]
+
+    def __str__(self):
+        return f"{self.year} | {self.week_num} | {self.distance}km | {self.base_donation:,} ₫"
+
+
+class SettingDefaultWeekBaseDonation(models.Model):
     distance = models.IntegerField(primary_key=True)
-    donation_per_km = models.IntegerField()
+    base_donation = models.IntegerField()
 
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.distance}km: {self.donation_per_km}đ/km"
+        return f"{self.distance}km | {self.base_donation:,} ₫"
+
+
+class SettingRegisteredMileage(models.Model):
+    distance = models.IntegerField(primary_key=True)
+
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.distance}km"
 
 
 class WeeklyProgress(models.Model):
@@ -63,6 +87,20 @@ class SettingDefaultDonation(SingletonModel):
 
     def __str__(self):
         return f"{self.default_donation:,} ₫"
+
+
+class SettingDefaultDonationByWeek(models.Model):
+    year = models.IntegerField()
+    week_num = models.IntegerField()
+    default_donation = models.IntegerField()
+
+    last_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ["year", "week_num"]
+
+    def __str__(self):
+        return f"{self.year} | {self.week_num} | {self.default_donation:,} ₫"
 
 
 class SettingClubDescription(SingletonModel):

@@ -2,7 +2,8 @@ import math
 
 from django import template
 
-from weeklyTracking.models import WeeklyProgress, SettingDefaultDonation
+from weeklyTracking.models import WeeklyProgress, SettingDefaultDonation, SettingWeekBaseDonation, \
+    SettingDefaultWeekBaseDonation, SettingDefaultDonationByWeek
 
 register = template.Library()
 
@@ -19,7 +20,7 @@ def missing_distance_str(week_progress: WeeklyProgress):
 
     if d == 0:
         return "Completed!"
-    
+
     return f"{d:.1f} km"
 
 
@@ -31,13 +32,23 @@ def pace_format(seconds: int):
 @register.filter
 def donation(week_progress: WeeklyProgress):
     reg_dis = int(week_progress.registered_mileage.distance)
-    donation_per_km = week_progress.registered_mileage.donation_per_km
+    if SettingWeekBaseDonation.objects.filter(distance=reg_dis, year=week_progress.year,
+                                              week_num=week_progress.week_num).exists():
+        donation_per_km = SettingWeekBaseDonation.objects.get(distance=reg_dis, year=week_progress.year,
+                                                              week_num=week_progress.week_num).base_donation
+    else:
+        donation_per_km = SettingDefaultWeekBaseDonation.objects.get(distance=reg_dis).base_donation
 
     if reg_dis == 0:
         return "--"
 
     if reg_dis > 0 and week_progress.distance == 0:
-        amount = SettingDefaultDonation.objects.get().default_donation
+        if SettingDefaultDonationByWeek.objects.filter(year=week_progress.year,
+                                                       week_num=week_progress.week_num).exists():
+            amount = SettingDefaultDonationByWeek.objects.get(year=week_progress.year,
+                                                              week_num=week_progress.week_num).default_donation
+        else:
+            amount = SettingDefaultDonation.objects.get().default_donation
     else:
         amount = donation_per_km * missing_distance(week_progress)
 
