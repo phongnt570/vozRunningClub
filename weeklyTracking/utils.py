@@ -38,8 +38,7 @@ def get_average_pace_in_seconds(minute_second):
 
 
 def get_strava_leaderboards():
-    if "GOOGLE_CHROME_BIN" in os.environ:
-        print("in heroku")
+    if "GOOGLE_CHROME_BIN" in os.environ:  # Heroku
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
         chrome_options.add_argument("--headless")
@@ -48,7 +47,6 @@ def get_strava_leaderboards():
         driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH", "chromedriver"),
                                   chrome_options=chrome_options)
     else:
-        print("not in heroku")
         driver = webdriver.Chrome()
 
     # get URL of Strava club
