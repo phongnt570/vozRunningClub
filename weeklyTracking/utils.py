@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -35,7 +36,18 @@ def get_average_pace_in_seconds(minute_second):
 
 
 def get_strava_leaderboards():
-    driver = webdriver.Chrome()
+    if "GOOGLE_CHROME_BIN" in os.environ:
+        print("in heroku")
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--no-sandbox")
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH", "chromedriver"),
+                                  chrome_options=chrome_options)
+    else:
+        print("not in heroku")
+        driver = webdriver.Chrome()
 
     # get URL of Strava club
     club_url = SettingStravaClub.objects.get().club_url
@@ -57,7 +69,7 @@ def get_strava_leaderboards():
     this_week_runners = get_data_from_driver(driver, year=this_year, week_num=this_week_num)
 
     # get last week's leaderboard
-    last_week_btn = driver.find_element_by_css_selector("span.button.last-week")
+    last_week_btn = driver.find_element(By.CSS_SELECTOR, "span.button.last-week")
     last_week_btn.click()
 
     last_week_year, last_week_num = get_last_week()
@@ -70,7 +82,7 @@ def get_strava_leaderboards():
 
 
 def get_data_from_driver(driver, year, week_num):
-    table = driver.find_element_by_css_selector("div.leaderboard > table > tbody").get_attribute("innerHTML")
+    table = driver.find_element(By.CSS_SELECTOR, "div.leaderboard > table > tbody").get_attribute("innerHTML")
     soup = BeautifulSoup(table, "html.parser")
 
     # Example table row:
