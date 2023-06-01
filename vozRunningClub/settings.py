@@ -25,18 +25,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-!!=ux%77v7+mqfop@pobev@v8i4^n6o57-*cdiw-qyqrsrq%c1'
 
+if 'SECRET_KEY' in os.environ:
+    SECRET_KEY = os.environ["SECRET_KEY"]
+
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if not IS_HEROKU_APP:
-    DEBUG = True
-else:
-    DEBUG = False
-
+DEBUG = True
+ALLOWED_HOSTS = []
 if IS_HEROKU_APP:
     ALLOWED_HOSTS = ["*"]
-else:
-    ALLOWED_HOSTS = []
 
 # Application definition
 
