@@ -2,6 +2,6 @@
 
 ## TODO
 - [x] Local CSS/JS files
-- [ ] Create Nav Bar, split into Home, About, and Donation
+- [x] Create Nav Bar, split into Home, About, and Donation
 - [ ] Build Donation Page
 - [ ] Build Admin Page
