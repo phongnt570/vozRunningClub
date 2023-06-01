@@ -11,7 +11,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from .models import StravaRunner, WeeklyProgress, SettingStravaClub, SettingRegisteredMileage
 
-logging.basicConfig(filename="weeklyTracking.log", level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
