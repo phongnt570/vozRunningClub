@@ -112,3 +112,4 @@ GitHub.sublime-settings
 .idea
 .sass-cache
 .vscode
+/staticfiles/

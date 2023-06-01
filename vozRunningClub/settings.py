@@ -31,23 +31,31 @@ if 'SECRET_KEY' in os.environ:
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = []
+if not IS_HEROKU_APP:
+    DEBUG = True
+
+# On Heroku, it's safe to use a wildcard for `ALLOWED_HOSTS``, since the Heroku router performs
+# validation of the Host header in the incoming HTTP request. On other platforms you may need
+# to list the expected hostnames explicitly to prevent HTTP Host header attacks. See:
+# https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-ALLOWED_HOSTS
 if IS_HEROKU_APP:
-    ALLOWED_HOSTS = ["vozrunning.herokuapp.com"]
-    DEBUG = False
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Application definition
 
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
-    'weeklyTracking.apps.WeeklytrackingConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'weeklyTracking.apps.WeeklytrackingConfig',
 ]
 
 MIDDLEWARE = [
@@ -141,6 +149,10 @@ USE_TZ = True
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 STORAGES = {
     # Enable WhiteNoise's GZip and Brotli compression of static assets:
