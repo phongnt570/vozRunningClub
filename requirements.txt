@@ -1,0 +1,8 @@
+django
+beautifulsoup4
+selenium
+psycopg2-binary
+requests
+gunicorn
+dj-database-url
+whitenoise

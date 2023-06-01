@@ -1,0 +1,43 @@
+{% load track_custom_utils %}
+
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th>Rank</th>
+        <th>Strava</th>
+        <th>Voz</th>
+        <th class="text-end">Runs</th>
+        <th class="text-end">Avg. Pace</th>
+        <th class="text-end">Distance</th>
+        <th class="text-end">Registration</th>
+        <th class="text-end">Missing</th>
+        <th class="text-end">Donation</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for reg in data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+                <a href="https://strava.com/athletes/{{ reg.runner.strava_id }}" target="_blank"
+                   class="text-decoration-none">
+                    {{ reg.runner.strava_name }}
+                </a>
+            </td>
+            <td>{{ reg.runner.voz_name }}</td>
+            <td class="text-end">{{ reg.runs }}</td>
+            <td class="text-end">{{ reg.average_pace|pace_format }}/km</td>
+            <td class="text-end">{{ reg.distance|floatformat:1 }} km</td>
+            <td class="text-end">
+                {% if reg.registered_mileage.distance > 0 %}
+                    {{ reg.registered_mileage.distance|floatformat:0 }} km
+                {% else %}
+                    --
+                {% endif %}
+            </td>
+            <td class="text-end">{{ reg|missing_distance_str}}</td>
+            <td class="text-end">{{ reg|donation }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
