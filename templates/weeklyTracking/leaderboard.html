@@ -102,7 +102,7 @@
             let selectedWeek = document.getElementById("select-week").value;
             let newYear = selectedWeek.split("-")[0];
             let newWeekNum = selectedWeek.split("-")[1];
-            location.replace("{% url 'index' %}?year=" + newYear + "&week=" + newWeekNum);
+            location.replace("{% url 'leaderboard' %}?year=" + newYear + "&week=" + newWeekNum);
         }
 
         function showSpinner() {

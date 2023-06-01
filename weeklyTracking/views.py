@@ -39,7 +39,7 @@ def get_available_weeks():
     return available_weeks
 
 
-def index(request):
+def leaderboard(request):
     requested_year = request.GET.get("year")
     requested_week_num = request.GET.get("week")
 
@@ -106,7 +106,7 @@ def index(request):
         "last_updated": last_updated,
     }
 
-    return render(request, "weeklyTracking/index.html", context=context)
+    return render(request, "weeklyTracking/leaderboard.html", context=context)
 
 
 @require_POST
