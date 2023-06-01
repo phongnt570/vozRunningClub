@@ -1,7 +1,5 @@
-import csv
 import datetime
 import logging
-from io import StringIO
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
@@ -9,8 +7,8 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
 from .forms import UploadFileForm
-from .models import WeeklyProgress, SettingClubDescription, StravaRunner, SettingRegisteredMileage
-from .utils import get_strava_leaderboards, update_week_progress
+from .models import WeeklyProgress, SettingClubDescription
+from .utils import get_strava_leaderboards, update_week_progress, handle_uploaded_week_reg_file
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -123,60 +121,12 @@ def update(request):
     return JsonResponse({"status": "success"})
 
 
-def handle_uploaded_file(f):
-    logger.info("Handling uploaded file")
-    reader = csv.DictReader(StringIO(f.read().decode("utf-8")))
-    input_rows = [row for row in reader]
-    logger.info(f"Read {len(input_rows)} rows from file")
-
-    new_runners = []
-    for row in input_rows:
-        strava_id = int(row["strava_id"])
-        strava_name = row["strava_name"]
-        voz_name = row["voz_name"]
-
-        if not StravaRunner.objects.filter(strava_id=strava_id).exists():
-            new_runners.append(StravaRunner(strava_id=strava_id, strava_name=strava_name, voz_name=voz_name))
-        else:
-            runner = StravaRunner.objects.get(strava_id=strava_id)
-            if strava_name:
-                runner.strava_name = strava_name
-            if voz_name:
-                runner.voz_name = voz_name
-            runner.save()
-
-    if new_runners:
-        logger.info(f"Adding {len(new_runners)} new runners")
-        StravaRunner.objects.bulk_create(new_runners)
-        logger.info("Done adding new runners")
-
-    registered_mileages = {}
-    for mileage in SettingRegisteredMileage.objects.all():
-        registered_mileages[mileage.distance] = mileage
-
-    logger.info("Updating weekly progress")
-    for row in input_rows:
-        strava_id = int(row["strava_id"])
-        week_num = int(row["week_num"])
-        year = int(row["year"])
-        registered_mileage = registered_mileages[int(row["registered_distance"])]
-
-        runner = StravaRunner.objects.get(strava_id=strava_id)
-        WeeklyProgress.objects.update_or_create(
-            runner=runner,
-            week_num=week_num,
-            year=year,
-            registered_mileage=registered_mileage,
-        )
-    logger.info("Done!!!")
-
-
 @staff_member_required
 def upload_file(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(request.FILES["file"])
+            handle_uploaded_week_reg_file(request.FILES["file"])
             return redirect("index")
     else:
         form = UploadFileForm()
