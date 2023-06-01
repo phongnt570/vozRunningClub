@@ -11,12 +11,15 @@
         </div>
 
         <div class="mb-4">
-            {% autoescape off %}
-                {{ club_description }}
-            {% endautoescape %}
+            <button type="button" class="btn btn-outline-info btn-sm" onclick="hideShowDescription()">
+                Info
+            </button>
+            <div class="mb-4 bg-warning-subtle p-2 rounded d-none" id="club-description">
+                {% autoescape off %}
+                    {{ club_description }}
+                {% endautoescape %}
+            </div>
         </div>
-
-        <hr>
 
         <div class="mb-4">
             <select id="select-week" class="form-select" aria-label="Select week" onchange="changeWeek()">
@@ -101,6 +104,15 @@
     </div>
 
     <script>
+        function hideShowDescription() {
+            let clubDescription = document.getElementById("club-description");
+            if (clubDescription.classList.contains("d-none")) {
+                clubDescription.classList.remove("d-none");
+            } else {
+                clubDescription.classList.add("d-none");
+            }
+        }
+
         function changeWeek() {
             let selectedWeek = document.getElementById("select-week").value;
             let newYear = selectedWeek.split("-")[0];

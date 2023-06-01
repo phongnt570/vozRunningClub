@@ -131,4 +131,4 @@ def upload_file(request):
     else:
         form = UploadFileForm()
 
-    return render(request, "upload.html", {"form": form})
+    return render(request, "weeklyTracking/upload.html", {"form": form})
