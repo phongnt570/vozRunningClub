@@ -19,7 +19,9 @@
 <div class="container mt-3 mb-4">
     <div>
         <div>
-            <img src="{% static 'img/logo-color.png' %}" alt="logo" class="nav-logo">
+            <a href="{% url 'index' %}">
+                <img src="{% static 'img/logo-color.png' %}" alt="logo" class="nav-logo">
+            </a>
         </div>
 
         <div class="my-3 text-center">
@@ -42,7 +44,7 @@
                         {#                                {{ link.name }}#}
                         {#                            </a>#}
                         {#                        {% endfor %}#}
-                        <a href="{% url 'index' %}"
+                        <a href="{% url 'leaderboard' %}"
                            class="nav-item-link">
                             Leaderboard
                         </a>
