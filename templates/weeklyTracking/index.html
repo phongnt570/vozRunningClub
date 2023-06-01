@@ -14,7 +14,7 @@
             <button type="button" class="btn btn-outline-info btn-sm" onclick="hideShowDescription()">
                 Info
             </button>
-            <div class="mb-4 bg-warning-subtle p-2 rounded d-none" id="club-description">
+            <div class="my-4 bg-warning-subtle p-2 rounded d-none" id="club-description">
                 {% autoescape off %}
                     {{ club_description }}
                 {% endautoescape %}
@@ -46,7 +46,7 @@
             <p>
                 {% get_current_timezone as TIME_ZONE %}
                 {% timezone TIME_ZONE %}
-                    <span class="text-secondary">Last updated: {{ last_updated }} {{ TIME_ZONE }}</span>
+                    <span class="text-secondary">Last updated: {{ last_updated }} ({{ TIME_ZONE }})</span>
                 {% endtimezone %}
                 {% if is_last_week or is_this_week %}
                     <button class="btn btn-outline-success btn-sm"
