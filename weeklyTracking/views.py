@@ -110,6 +110,7 @@ def leaderboard(request):
     return render(request, "weeklyTracking/leaderboard.html", context=context)
 
 
+@staff_member_required
 @require_POST
 def update(request):
     try:
