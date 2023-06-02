@@ -1,4 +1,4 @@
-# Voz Running Club - Web App for Tracking Weekly Progress with Registered Distances
+# Voz Running Club - Web App
 
 ## About
 
