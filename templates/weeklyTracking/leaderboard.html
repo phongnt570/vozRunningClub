@@ -102,15 +102,6 @@
     </div>
 
     <script>
-        function hideShowDescription() {
-            let clubDescription = document.getElementById("club-description");
-            if (clubDescription.classList.contains("d-none")) {
-                clubDescription.classList.remove("d-none");
-            } else {
-                clubDescription.classList.add("d-none");
-            }
-        }
-
         function changeWeek() {
             let selectedWeek = document.getElementById("select-week").value;
             let newYear = selectedWeek.split("-")[0];
@@ -127,25 +118,27 @@
         }
     </script>
 
-    <script>
-        axios.defaults.xsrfCookieName = 'csrftoken';
-        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    {% if request.user.is_authenticated %}
+        <script>
+            axios.defaults.xsrfCookieName = 'csrftoken';
+            axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 
-        async function updateLeaderboard() {
-            showSpinner();
-            await axios.post("{% url 'update-leaderboard' %}")
-                .then(function (response) {
-                    if (response.data.status === "success") {
-                        location.reload();
-                    } else {
-                        alert("Error updating leaderboard: " + response.data.message);
+            async function updateLeaderboard() {
+                showSpinner();
+                await axios.post("{% url 'update-leaderboard' %}")
+                    .then(function (response) {
+                        if (response.data.status === "success") {
+                            location.reload();
+                        } else {
+                            alert("Error updating leaderboard: " + response.data.message);
+                            hideSpinner();
+                        }
+                    })
+                    .catch(function (error) {
+                        alert("Error updating leaderboard: " + error);
                         hideSpinner();
-                    }
-                })
-                .catch(function (error) {
-                    alert("Error updating leaderboard: " + error);
-                    hideSpinner();
-                });
-        }
-    </script>
+                    });
+            }
+        </script>
+    {% endif %}
 {% endblock %}
