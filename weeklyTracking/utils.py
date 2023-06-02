@@ -163,6 +163,17 @@ def update_week_progress(runners):
             )
 
 
+def handle_leaderboard_update_request():
+    logger.info("Fetching Strava Leaderboards")
+    this_week_runners, last_week_runners = get_strava_leaderboards()
+
+    logger.info("Updating Week Progress Table")
+    update_week_progress(this_week_runners)
+    update_week_progress(last_week_runners)
+
+    logger.info("Leaderboard update complete")
+
+
 def handle_uploaded_week_reg_file(f):
     logger.info("Handling uploaded file")
     reader = csv.DictReader(StringIO(f.read().decode("utf-8")))

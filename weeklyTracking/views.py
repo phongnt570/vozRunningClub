@@ -8,7 +8,8 @@ from django.views.decorators.http import require_POST
 
 from .forms import UploadFileForm
 from .models import WeeklyProgress, SettingClubDescription
-from .utils import get_strava_leaderboards, update_week_progress, handle_uploaded_week_reg_file
+from .utils import handle_uploaded_week_reg_file, \
+    handle_leaderboard_update_request
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -112,9 +113,7 @@ def leaderboard(request):
 @require_POST
 def update(request):
     try:
-        this_week_runners, last_week_runners = get_strava_leaderboards()
-        update_week_progress(this_week_runners)
-        update_week_progress(last_week_runners)
+        handle_leaderboard_update_request()
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)})
     return JsonResponse({"status": "success"})
