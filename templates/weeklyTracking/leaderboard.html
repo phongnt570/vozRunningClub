@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% load tz %}
 {% load track_custom_utils %}
 
@@ -19,12 +20,26 @@
             <p>
                 {% get_current_timezone as TIME_ZONE %}
                 {% timezone TIME_ZONE %}
-                    <span class="text-secondary">Last updated: {{ last_updated }} ({{ TIME_ZONE }})</span>
+                    <span class="text-secondary">
+                        <span>Last updated:</span>
+                        <span>
+                            {% if is_last_week or is_this_week %}
+                                {{ last_updated|naturaltime }}
+                                (automatically updated every 10 minutes)
+                            {% else %}
+                                {{ last_updated }} ({{ TIME_ZONE }})
+                            {% endif %}
+                        </span>
+                    </span>
                 {% endtimezone %}
-                {% if is_last_week or is_this_week %}
-                    (<span class="text-decoration-underline text-primary"
-                           onclick="updateLeaderboard()"
-                           role="button">Update now</span>)
+                {% if request.user.is_authenticated %}
+                    {% if is_last_week or is_this_week %}
+                        (<span class="text-decoration-underline text-primary"
+                               onclick="updateLeaderboard()"
+                               role="button">Update now</span>, acting as
+                        <span class="text-secondary">
+                        {{ request.user.username }}</span>)
+                    {% endif %}
                 {% endif %}
             </p>
         </div>
