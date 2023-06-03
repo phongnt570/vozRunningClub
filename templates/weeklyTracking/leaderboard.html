@@ -22,7 +22,7 @@
                 {% timezone TIME_ZONE %}
                     <span class="text-secondary">
                         <span>Last updated:</span>
-                        <span>
+                        <span title="{{ last_updated }} ({{ TIME_ZONE }})">
                             {% if is_last_week or is_this_week %}
                                 {{ last_updated|naturaltime }}
                                 (automatically updated every 10 minutes)
