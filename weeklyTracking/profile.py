@@ -11,10 +11,6 @@ this_year = datetime.date.today().isocalendar()[0]
 this_week_num = datetime.date.today().isocalendar()[1]
 
 def handle_join_challenge_request(registered_mileage_distance, voz_name, strava_refresh_token):
-   
-    this_year = datetime.date.today().isocalendar()[0]
-    this_week_num = datetime.date.today().isocalendar()[1]
-
     runner = StravaRunner.objects.get(strava_refresh_token=strava_refresh_token)
     
     if voz_name:
