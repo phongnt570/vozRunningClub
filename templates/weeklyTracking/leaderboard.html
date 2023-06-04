@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load humanize %}
 {% load tz %}
 {% load track_custom_utils %}
@@ -8,41 +9,54 @@
 {% block body %}
     <div class="container my-4">
         <div class="mb-4">
-            <h4>Leaderboard
-                {% if is_this_week %}
-                    (this week)
-                {% elif is_last_week %}
-                    (last week)
-                {% else %}
-                    ({{ requested_week_start }} - {{ requested_week_end }})
-                {% endif %}
-            </h4>
-            <p>
-                {% get_current_timezone as TIME_ZONE %}
-                {% timezone TIME_ZONE %}
-                    <span class="text-secondary">
-                        <span>Last updated:</span>
-                        <span title="{{ last_updated }} ({{ TIME_ZONE }})">
+            <div>
+                <div>
+                    <h4>Leaderboard
+                        {% if is_this_week %}
+                            (this week)
+                        {% elif is_last_week %}
+                            (last week)
+                        {% else %}
+                            ({{ requested_week_start }} - {{ requested_week_end }})
+                        {% endif %}
+                    </h4>
+                    <p>
+                        {% get_current_timezone as TIME_ZONE %}
+                        {% timezone TIME_ZONE %}
+                            <span class="text-secondary">
+                                <span>Last updated:</span>
+                                <span>
+                                    {% if is_last_week or is_this_week %}
+                                        {{ last_updated|naturaltime }}
+                                        (automatically updated every 10 minutes)
+                                    {% else %}
+                                        {{ last_updated }} ({{ TIME_ZONE }})
+                                    {% endif %}
+                                </span>
+                            </span>
+                        {% endtimezone %}
+                        {% if request.user.is_authenticated %}
                             {% if is_last_week or is_this_week %}
-                                {{ last_updated|naturaltime }}
-                                (automatically updated every 10 minutes)
-                            {% else %}
-                                {{ last_updated }} ({{ TIME_ZONE }})
+                                (<span class="text-decoration-underline text-primary"
+                                       onclick="updateLeaderboard()"
+                                       role="button">Update now</span>,
+                                acting as <span class="text-secondary">{{ request.user.username }}</span>)
                             {% endif %}
-                        </span>
-                    </span>
-                {% endtimezone %}
-                {% if request.user.is_authenticated %}
-                    {% if is_last_week or is_this_week %}
-                        (<span class="text-decoration-underline text-primary"
-                               onclick="updateLeaderboard()"
-                               role="button">Update now</span>, acting as
-                        <span class="text-secondary">
-                        {{ request.user.username }}</span>)
-                    {% endif %}
-                {% endif %}
-            </p>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+{#            <div>#}
+            {#                <div class="join-panel" id="join-panel">#}
+            {#                    <h4>Sign Up Here!</h4>#}
+            {#                    <p>If you want to join with us, then click to <em>Connect with STRAVA</em>.</p>#}
+            {#                    <div style="text-align:center"><a href="{% url 'registration' %}"><img#}
+            {#                            src="{% static 'img/connect-strava.png' %}"#}
+            {#                            alt="Connect with Strava"></a></div>#}
+            {#                </div>#}
+            {#            </div>#}
         </div>
+
 
         <div class="mb-4">
             <select id="select-week" class="form-select" aria-label="Select week" onchange="changeWeek()">
@@ -102,6 +116,10 @@
     </div>
 
     <script>
+        if (localStorage.getItem("user_strava_refresh_token")) {
+            $("#join-panel").hide();
+        }
+
         function changeWeek() {
             let selectedWeek = document.getElementById("select-week").value;
             let newYear = selectedWeek.split("-")[0];
@@ -117,9 +135,9 @@
             document.getElementById("spinner-wrapper").classList.add("d-none");
         }
     </script>
-
     {% if request.user.is_authenticated %}
         <script>
+
             axios.defaults.xsrfCookieName = 'csrftoken';
             axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 

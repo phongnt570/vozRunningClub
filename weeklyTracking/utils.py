@@ -3,7 +3,7 @@ import datetime
 import logging
 import os
 from io import StringIO
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -16,6 +16,35 @@ from .models import StravaRunner, WeeklyProgress, SettingStravaClub, SettingRegi
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def validate_year_week(requested_year, requested_week_num):
+    try:
+        requested_year = int(requested_year)
+        requested_week_num = int(requested_week_num)
+    except (ValueError, TypeError):
+        return False
+
+    try:
+        requested_first_weekday = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 1)
+    except ValueError:
+        return False
+
+    next_week = (datetime.date.today() + datetime.timedelta(days=7)).isocalendar()
+    next_week_monday = datetime.datetime.fromisocalendar(next_week[0], next_week[1], 1)
+
+    if requested_first_weekday > next_week_monday:
+        print(requested_first_weekday, next_week_monday)
+        return False
+
+    return True
+
+
+def get_available_weeks():
+    available_weeks = set()
+    for week_progress in WeeklyProgress.objects.all():
+        available_weeks.add((week_progress.year, week_progress.week_num))
+    return available_weeks
 
 
 def get_last_week():
@@ -255,3 +284,45 @@ def handle_uploaded_week_reg_file(f):
                 elevation_gain=0
             )
     logger.info("Done!!!")
+
+
+def is_registration_open():
+    """
+    Returns True if the current date is within the registration phase
+    (i.e., from 00:00:00 Sunday until 23:59:59 Monday)
+    :return: True if in registration phase, False otherwise
+    """
+    today = datetime.date.today()
+
+    # If today is Sunday, check if it's after 00:00:00
+    if today.weekday() == 6:
+        return datetime.datetime.now().time() >= datetime.time(0, 0, 0)
+
+    # If today is Monday, check if it's before 23:59:59
+    if today.weekday() == 0:
+        return datetime.datetime.now().time() <= datetime.time(23, 59, 59)
+
+    # Otherwise, it's not Sunday or Monday, so we're not in the registration phase
+    return False
+
+
+def get_current_registration_week() -> Tuple[datetime.date, datetime.date]:
+    """
+    Returns the start and end dates of the current registration week
+    :return: Tuple of start and end dates
+    """
+
+    today = datetime.date.today()
+
+    # If today is Sunday, the registration week is next week
+    if today.weekday() == 6:
+        start_date = today + datetime.timedelta(days=1)
+        end_date = start_date + datetime.timedelta(days=6)
+
+    # If today is Monday, the registration week is this week
+    else:
+        # Start date is the most recent Monday
+        start_date = today - datetime.timedelta(days=today.weekday())
+        end_date = start_date + datetime.timedelta(days=6)
+
+    return start_date, end_date
