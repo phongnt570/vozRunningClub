@@ -167,6 +167,7 @@ def registration(request):
         "available_mileages": available_mileages,
         "current_registration_week_num": current_registration_week_num,
         "current_registration_week_year": current_registration_week_year,
+        "club_description": SettingClubDescription.objects.get().club_description,
     })
 
 

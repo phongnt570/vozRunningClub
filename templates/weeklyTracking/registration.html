@@ -5,6 +5,13 @@
 
 {% block body %}
     <div class="container my-4">
+
+        <div class="bg-warning-subtle p-2 rounded mb-4" id="club-description">
+            {% autoescape off %}
+                {{ club_description }}
+            {% endautoescape %}
+        </div>
+
         {% if strava_runner %}
             <div id="settings">
                 <div>
@@ -156,6 +163,14 @@
         {% else %}
             <div id="connect">
                 <div>
+                    <div>
+                        <p>
+                            Để đăng ký hoặc sửa cự ly chạy, bạn cần kết nối với tài khoản Strava của mình.
+                            <br>
+                            * Chúng tôi chỉ lấy thông tin về <b>Tên của bạn</b> từ tài khoản Strava mà bạn cung cấp,
+                            ngoài ra chúng tôi không lưu hoặc đọc bất cứ thông tin nào khác.
+                        </p>
+                    </div>
                     <div>
                         <a href="{{ strava_login_url }}">
                             <img src="{% static 'img/connect-strava.png' %}" alt="Strava logo"
