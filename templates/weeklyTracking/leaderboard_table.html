@@ -24,7 +24,14 @@
                     {{ reg.runner.strava_name }}
                 </a>
             </td>
-            <td>{{ reg.runner.voz_name }}</td>
+            <td>
+                {% if reg.runner.voz_name %}
+                    {{ reg.runner.voz_name }}
+                {% else %}
+                    <span class="text-secondary"></span>
+                {% endif %}
+
+            </td>
             <td class="text-end">{{ reg.runs }}</td>
             <td class="text-end">{{ reg.average_pace|pace_format }}/km</td>
             <td class="text-end">{{ reg.distance|floatformat:1 }} km</td>
@@ -32,10 +39,10 @@
                 {% if reg.registered_mileage.distance > 0 %}
                     {{ reg.registered_mileage.distance|floatformat:0 }} km
                 {% else %}
-                    --
+                    <span class="text-secondary">--</span>
                 {% endif %}
             </td>
-            <td class="text-end">{{ reg|missing_distance_str}}</td>
+            <td class="text-end">{{ reg|missing_distance_str }}</td>
             <td class="text-end">{{ reg|donation }}</td>
         </tr>
     {% endfor %}

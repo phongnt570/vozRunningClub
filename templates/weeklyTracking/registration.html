@@ -89,7 +89,7 @@
                                    class="form-control"
                                    id="voz_name"
                                    name="voz_name"
-                                   value="{{ strava_runner.voz_name }}"
+                                   value="{% if strava_runner.voz_name %}{{ strava_runner.voz_name }}{% else %}{% endif %}"
                                    placeholder="Voz name">
                         </div>
 
