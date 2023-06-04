@@ -230,7 +230,6 @@
         }
 
         function updateLastUpdated() {
-            console.log("{{ last_updated|date:'Y-m-d H:m:sO' }}");
             let lastUpdated = document.getElementById("last-updated-time");
             lastUpdated.innerText = timeAgo(Date.parse("{{ last_updated|date:'Y-m-d H:m:sO' }}"));
         }
