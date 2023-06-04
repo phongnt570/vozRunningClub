@@ -237,7 +237,8 @@ def handle_leaderboard_update_request():
         return
 
     logger.info("Updating Week Progress Table")
-    update_week_progress(this_week_runners, remove_non_strava_runners=True)
+    update_week_progress(this_week_runners, remove_non_strava_runners=False)
+    # update_week_progress(this_week_runners, remove_non_strava_runners=True)
     # update_week_progress(last_week_runners, remove_non_strava_runners=False)
     logger.info("Leaderboard update complete")
 
