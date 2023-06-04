@@ -9,7 +9,8 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
 from .forms import UploadFileForm, JoinChallengeForm
-from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, StravaRunner
+from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, StravaRunner, \
+    SettingStravaAPIClient
 from .registration import handle_get_user_by_refresh_token, handle_join_challenge_request, \
     handle_strava_exchange_code
 from .utils import handle_uploaded_week_reg_file, \
@@ -205,13 +206,12 @@ def get_strava_access_token(strava_runner):
     if not refresh_token:
         return None
 
-    # TODO: Move these two to settings
-    strava_client_id = "108204"
-    strava_client_key = "a603ad31780bd0e3ceee0edeefec3c7122bc2156"
+    strava_client_setting = SettingStravaAPIClient.objects.get()
+    strava_client_id, strava_client_secret = strava_client_setting.client_id, strava_client_setting.client_secret
 
     query = {
         "client_id": strava_client_id,
-        "client_secret": strava_client_key,
+        "client_secret": strava_client_secret,
         "refresh_token": refresh_token,
         "grant_type": 'refresh_token'
     }

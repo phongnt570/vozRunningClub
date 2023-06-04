@@ -3,7 +3,7 @@ from typing import Tuple
 
 import requests
 
-from .models import StravaRunner, WeeklyProgress, SettingRegisteredMileage
+from .models import StravaRunner, WeeklyProgress, SettingRegisteredMileage, SettingStravaAPIClient
 from .utils import get_current_registration_week
 
 logging.basicConfig(level=logging.INFO)
@@ -84,13 +84,12 @@ def handle_strava_exchange_code(exchange_code: str) -> Tuple[StravaRunner, Weekl
     this_year = start_date.isocalendar()[0]
     this_week_num = start_date.isocalendar()[1]
 
-    # TODO: Move these two to settings
-    strava_client_id = "108204"
-    strava_client_key = "a603ad31780bd0e3ceee0edeefec3c7122bc2156"
+    strava_client_setting = SettingStravaAPIClient.objects.get()
+    strava_client_id, strava_client_secret = strava_client_setting.client_id, strava_client_setting.client_secret
 
     query = {
         "client_id": strava_client_id,
-        "client_secret": strava_client_key,
+        "client_secret": strava_client_secret,
         "code": exchange_code,
         "grant_type": 'authorization_code'
     }

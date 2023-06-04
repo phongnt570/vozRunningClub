@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
 from weeklyTracking.models import SettingDefaultDonation, SettingClubDescription, SettingStravaClub, \
-    SettingDefaultWeekBaseDonation, SettingRegisteredMileage
+    SettingDefaultWeekBaseDonation, SettingRegisteredMileage, SettingStravaAPIClient
 
 
 class Command(BaseCommand):
@@ -33,3 +33,10 @@ class Command(BaseCommand):
             SettingRegisteredMileage.objects.create(distance=50)
             SettingRegisteredMileage.objects.create(distance=70)
             SettingRegisteredMileage.objects.create(distance=100)
+
+        # SettingStravaAPIClient
+        if not SettingStravaAPIClient.objects.filter().exists():
+            SettingStravaAPIClient.objects.create(
+                client_id="108204",
+                client_secret="a603ad31780bd0e3ceee0edeefec3c7122bc2156",
+            )

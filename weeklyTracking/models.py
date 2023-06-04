@@ -111,3 +111,13 @@ class SettingClubDescription(SingletonModel):
 
     def __str__(self):
         return self.club_description
+
+
+class SettingStravaAPIClient(SingletonModel):
+    client_id = models.CharField(max_length=512)
+    client_secret = models.CharField(max_length=512)
+
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.client_id} | {self.client_secret}"
