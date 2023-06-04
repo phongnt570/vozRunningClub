@@ -239,9 +239,7 @@ def forget_strava(request):
 
     access_token = get_strava_access_token(strava_runner)
     try:
-        response = requests.post("https://www.strava.com/oauth/deauthorize", params={"access_token": access_token})
-        if response.status_code != 200:
-            return JsonResponse({"status": "error", "message": "Error forgetting strava"})
+        requests.post("https://www.strava.com/oauth/deauthorize", params={"access_token": access_token})
     except Exception as e:
         logger.error(f"Error forgetting strava: {e}")
 
