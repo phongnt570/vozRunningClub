@@ -229,7 +229,7 @@ def handle_leaderboard_update_request():
                             db_this_week_progress]
     simplified_this_week_runners = [{"id": runner["id"], "distance": runner["distance"], "runs": runner["runs"]} for
                                     runner in this_week_runners]
-    if simplified_this_week_runners[:10] == db_this_week_runners[:10]:
+    if simplified_this_week_runners == db_this_week_runners:
         logger.info("Leaderboard has not been updated for the new week")
         return
 

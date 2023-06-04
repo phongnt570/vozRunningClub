@@ -73,7 +73,7 @@ def leaderboard(request):
             elif start_date == this_week_start + datetime.timedelta(days=7):
                 value = "Next week"
             else:
-                value = f"Week {week_num} ({start_date.strftime('%d %b %Y')} - {end_date.strftime('%d %b %Y')})"
+                value = f"Week: {start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
 
         available_weeks[(year, week_num)] = value
 
