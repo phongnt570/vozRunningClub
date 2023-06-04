@@ -156,7 +156,7 @@ def profile(request):
         context = handle_strava_exchange_code(code)
             
     else :
-        context["strava_login_url"] = "http://www.strava.com/oauth/authorize?client_id="+strava_client_id+"&response_type=code&redirect_uri="+callback_url+"&approval_prompt=auto&scope=read,activity:read_all,activity:write&state=test"
+        context["strava_login_url"] = "http://www.strava.com/oauth/authorize?client_id="+strava_client_id+"&response_type=code&redirect_uri="+callback_url+"&approval_prompt=auto&scope=read,activity:read_all"
 
     print(context)
     return render(request, "weeklyTracking/profile.html", context)
