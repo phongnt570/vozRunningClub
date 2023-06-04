@@ -66,7 +66,11 @@
                                     {% for am in available_mileages %}
                                         <option value="{{ am.distance }}"
                                                 {% if am.distance == weekly_progress.registered_mileage.distance %}selected{% endif %}>
-                                        {{ am.distance }} km
+                                        {% if am.distance == 0 %}
+                                            Tuần này nghỉ, không đăng ký
+                                        {% else %}
+                                            {{ am.distance }} km
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                             {% else %}
