@@ -6,8 +6,10 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
+from weeklyTracking.profile import handle_get_user_by_refresh_token, handle_join_challenge_request, handle_strava_exchange_code
+
 from .forms import UploadFileForm
-from .models import WeeklyProgress, SettingClubDescription
+from .models import WeeklyProgress, SettingClubDescription, StravaRunner
 from .utils import handle_uploaded_week_reg_file, \
     handle_leaderboard_update_request
 
@@ -140,3 +142,33 @@ def about(request):
 
 def top_donates(request):
     return render(request, "weeklyTracking/top_donates.html")
+
+def profile(request):
+    context = {}
+    strava_client_id = "108204"
+    callback_url = "https://www.vozrun.club/profile"
+    code = request.GET.get("code")
+    refresh_token = request.COOKIES.get('token')
+    if refresh_token :
+        context = handle_get_user_by_refresh_token(refresh_token)
+
+    elif code :
+        context = handle_strava_exchange_code(code)
+            
+    else :
+        context["strava_login_url"] = "http://www.strava.com/oauth/authorize?client_id="+strava_client_id+"&response_type=code&redirect_uri="+callback_url+"&approval_prompt=auto&scope=read,activity:read_all,activity:write&state=test"
+
+    print(context)
+    return render(request, "weeklyTracking/profile.html", context)
+
+@require_POST
+def joinChallenge(request):
+    try:
+        strava_refresh_token = request.GET.get('token') 
+        voz_name = request.GET.get('voz_name')
+        registered_mileage = request.GET.get('registered_mileage')   
+        handle_join_challenge_request(registered_mileage, voz_name, strava_refresh_token)
+        
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)})
+    return JsonResponse({"status": "success"})

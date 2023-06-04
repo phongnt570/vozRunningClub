@@ -1,0 +1,47 @@
+.my-apps{
+    .item-application{
+        text-align: center;
+        margin-bottom: 20px;
+        border: 1px solid #ababab;
+        padding: 15px;
+        border-radius: 5px;
+        position: relative;
+        padding-bottom: 45px;
+        padding-top: 20px;
+        overflow: hidden;
+        &--disabled{
+            opacity: 0.4;
+            background: #8080801f;
+            pointer-events: none;
+        }
+        .wrap-img{
+            height: 60px;
+            img{
+                max-width: 100%;
+                max-height: 100%;
+            }
+        }
+        .btn-app{
+            padding: 3px 8px;
+            font-size: 12px;
+        }
+        .tutorial{
+            margin-top: 5px;
+            font-size: 12px;
+            display: block;
+        }
+    }
+}
+
+.join-panel{
+    border-style: solid;
+    border-width: 0;
+    border-color: #d9d9d9;
+    margin-bottom: 1.25em;
+    padding: 1.25em;
+    background: #f2f2f2;
+    max-width: 420px;
+    img{
+        max-height: 50px;
+    }
+}

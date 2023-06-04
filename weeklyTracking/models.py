@@ -6,12 +6,13 @@ from .singleton_model import SingletonModel
 class StravaRunner(models.Model):
     strava_id = models.IntegerField(primary_key=True)
     strava_name = models.CharField(max_length=64)
+    strava_refresh_token = models.CharField(max_length=64, default='')
     voz_name = models.CharField(max_length=64)
 
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.strava_id} | {self.strava_name} | {self.voz_name}"
+        return f"{self.strava_id} | {self.strava_name} | {self.strava_refresh_token} | {self.voz_name}"
 
 
 class SettingWeekBaseDonation(models.Model):

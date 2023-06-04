@@ -10,4 +10,6 @@ urlpatterns = [
 
     path("update-leaderboard/", views.update, name="update-leaderboard"),
     path("upload/", views.upload_file, name="upload"),
+    path("profile/", views.profile, name="profile"),
+    path("join-challenge/", views.joinChallenge, name="join-challenge"),
 ]

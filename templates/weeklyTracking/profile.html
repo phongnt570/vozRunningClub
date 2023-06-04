@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}Join Challenge | Voz Running Club{% endblock %}
+
+{% block body %}
+
+{% if athlete_id %}
+<script>
+    document.cookie = "token=" + "{{refresh_token}}";
+    localStorage.setItem("token","{{refresh_token}}")
+</script>
+<div class="container" id="settings">
+    <div class="row">
+        <form id="regForm" action="">
+            <div class="form-group mt-4">
+                <label for="strava_name">Strava name</label>
+                <input type="strava_name" disabled class="form-control" id="strava_name" value="{{strava_name}}">
+            </div>
+
+            <div class="form-group  mt-4">
+                <label for="voz_name">Voz name</label>
+                <input type="voz_name" class="form-control" id="voz_name" value="{{voz_name}}" placeholder="Voz Name">
+            </div>
+
+
+            <div class="form-group  mt-3">
+                <label for="registered_mileage">Cự ly đăng ký:</label>
+                {% if registered_mileage is None or registered_mileage == '0km' %}
+                <select class="form-control" id="registered_mileage" required="true" name="registered_mileage">
+                    <option value="0">0km</option>
+                    <option value="30">30km</option>
+                    <option value="50">50km</option>
+                    <option value="70">70km</option>
+                    <option value="100">100km</option>
+                </select>
+                {% else %}
+                <input type="registered_mileage" disabled class="form-control" value="{{registered_mileage}}">
+                {% endif %}
+            </div>
+            <div class="form-group mt-4">
+                <button id="submit" class="btn btn-primary mb-1">Cập nhật</button>
+                <input type="reset" class="btn btn-default" value="Reset form">
+            </div>
+        </form>
+    </div>
+</div>
+<div id="spinner-wrapper" class="d-none">
+    <div class="loading">Loading&#8230;</div>
+</div>
+<script>
+    function showSpinner() {
+        document.getElementById("spinner-wrapper").classList.remove("d-none");
+    }
+
+    function hideSpinner() {
+        document.getElementById("spinner-wrapper").classList.add("d-none");
+    }
+    $("#submit").click(function (e) {
+        e.preventDefault();
+        showSpinner();
+        $("#registered_mileage")
+        axios.defaults.xsrfCookieName = 'csrftoken';
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+        axios.post("{% url 'join-challenge' %}", null, {
+            params: {
+                voz_name: $("#voz_name").val(),
+                registered_mileage: $("#registered_mileage").val(),
+                token: "{{refresh_token}}"
+            }
+        }).then(function (response) {
+            if (response.data.status === "success") {
+                location.reload();
+            } else {
+                alert("Error updating register: " + response.data.message);
+                hideSpinner();
+            }
+        }).catch(function (error) {
+            alert("Error updating register: " + error);
+            hideSpinner();
+        });
+    });
+</script>
+{% else %}
+<div class="container my-apps" id="connect">
+    <div class="row">
+
+        <div class="col-sm-3 col-xs-6">
+            <div class="item-application ">
+                <p class="wrap-img">
+                    <img src="/static/img/connect-strava.png" alt="strava">
+                </p>
+                <div>
+                    <a class="btn btn-primary btn-app" href="{{ strava_login_url }}">Kết nối</a>
+                </div>
+                <span class="tutorial">(Xem hướng dẫn)</span>
+                <!-- <a class="tutorial"
+                            href="#"
+                            target="_blank">(Xem hướng dẫn)</a> -->
+            </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+            <div class="item-application item-application--disabled">
+                <p class="wrap-img">
+                    <img src="/static/img/garmin.png" alt="Garmin" style="height: 60px;">
+                </p>
+                <div>
+                    <a class="btn btn-primary btn-app" href="#">Kết nối</a>
+                </div>
+                <a class="tutorial" href="#" target="_blank">(Đang cập nhật)</a>
+            </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+            <div class="item-application item-application--disabled">
+                <p class="wrap-img">
+                    <img src="/static/img/fitbit-large.png" alt="Fitbit">
+                </p>
+                <div>
+                    <a class="btn btn-primary btn-app" href="#">Kết nối</a>
+                </div>
+                <a class="tutorial" href="#" target="_blank">(Đang cập nhật)</a>
+            </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+            <div class="item-application item-application--disabled">
+                <p class="wrap-img">
+                    <img class="full-width" src="/static/img/suunto.png" alt="Suunto">
+                </p>
+                <div>
+                    <a class="btn btn-primary btn-app" href="#">Kết nối</a>
+                </div>
+                <a class="tutorial" href="#" target="_blank">(Đang cập nhật)</a>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{% endif %}
+{% endblock %}
