@@ -222,14 +222,15 @@ def handle_leaderboard_update_request():
 
     # check if the leaderboard has been updated for the new week
     # issues happen on sunday night (time zone issues?)
+    # compare strava this week vs db last week
+    last_week_year, last_week_num = get_last_week()
     db_this_week_progress = WeeklyProgress.objects.filter(
-        year=last_week_runners[0]["year"],
-        week_num=last_week_runners[0]["week_num"]).order_by("-distance").all()
+        year=last_week_year, week_num=last_week_num).order_by("-distance").all()
     db_total_runs = sum([obj.runs for obj in db_this_week_progress])
     db_total_runners = len(db_this_week_progress)
 
-    strava_total_runs = sum([runner["runs"] for runner in last_week_runners])
-    strava_total_runners = len(last_week_runners)
+    strava_total_runs = sum([runner["runs"] for runner in this_week_runners])
+    strava_total_runners = len(this_week_runners)
 
     if db_total_runners == strava_total_runners and db_total_runs == strava_total_runs:
         logger.info("Leaderboard has not been updated for the new week")
