@@ -7,7 +7,6 @@ $neutral-color: rgba(100, 100, 100, 1);
 $positive-color: rgba(29, 159, 152, 1);
 
 @import "bootstrap/bootstrap";
-@import "profile";
 
 body {
   overflow-y: scroll; /* Show vertical scrollbar */
@@ -26,7 +25,6 @@ nav.my-navbar {
   }
 
   .nav-item-link {
-    font-size: larger;
     margin: 0 1.5% 0 0;
   }
 

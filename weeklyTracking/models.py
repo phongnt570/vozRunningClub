@@ -6,7 +6,7 @@ from .singleton_model import SingletonModel
 class StravaRunner(models.Model):
     strava_id = models.IntegerField(primary_key=True)
     strava_name = models.CharField(max_length=64)
-    strava_refresh_token = models.CharField(max_length=64, default='')
+    strava_refresh_token = models.CharField(max_length=64, null=True, blank=True)
     voz_name = models.CharField(max_length=64)
 
     last_updated = models.DateTimeField(auto_now=True)

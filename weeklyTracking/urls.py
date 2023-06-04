@@ -8,8 +8,11 @@ urlpatterns = [
     path("top-donates/", views.top_donates, name="top-donates"),
     path("about/", views.about, name="about"),
 
-    path("update-leaderboard/", views.update, name="update-leaderboard"),
+    path("update-leaderboard/", views.post_update_leaderboard, name="update-leaderboard"),
     path("upload/", views.upload_file, name="upload"),
-    path("profile/", views.profile, name="profile"),
-    path("join-challenge/", views.joinChallenge, name="join-challenge"),
+
+    path("registration/", views.registration, name="registration"),
+    path("join-challenge/", views.join_challenge, name="join-challenge"),
+
+    path("forget-strava/", views.forget_strava, name="forget-strava"),
 ]

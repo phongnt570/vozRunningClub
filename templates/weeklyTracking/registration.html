@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}Registration | Voz Running Club{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        {% if strava_runner %}
+            <div id="settings">
+                <div>
+                    <h3>
+                        Registration
+                    </h3>
+                    <p>
+                    <span class="text-secondary">
+                        You are connected with <span class="fw-bold" style="color: #fc5200">Strava</span> account:
+                        <a class="fw-bold text-decoration-none"
+                           href="https://strava.com/athletes/{{ strava_runner.strava_id }}"
+                           target="_blank">
+                        {{ strava_runner.strava_name }}</a>
+                        <span class="text-muted">
+                            (<span class="text-decoration-underline" style="cursor: pointer"
+                                   onclick="forgetStrava({{ strava_runner.strava_id }})">Disconnect</span>)
+                        </span>
+                    </span>
+                    </p>
+                </div>
+
+                <div class="row">
+                    {% csrf_token %}
+                    <form id="regForm">
+                        <input type="hidden" class="form-control" name="strava_runner_id"
+                               value="{{ strava_runner.strava_id }}">
+                        <input type="hidden" class="form-control" name="year"
+                               value="{{ current_registration_week_year }}">
+                        <input type="hidden" class="form-control" name="week_num"
+                               value="{{ current_registration_week_num }}">
+
+                        <div>
+                            <label for="strava_name" class="form-label">Strava name</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="strava_name"
+                                   name="strava_name"
+                                   value="{{ strava_runner.strava_name }}"
+                                   disabled>
+                        </div>
+
+                        <div class="my-3">
+                            {% if is_registration_open %}
+                                <label for="registered_mileage_distance" class="form-label">Cự ly muốn đăng ký cho tuần
+                                    này
+                                    <span class="fw-bold">
+                                        ({{ current_registration_week_start_date }}
+                                    - {{ current_registration_week_end_date }})</span>:</label>
+                                <select class="form-select" aria-label="Select distance"
+                                        id="registered_mileage_distance"
+                                        name="registered_mileage_distance" required>
+                                    {% for am in available_mileages %}
+                                        <option value="{{ am.distance }}"
+                                                {% if am.distance == weekly_progress.registered_mileage.distance %}selected{% endif %}>
+                                        {{ am.distance }} km
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                <label for="registered_mileage_fixed" class="form-label">Cự ly đã đăng ký:</label>
+                                <input type="text" disabled class="form-control" id="registered_mileage_fixed"
+                                       value="{{ weekly_progress.registered_mileage.distance }} km">
+                            {% endif %}
+                        </div>
+
+                        <div class="my-3">
+                            <label for="voz_name"
+                                   class="form-label">
+                                Voz name <span class="text-secondary">(không bắt buộc)</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="voz_name"
+                                   name="voz_name"
+                                   value="{{ strava_runner.voz_name }}"
+                                   placeholder="Voz name">
+                        </div>
+
+                        {% if is_registration_open %}
+                            <button class="btn btn-primary" type="submit">Update</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <div id="spinner-wrapper" class="d-none">
+                <div class="loading">Loading&#8230;</div>
+            </div>
+
+            <script>
+                axios.defaults.xsrfCookieName = 'csrftoken';
+                axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+
+                function showSpinner() {
+                    document.getElementById("spinner-wrapper").classList.remove("d-none");
+                }
+
+                function hideSpinner() {
+                    document.getElementById("spinner-wrapper").classList.add("d-none");
+                }
+
+                document.getElementById("regForm").onsubmit = async (e) => {
+                    e.preventDefault();
+                    showSpinner();
+                    let formData = new FormData(document.getElementById("regForm"));
+                    axios.post(
+                        "{% url 'join-challenge' %}",
+                        formData,
+                        {
+                            headers: {
+                                "content-type": "multipart/form-data",
+                            }
+                        }).then(function (response) {
+                        if (response.data.status === "success") {
+                            alert("Updated successfully!");
+                        } else {
+                            alert("Error updating register: " + response.data.message);
+                        }
+                    }).catch(function (error) {
+                        alert("Error updating register: " + error);
+                    });
+                    hideSpinner();
+                }
+
+                function forgetStrava(strava_runner_id) {
+                    if (confirm("Are you sure you want to logout?")) {
+                        showSpinner();
+                        axios.post(
+                            "{% url 'forget-strava' %}",
+                            {
+                                strava_runner_id: strava_runner_id,
+                            },
+                            {
+                                headers: {
+                                    "content-type": "application/json",
+                                }
+                            }).then(function (response) {
+                            if (response.data.status === "success") {
+                                window.location.href = "{% url 'registration' %}";
+                            } else {
+                                alert("Error logging out: " + response.data.message);
+                            }
+                        }).catch(function (error) {
+                            alert("Error logging out: " + error);
+                        });
+                        hideSpinner();
+                    }
+                }
+            </script>
+        {% else %}
+            <div id="connect">
+                <div>
+                    <div>
+                        <a href="{{ strava_login_url }}">
+                            <img src="/static/img/connect-strava.png" alt="Strava logo"
+                                 style="max-width: 100%; height: 3rem">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

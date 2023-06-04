@@ -13,9 +13,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="{% static 'js/axios.min.js' %}"></script>
     <script
-    src="{% static 'js/jquery-3.7.0.min.js' %}"
-    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
-    crossorigin="anonymous"></script>
+            src="{% static 'js/jquery-3.7.0.min.js' %}"></script>
 </head>
 <body>
 
@@ -55,9 +53,9 @@
                            class="nav-item-link">
                             Top donates
                         </a>
-                        <a href="{% url 'profile' %}"
-                            class="nav-item-link">
-                            Profile
+                        <a href="{% url 'registration' %}"
+                           class="nav-item-link">
+                            Registration
                         </a>
                         <a href="{% url 'about' %}"
                            class="nav-item-link">
