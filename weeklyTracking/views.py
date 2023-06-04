@@ -173,6 +173,9 @@ def registration(request):
 
 @require_POST
 def join_challenge(request):
+    if not is_registration_open():
+        return JsonResponse({"status": "error", "message": "Registration is closed"})
+
     form = JoinChallengeForm(request.POST)
 
     if form.is_valid():
