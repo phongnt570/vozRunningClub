@@ -225,11 +225,13 @@ def handle_leaderboard_update_request():
     db_this_week_progress = WeeklyProgress.objects.filter(
         year=last_week_runners[0]["year"],
         week_num=last_week_runners[0]["week_num"]).order_by("-distance").all()
-    db_this_week_runners = [{"id": obj.runner_id, "distance": obj.distance, "runs": obj.runs} for obj in
-                            db_this_week_progress]
-    simplified_this_week_runners = [{"id": runner["id"], "distance": runner["distance"], "runs": runner["runs"]} for
-                                    runner in this_week_runners]
-    if simplified_this_week_runners == db_this_week_runners:
+    db_total_runs = sum([obj.runs for obj in db_this_week_progress])
+    db_total_runners = len(db_this_week_progress)
+
+    strava_total_runs = sum([runner["runs"] for runner in last_week_runners])
+    strava_total_runners = len(last_week_runners)
+
+    if db_total_runners == strava_total_runners and db_total_runs == strava_total_runs:
         logger.info("Leaderboard has not been updated for the new week")
         return
 
