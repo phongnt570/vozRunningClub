@@ -105,7 +105,6 @@ def get_strava_leaderboards():
     last_week_year, last_week_num = get_last_week()
 
     last_week_runners = get_data_from_driver(driver, year=last_week_year, week_num=last_week_num)
-    this_week_runners = get_data_from_driver(driver, year=last_week_year, week_num=last_week_num)
 
     driver.close()
 
@@ -222,8 +221,15 @@ def handle_leaderboard_update_request():
     this_week_runners, last_week_runners = get_strava_leaderboards()
 
     logger.info("Updating Week Progress Table")
-    update_week_progress(this_week_runners, remove_non_strava_runners=True)
-    update_week_progress(last_week_runners, remove_non_strava_runners=False)
+    # update_week_progress(this_week_runners, remove_non_strava_runners=True)
+    # update_week_progress(last_week_runners, remove_non_strava_runners=False)
+
+    tmp = []
+    for runner in last_week_runners:
+        runner = runner.copy()
+        runner["week_num"] -= 1
+        tmp.append(runner)
+    update_week_progress(tmp, remove_non_strava_runners=True)
 
     logger.info("Leaderboard update complete")
 
