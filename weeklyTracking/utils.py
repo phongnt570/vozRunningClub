@@ -3,6 +3,7 @@ import datetime
 import logging
 import os
 from io import StringIO
+from typing import List, Dict
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -131,8 +132,20 @@ def get_data_from_driver(driver, year, week_num):
     return runners
 
 
-def update_week_progress(runners):
-    for runner in runners:
+def update_week_progress(strava_runners: List[Dict], remove_non_strava_runners: bool = False):
+    if not strava_runners:
+        return
+
+    if len(set([runner["year"] for runner in strava_runners])) != 1:
+        raise ValueError("All runners must be from the same year")
+
+    if len(set([runner["week_num"] for runner in strava_runners])) != 1:
+        raise ValueError("All runners must be from the same week")
+
+    year = strava_runners[0]["year"]
+    week_num = strava_runners[0]["week_num"]
+
+    for runner in strava_runners:
         if not StravaRunner.objects.filter(strava_id=runner["id"]).exists():
             StravaRunner.objects.create(
                 strava_id=runner["id"],
@@ -140,9 +153,8 @@ def update_week_progress(runners):
                 voz_name="",
             )
 
-        if WeeklyProgress.objects.filter(runner_id=runner["id"], week_num=runner["week_num"],
-                                         year=runner["year"]).exists():
-            obj = WeeklyProgress.objects.get(runner_id=runner["id"], week_num=runner["week_num"], year=runner["year"])
+        if WeeklyProgress.objects.filter(runner_id=runner["id"], week_num=week_num, year=year).exists():
+            obj = WeeklyProgress.objects.get(runner_id=runner["id"], week_num=week_num, year=year)
             obj.distance = runner["distance"]
             obj.runs = runner["runs"]
             obj.longest_run = runner["longest_run"]
@@ -152,8 +164,8 @@ def update_week_progress(runners):
         else:
             WeeklyProgress.objects.create(
                 runner_id=runner["id"],
-                week_num=runner["week_num"],
-                year=runner["year"],
+                week_num=week_num,
+                year=year,
                 registered_mileage=SettingRegisteredMileage.objects.get(distance=0),
                 distance=runner["distance"],
                 runs=runner["runs"],
@@ -162,14 +174,26 @@ def update_week_progress(runners):
                 elevation_gain=runner["elevation_gain"]
             )
 
+    # Check if any runners have been removed from the real-time Strava leaderboard
+    # If so, delete them from the database
+    if not remove_non_strava_runners:
+        return
+    db_progress = WeeklyProgress.objects.filter(year=year, week_num=week_num)
+    db_ids = set([obj.runner_id for obj in db_progress])
+    strava_ids = set([runner["id"] for runner in strava_runners])
+    removed_ids = db_ids - strava_ids
+    if removed_ids:
+        print(f"Removing {len(removed_ids)} runners from the database: {removed_ids}")
+        WeeklyProgress.objects.filter(runner_id__in=removed_ids, year=year, week_num=week_num).delete()
+
 
 def handle_leaderboard_update_request():
     logger.info("Fetching Strava Leaderboards")
     this_week_runners, last_week_runners = get_strava_leaderboards()
 
     logger.info("Updating Week Progress Table")
-    update_week_progress(this_week_runners)
-    update_week_progress(last_week_runners)
+    update_week_progress(this_week_runners, remove_non_strava_runners=True)
+    update_week_progress(last_week_runners, remove_non_strava_runners=False)
 
     logger.info("Leaderboard update complete")
 

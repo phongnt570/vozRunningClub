@@ -12,11 +12,11 @@ class Command(BaseCommand):
 
         # set SettingClubDescription to "This is the default club description"
         if not SettingClubDescription.objects.filter().exists():
-            SettingClubDescription.objects.create(description="This is the default club description")
+            SettingClubDescription.objects.create(club_description="This is the default club description")
 
         # set StravaClub to "https://www.strava.com/clubs/1140105"
         if not SettingStravaClub.objects.filter().exists():
-            SettingStravaClub.objects.create(strava_club="https://www.strava.com/clubs/1140105")
+            SettingStravaClub.objects.create(club_url="https://www.strava.com/clubs/1140105")
 
         # set SettingDefaultWeekBaseDonation 0km - 0đ, 30km - 1,000đ, 50km - 5,000đ, 70km - 10,000đ, 100km - 20,000đ
         if not SettingDefaultWeekBaseDonation.objects.filter().exists():
