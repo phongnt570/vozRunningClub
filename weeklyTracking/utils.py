@@ -104,7 +104,8 @@ def get_strava_leaderboards():
 
     last_week_year, last_week_num = get_last_week()
 
-    last_week_runners = get_data_from_driver(driver, year=last_week_year, week_num=last_week_num)
+    # last_week_runners = get_data_from_driver(driver, year=last_week_year, week_num=last_week_num)
+    last_week_runners = get_data_from_driver(driver, year=this_year, week_num=this_week_num)
 
     driver.close()
 
