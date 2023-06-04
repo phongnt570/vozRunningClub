@@ -35,18 +35,18 @@
                                 </span>
                             </span>
                         {% endtimezone %}
-                        {% if request.user.is_authenticated %}
-                            {% if is_last_week or is_this_week %}
-                                (<span class="text-decoration-underline text-primary"
-                                       onclick="updateLeaderboard()"
-                                       role="button">Update now</span>,
-                                acting as <span class="text-secondary">{{ request.user.username }}</span>)
-                            {% endif %}
-                        {% endif %}
+                        {#                        {% if request.user.is_authenticated %}#}
+                        {#                            {% if is_last_week or is_this_week %}#}
+                        {#                                (<span class="text-decoration-underline text-primary"#}
+                        {#                                       onclick="updateLeaderboard()"#}
+                        {#                                       role="button">Update now</span>,#}
+                        {#                                acting as <span class="text-secondary">{{ request.user.username }}</span>)#}
+                        {#                            {% endif %}#}
+                        {#                        {% endif %}#}
                     </p>
                 </div>
             </div>
-{#            <div>#}
+            {#            <div>#}
             {#                <div class="join-panel" id="join-panel">#}
             {#                    <h4>Sign Up Here!</h4>#}
             {#                    <p>If you want to join with us, then click to <em>Connect with STRAVA</em>.</p>#}
@@ -109,7 +109,7 @@
             {% endfor %}
         </div>
     </div>
-    {% csrf_token %}
+    {#    {% csrf_token %}#}
 
     <div id="spinner-wrapper" class="d-none">
         <div class="loading">Loading&#8230;</div>
@@ -135,28 +135,28 @@
             document.getElementById("spinner-wrapper").classList.add("d-none");
         }
     </script>
-    {% if request.user.is_authenticated %}
-        <script>
-
-            axios.defaults.xsrfCookieName = 'csrftoken';
-            axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-
-            async function updateLeaderboard() {
-                showSpinner();
-                await axios.post("{% url 'update-leaderboard' %}")
-                    .then(function (response) {
-                        if (response.data.status === "success") {
-                            location.reload();
-                        } else {
-                            alert("Error updating leaderboard: " + response.data.message);
-                            hideSpinner();
-                        }
-                    })
-                    .catch(function (error) {
-                        alert("Error updating leaderboard: " + error);
-                        hideSpinner();
-                    });
-            }
-        </script>
-    {% endif %}
+    {#    {% if request.user.is_authenticated %}#}
+    {#        <script>#}
+    {##}
+    {#            axios.defaults.xsrfCookieName = 'csrftoken';#}
+    {#            axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";#}
+    {##}
+    {#            async function updateLeaderboard() {#}
+    {#                showSpinner();#}
+    {#                await axios.post("{% url 'update-leaderboard' %}")#}
+    {#                    .then(function (response) {#}
+    {#                        if (response.data.status === "success") {#}
+    {#                            location.reload();#}
+    {#                        } else {#}
+    {#                            alert("Error updating leaderboard: " + response.data.message);#}
+    {#                            hideSpinner();#}
+    {#                        }#}
+    {#                    })#}
+    {#                    .catch(function (error) {#}
+    {#                        alert("Error updating leaderboard: " + error);#}
+    {#                        hideSpinner();#}
+    {#                    });#}
+    {#            }#}
+    {#        </script>#}
+    {#    {% endif %}#}
 {% endblock %}

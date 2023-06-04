@@ -5,16 +5,16 @@ import logging
 import requests
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
-from .forms import UploadFileForm, JoinChallengeForm
+from .forms import JoinChallengeForm
 from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, StravaRunner, \
     SettingStravaAPIClient
 from .registration import handle_get_user_by_refresh_token, handle_join_challenge_request, \
     handle_strava_exchange_code
-from .utils import handle_uploaded_week_reg_file, \
-    handle_leaderboard_update_request, is_registration_open, get_current_registration_week, validate_year_week, \
+from .utils import handle_leaderboard_update_request, is_registration_open, get_current_registration_week, \
+    validate_year_week, \
     get_available_weeks
 
 logging.basicConfig(level=logging.INFO)
@@ -103,17 +103,17 @@ def post_update_leaderboard(request):
     return JsonResponse({"status": "success"})
 
 
-@staff_member_required
-def upload_file(request):
-    if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            handle_uploaded_week_reg_file(request.FILES["file"])
-            return redirect("index")
-    else:
-        form = UploadFileForm()
-
-    return render(request, "weeklyTracking/upload.html", {"form": form})
+# @staff_member_required
+# def upload_file(request):
+#     if request.method == "POST":
+#         form = UploadFileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             handle_uploaded_week_reg_file(request.FILES["file"])
+#             return redirect("index")
+#     else:
+#         form = UploadFileForm()
+#
+#     return render(request, "weeklyTracking/upload.html", {"form": form})
 
 
 def about(request):

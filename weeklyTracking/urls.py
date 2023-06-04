@@ -9,7 +9,7 @@ urlpatterns = [
     path("about/", views.about, name="about"),
 
     path("update-leaderboard/", views.post_update_leaderboard, name="update-leaderboard"),
-    path("upload/", views.upload_file, name="upload"),
+    # path("upload/", views.upload_file, name="upload"),
 
     path("registration/", views.registration, name="registration"),
     path("join-challenge/", views.join_challenge, name="join-challenge"),
