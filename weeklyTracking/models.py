@@ -7,7 +7,7 @@ class StravaRunner(models.Model):
     strava_id = models.IntegerField(primary_key=True)
     strava_name = models.CharField(max_length=64)
     strava_refresh_token = models.CharField(max_length=64, null=True, blank=True)
-    voz_name = models.CharField(max_length=64)
+    voz_name = models.CharField(max_length=64, blank=True, null=True)
 
     last_updated = models.DateTimeField(auto_now=True)
 
