@@ -114,6 +114,7 @@ def handle_strava_exchange_code(exchange_code: str) -> Tuple[StravaRunner, Weekl
             )
         else:
             strava_runner = StravaRunner.objects.get(strava_id=strava_runner_id)
+            strava_runner.strava_name = strava_name
 
         # Update StravaRunner with new refresh token
         strava_runner.strava_refresh_token = user_strava_refresh_token
