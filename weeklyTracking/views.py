@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
-from .forms import JoinChallengeForm, UpdateVozNameForm
+from .forms import JoinChallengeForm, UpdateAfterRegForm
 from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, StravaRunner, \
     SettingStravaAPIClient
 from .registration import handle_get_user_by_refresh_token, handle_join_challenge_request, \
@@ -198,7 +198,7 @@ def join_challenge(request):
             strava_runner = StravaRunner.objects.get(strava_id=strava_runner_id)
         except StravaRunner.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Invalid session"})
-        
+
         if not check_matching_refresh_tokens(request, strava_runner):
             return JsonResponse({"status": "error", "message": "Invalid session"})
 
@@ -223,12 +223,16 @@ def join_challenge(request):
 
 
 @require_POST
-def update_voz_name(request):
-    form = UpdateVozNameForm(request.POST)
+def update_after_registration(request):
+    form = UpdateAfterRegForm(request.POST)
 
     if form.is_valid():
         strava_runner_id = form.cleaned_data["strava_runner_id"]
         voz_name = form.cleaned_data.get("voz_name", "")
+        note = form.cleaned_data.get("note", "")
+        week_num = form.cleaned_data["week_num"]
+        year = form.cleaned_data["year"]
+
         try:
             strava_runner = StravaRunner.objects.get(strava_id=strava_runner_id)
         except StravaRunner.DoesNotExist:
@@ -237,9 +241,23 @@ def update_voz_name(request):
         if not check_matching_refresh_tokens(request, strava_runner):
             return JsonResponse({"status": "error", "message": "Invalid session"})
 
+        try:
+            weekly_progress = WeeklyProgress.objects.get(
+                runner=strava_runner,
+                week_num=week_num,
+                year=year
+            )
+        except WeeklyProgress.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Weekly progress not found"})
+
         strava_runner.voz_name = voz_name
         strava_runner.save()
-        logger.info(f"Updated VOZ name for strava={strava_runner_id} voz={voz_name}")
+
+        weekly_progress.note = note
+        weekly_progress.save()
+
+        logger.info(
+            f"Updated VOZ name for strava={strava_runner_id} voz={voz_name} year={year} week={week_num} note={note}")
 
         return JsonResponse({"status": "success"})
     else:

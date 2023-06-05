@@ -67,6 +67,8 @@ class WeeklyProgress(models.Model):
     average_pace = models.FloatField(default=0.0)
     elevation_gain = models.FloatField(default=0.0)
 
+    note = models.TextField(blank=True, default="")
+
     last_updated = models.DateTimeField(auto_now=True)
 
     class Meta:

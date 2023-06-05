@@ -34,12 +34,14 @@
                     <ul class="text-secondary">
                         <li>Registration for week: <span
                                 class="fw-bold">{{ current_registration_week_start_date|date:"d/m/Y" }}
-                            - {{ current_registration_week_end_date|date:"d/m/Y" }}</span>,</li>
+                            - {{ current_registration_week_end_date|date:"d/m/Y" }}</span>,
+                        </li>
                         <li>Registration closed at: <span
                                 class="fw-bold">23h59, {{ current_registration_week_start_date|date:"d/m/Y" }} (giờ Việt Nam)</span>,
                         </li>
                         <li>
-                            When registration is closed, you can still update your Voz name.
+                            When registration is closed, you can still update other fields except <span
+                                class="fw-bold">registered mileage</span>.
                         </li>
                     </ul>
                 </div>
@@ -96,6 +98,13 @@
 
                         {% if is_registration_open %}
                             <div class="my-3">
+                                <label for="note" class="form-label">Note <span
+                                        class="text-secondary">(không bắt buộc)</span></label>
+                                <textarea class="form-control" placeholder="Leave a note here"
+                                          id="note" name="note"
+                                          style="height: 100px;">{{ weekly_progress.note }}</textarea>
+                            </div>
+                            <div class="my-3">
                                 <label for="voz_name"
                                        class="form-label">
                                     Voz name <span class="text-secondary">(không bắt buộc)</span>
@@ -112,9 +121,22 @@
                     </form>
 
                     {% if not is_registration_open %}
-                        <form id="vozNameForm">
+                        <form id="afterRegistrationForm">
                             <input type="hidden" class="form-control" name="strava_runner_id"
                                    value="{{ strava_runner.strava_id }}">
+                            <input type="hidden" class="form-control" name="year"
+                                   value="{{ current_registration_week_year }}">
+                            <input type="hidden" class="form-control" name="week_num"
+                                   value="{{ current_registration_week_num }}">
+
+                            <div class="my-3">
+                                <label for="note" class="form-label">Note <span
+                                        class="text-secondary">(không bắt buộc)</span></label>
+                                <textarea class="form-control" placeholder="Leave a note here"
+                                          id="note" name="note"
+                                          style="height: 100px;">{{ weekly_progress.note }}</textarea>
+                            </div>
+
                             <div class="mb-3">
                                 <label for="voz_name" class="form-label">Voz name</label>
                                 <input type="text"
@@ -170,12 +192,12 @@
                     hideSpinner();
                 };
 
-                document.getElementById("vozNameForm").onsubmit = async (e) => {
+                document.getElementById("afterRegistrationForm").onsubmit = async (e) => {
                     e.preventDefault();
                     showSpinner();
-                    let formData = new FormData(document.getElementById("vozNameForm"));
+                    let formData = new FormData(document.getElementById("afterRegistrationForm"));
                     axios.post(
-                        "{% url 'update-voz-name' %}",
+                        "{% url 'update-after-registration' %}",
                         formData,
                         {
                             headers: {
@@ -183,12 +205,12 @@
                             }
                         }).then(function (response) {
                         if (response.data.status === "success") {
-                            alert("Voz name updated successfully!");
+                            alert("Updated successfully!");
                         } else {
-                            alert("Error updating Voz name: " + response.data.message);
+                            alert("Error: " + response.data.message);
                         }
                     }).catch(function (error) {
-                        alert("Error updating Voz name: " + error);
+                        alert("Error: " + error);
                     });
                     hideSpinner();
                 };

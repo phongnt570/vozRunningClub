@@ -13,6 +13,9 @@ class JoinChallengeForm(forms.Form):
     year = forms.IntegerField()
 
 
-class UpdateVozNameForm(forms.Form):
+class UpdateAfterRegForm(forms.Form):
     strava_runner_id = forms.IntegerField()
     voz_name = forms.CharField(max_length=200, required=False)
+    note = forms.CharField(widget=forms.Textarea(), required=False)
+    week_num = forms.IntegerField()
+    year = forms.IntegerField()
