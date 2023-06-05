@@ -142,6 +142,7 @@ def registration(request):
         except StravaRunner.DoesNotExist:
             strava_runner = None
             weekly_progress = None
+            request.session.pop("user_strava_refresh_token", None)
     elif strava_code:  # user logged in for the first time
         strava_runner, weekly_progress = handle_strava_exchange_code(strava_code)
         # save refresh token in session cookies
