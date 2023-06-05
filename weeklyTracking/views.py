@@ -224,6 +224,7 @@ def get_strava_access_token(strava_runner):
 
     if response.status_code == 200:
         response_json = response.json()
+        strava_runner.strava_refresh_token = response_json["refresh_token"]
         return response_json["access_token"]
 
     return None

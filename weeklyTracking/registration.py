@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 def handle_join_challenge_request(strava_runner_id, registered_mileage_distance, voz_name, year, week_num):
     runner = StravaRunner.objects.get(strava_id=strava_runner_id)
 
-    if voz_name:
-        runner.voz_name = voz_name
+    if type(voz_name) == str:
+        runner.voz_name = voz_name.strip()
         runner.save()
 
     registered_mileage = SettingRegisteredMileage.objects.get(distance=registered_mileage_distance)
