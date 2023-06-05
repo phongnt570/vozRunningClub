@@ -91,23 +91,40 @@
                             {% endif %}
                         </div>
 
-                        <div class="my-3">
-                            <label for="voz_name"
-                                   class="form-label">
-                                Voz name <span class="text-secondary">(không bắt buộc)</span>
-                            </label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="voz_name"
-                                   name="voz_name"
-                                   value="{{ strava_runner.voz_name }}"
-                                   placeholder="Voz name">
-                        </div>
-
                         {% if is_registration_open %}
+                            <div class="my-3">
+                                <label for="voz_name"
+                                       class="form-label">
+                                    Voz name <span class="text-secondary">(không bắt buộc)</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="voz_name"
+                                       name="voz_name"
+                                       value="{{ strava_runner.voz_name }}"
+                                       placeholder="Voz name">
+                            </div>
                             <button class="btn btn-primary" type="submit">Update</button>
                         {% endif %}
                     </form>
+
+                    {% if not is_registration_open %}
+                        <form id="vozNameForm">
+                            <input type="hidden" class="form-control" name="strava_runner_id"
+                                   value="{{ strava_runner.strava_id }}">
+                            <div class="my-3">
+                                <label for="voz_name" class="form-label">Voz name</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="voz_name"
+                                       name="voz_name"
+                                       value="{{ strava_runner.voz_name }}"
+                                       placeholder="Voz name">
+                            </div>
+                            <button class="btn btn-primary" type="submit">Update</button>
+                        </form>
+                    {% endif %}
+
                 </div>
             </div>
 
@@ -148,7 +165,30 @@
                         alert("Error updating register: " + error);
                     });
                     hideSpinner();
-                }
+                };
+
+                document.getElementById("vozNameForm").onsubmit = async (e) => {
+                    e.preventDefault();
+                    showSpinner();
+                    let formData = new FormData(document.getElementById("vozNameForm"));
+                    axios.post(
+                        "{% url 'update-voz-name' %}",
+                        formData,
+                        {
+                            headers: {
+                                "content-type": "multipart/form-data",
+                            }
+                        }).then(function (response) {
+                        if (response.data.status === "success") {
+                            alert("Voz name updated successfully!");
+                        } else {
+                            alert("Error updating Voz name: " + response.data.message);
+                        }
+                    }).catch(function (error) {
+                        alert("Error updating Voz name: " + error);
+                    });
+                    hideSpinner();
+                };
 
                 function forgetStrava(strava_runner_id) {
                     if (confirm("Are you sure you want to logout?")) {

@@ -14,5 +14,7 @@ urlpatterns = [
     path("registration/", views.registration, name="registration"),
     path("join-challenge/", views.join_challenge, name="join-challenge"),
 
+    path("update-voz-name/", views.update_voz_name, name="update-voz-name"),
+
     path("forget-strava/", views.forget_strava, name="forget-strava"),
 ]
