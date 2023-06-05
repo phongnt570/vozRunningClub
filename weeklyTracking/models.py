@@ -12,7 +12,7 @@ class StravaRunner(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.strava_id} | {self.strava_name} | {self.strava_refresh_token} | {self.voz_name}"
+        return f"{self.strava_id} | {self.strava_name} | {self.voz_name} | {self.strava_refresh_token}"
 
 
 class SettingWeekBaseDonation(models.Model):
@@ -25,9 +25,13 @@ class SettingWeekBaseDonation(models.Model):
 
     class Meta:
         unique_together = ["distance", "year", "week_num"]
+        indexes = [
+            models.Index(fields=["year", "week_num"]),
+            models.Index(fields=["distance", "year", "week_num"]),
+        ]
 
     def __str__(self):
-        return f"{self.year} | {self.week_num} | {self.distance}km | {self.base_donation:,} ₫"
+        return f"{self.year} | {self.week_num} | {self.distance} km | {self.base_donation:,} ₫"
 
 
 class SettingDefaultWeekBaseDonation(models.Model):
@@ -46,7 +50,7 @@ class SettingRegisteredMileage(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.distance}km"
+        return f"{self.distance} km"
 
 
 class WeeklyProgress(models.Model):
@@ -67,6 +71,10 @@ class WeeklyProgress(models.Model):
 
     class Meta:
         unique_together = ["runner", "year", "week_num"]
+        indexes = [
+            models.Index(fields=["year", "week_num"]),
+            models.Index(fields=["runner", "year", "week_num"]),
+        ]
 
     def __str__(self):
         return f"{self.runner} | {self.year} | {self.week_num} | {self.registered_mileage.distance} km"
@@ -99,6 +107,9 @@ class SettingDefaultDonationByWeek(models.Model):
 
     class Meta:
         unique_together = ["year", "week_num"]
+        indexes = [
+            models.Index(fields=["year", "week_num"]),
+        ]
 
     def __str__(self):
         return f"{self.year} | {self.week_num} | {self.default_donation:,} ₫"
