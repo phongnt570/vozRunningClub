@@ -11862,6 +11862,10 @@ body {
   overflow-y: scroll; /* Show vertical scrollbar */
 }
 
+.text-strava {
+  color: #fc4c02;
+}
+
 .small-caps {
   font-variant: small-caps;
 }
