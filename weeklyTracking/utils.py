@@ -309,17 +309,7 @@ def is_registration_open():
     :return: True if in registration phase, False otherwise
     """
     today = datetime.date.today()
-
-    # If today is Sunday, check if it's after 00:00:00
-    if today.weekday() == 6:
-        return datetime.datetime.now().time() >= datetime.time(0, 0, 0)
-
-    # If today is Monday, check if it's before 23:59:59
-    if today.weekday() == 0:
-        return datetime.datetime.now().time() <= datetime.time(23, 59, 59)
-
-    # Otherwise, it's not Sunday or Monday, so we're not in the registration phase
-    return False
+    return today.weekday() == 6 or today.weekday() == 0
 
 
 def get_current_registration_week() -> Tuple[datetime.date, datetime.date]:
