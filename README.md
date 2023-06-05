@@ -18,19 +18,13 @@ pip install -r requirements.txt
 ```
 
 4. Install `chromedriver` (https://chromedriver.chromium.org/) - needed for Selenium
-5. Migrate the database
+5. First time running the app, run the release tasks:
 
 ```bash
-python manage.py migrate
+./release-tasks.sh
 ```
 
-6. First time running the app, run the command to add default settings
-
-```bash
-python manage.py add_default_settings
-```
-
-7. Run the app
+6. Run the app
 
 ```bash
 python manage.py runserver
@@ -40,7 +34,7 @@ python manage.py runserver
 
 - [x] Local CSS/JS files
 - [x] Create Nav Bar, split into Home, About, and Donation
-- [x] New domain name (vozrun.club)
+- [x] New domain name (https://vozrun.club)
 - [x] Automatically fetching data from Strava
 - [x] Add Strava OAuth
 - [ ] Build Top-donates Page
