@@ -317,7 +317,6 @@ def get_current_registration_week() -> Tuple[datetime.date, datetime.date]:
     Returns the start and end dates of the current registration week
     :return: Tuple of start and end dates
     """
-
     today = datetime.date.today()
 
     # If today is Sunday, the registration week is next week
