@@ -34,9 +34,12 @@
                     <ul class="text-secondary">
                         <li>Registration for week: <span
                                 class="fw-bold">{{ current_registration_week_start_date|date:"d/m/Y" }}
-                            - {{ current_registration_week_end_date|date:"d/m/Y" }}</span></li>
+                            - {{ current_registration_week_end_date|date:"d/m/Y" }}</span>,</li>
                         <li>Registration closed at: <span
-                                class="fw-bold">23h59, {{ current_registration_week_start_date|date:"d/m/Y" }} (giờ Việt Nam)</span>
+                                class="fw-bold">23h59, {{ current_registration_week_start_date|date:"d/m/Y" }} (giờ Việt Nam)</span>,
+                        </li>
+                        <li>
+                            When registration is closed, you can still update your Voz name.
                         </li>
                     </ul>
                 </div>
@@ -112,7 +115,7 @@
                         <form id="vozNameForm">
                             <input type="hidden" class="form-control" name="strava_runner_id"
                                    value="{{ strava_runner.strava_id }}">
-                            <div class="my-3">
+                            <div class="mb-3">
                                 <label for="voz_name" class="form-label">Voz name</label>
                                 <input type="text"
                                        class="form-control"
