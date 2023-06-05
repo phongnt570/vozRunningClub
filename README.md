@@ -34,7 +34,7 @@ python manage.py runserver
 
 - [x] Local CSS/JS files
 - [x] Create Nav Bar, split into Home, About, and Donation
-- [x] New domain name (https://vozrun.club)
+- [x] New domain name (https://www.vozrun.club)
 - [x] Automatically fetching data from Strava
 - [x] Add Strava OAuth
 - [ ] Build Top-donates Page
