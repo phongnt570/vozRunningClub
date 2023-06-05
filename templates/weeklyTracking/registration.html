@@ -31,6 +31,14 @@
                         </span>
                     </span>
                     </p>
+                    <ul class="text-secondary">
+                        <li>Registration for week: <span
+                                class="fw-bold">{{ current_registration_week_start_date|date:"d/m/Y" }}
+                            - {{ current_registration_week_end_date|date:"d/m/Y" }}</span></li>
+                        <li>Registration closed at: <span
+                                class="fw-bold">23h59, {{ current_registration_week_start_date|date:"d/m/Y" }}</span>
+                        </li>
+                    </ul>
                 </div>
 
                 <div class="row">
@@ -58,8 +66,8 @@
                                 <label for="registered_mileage_distance" class="form-label">Cự ly muốn đăng ký cho tuần
                                     này
                                     <span class="fw-bold">
-                                        ({{ current_registration_week_start_date }}
-                                    - {{ current_registration_week_end_date }})</span>:</label>
+                                        ({{ current_registration_week_start_date|date:"d/m/Y" }}
+                                    - {{ current_registration_week_end_date|date:"d/m/Y" }})</span></label>
                                 <select class="form-select" aria-label="Select distance"
                                         id="registered_mileage_distance"
                                         name="registered_mileage_distance" required>
@@ -74,7 +82,10 @@
                                     {% endfor %}
                                 </select>
                             {% else %}
-                                <label for="registered_mileage_fixed" class="form-label">Cự ly đã đăng ký:</label>
+                                <label for="registered_mileage_fixed" class="form-label">Cự ly đã đăng ký cho tuần này
+                                    <span class="fw-bold">
+                                        ({{ current_registration_week_start_date|date:"d/m/Y" }}
+                                    - {{ current_registration_week_end_date|date:"d/m/Y" }})</span></label>
                                 <input type="text" disabled class="form-control" id="registered_mileage_fixed"
                                        value="{{ weekly_progress.registered_mileage.distance }} km">
                             {% endif %}
