@@ -201,15 +201,20 @@ def update_strava(request):
         strava_profile = get_strava_profile(request.user)
         if not strava_profile:
             return JsonResponse({"status": "error", "message": "You need to connect your Strava account first"})
-        try:
-            strategy = load_strategy()
-            access_token = strava_profile.get_access_token(strategy)
-            backend = strava_profile.get_backend_instance(strategy)
-            user_details = backend.user_data(access_token=access_token)
-        except Exception as e:
-            print(e)
-            return JsonResponse(
-                {"status": "error", "message": "Strava authentication failed! Please log out and try again."})
+        # try:
+        strategy = load_strategy()
+        print(strategy)
+        print(type(strategy))
+        access_token = strava_profile.get_access_token(strategy)
+        print(access_token)
+        backend = strava_profile.get_backend_instance(strategy)
+        print(backend)
+        user_details = backend.user_data(access_token=access_token)
+        print(user_details)
+        # except Exception as e:
+        #     print(e)
+        #     return JsonResponse(
+        #         {"status": "error", "message": "Strava authentication failed! Please log out and try again."})
 
         request.user.first_name = user_details.get("firstname", "")
         request.user.last_name = user_details.get("lastname", "")
