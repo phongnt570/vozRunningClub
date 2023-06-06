@@ -206,7 +206,8 @@ def update_strava(request):
             access_token = strava_profile.get_access_token(strategy)
             backend = strava_profile.get_backend_instance(strategy)
             user_details = backend.user_data(access_token=access_token)
-        except Exception:
+        except Exception as e:
+            print(e)
             return JsonResponse(
                 {"status": "error", "message": "Strava authentication failed! Please log out and try again."})
 
