@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
+from social_django.models import UserSocialAuth
 from social_django.utils import load_strategy
 
 from .forms import WeeklyRegistrationForm, UserProfileForm
@@ -53,9 +54,15 @@ def leaderboard(request):
         sorted_reg_map[key] = reg_map[key]
 
     last_updated = None
-    if WeeklyProgress.objects.filter(week_num=requested_week_num, year=requested_year).exists():
-        last_updated = WeeklyProgress.objects.filter(week_num=requested_week_num, year=requested_year).order_by(
-            "-last_updated").first().last_updated
+    if sorted_reg_map:
+        last_updated = sorted([wp for wps in sorted_reg_map.values() for wp in wps], key=lambda x: x.last_updated)[
+            -1].last_updated
+
+    user_2_strava_id = {}
+    all_user_ids_in_week = [wp.user.id for wps in sorted_reg_map.values() for wp in wps]
+    all_strava_profiles = UserSocialAuth.objects.filter(user_id__in=all_user_ids_in_week, provider="strava")
+    for strava_profile in all_strava_profiles:
+        user_2_strava_id[strava_profile.user_id] = strava_profile.uid
 
     available_weeks = {}
     for year, week_num in sorted(get_available_weeks_in_db(), reverse=True):
@@ -83,6 +90,7 @@ def leaderboard(request):
         "is_this_week": requested_week_start == this_week_start,
         "is_last_week": requested_week_end == this_week_start + datetime.timedelta(days=-1),
         "available_weeks": available_weeks,
+        "user_2_strava_id": user_2_strava_id,
         "last_updated": last_updated,
     }
 

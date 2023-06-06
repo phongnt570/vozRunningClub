@@ -63,3 +63,8 @@ def get_strava_id(user: User):
         return user.social_auth.get(provider="strava").uid
     except UserSocialAuth.DoesNotExist:
         return None
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

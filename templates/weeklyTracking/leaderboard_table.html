@@ -15,28 +15,29 @@
     </tr>
     </thead>
     <tbody>
-    {% for reg in data %}
+    {% for weekly_progress in data %}
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>
-                <a href="https://strava.com/athletes/{{ reg.user|get_strava_id }}" target="_blank"
-                   class="text-decoration-none">
-                    {{ reg.user.get_full_name }}
+                <a href="https://strava.com/athletes/{{ user_2_strava_id|get_item:weekly_progress.user.id }}"
+                   target="_blank"
+                   class="text-decoration-none fw-semibold">
+                    {{ weekly_progress.user.get_full_name }}
                 </a>
             </td>
-            <td>{{ reg.user.profile.voz_name }}</td>
-            <td class="text-end">{{ reg.runs }}</td>
-            <td class="text-end">{{ reg.average_pace|pace_format }}/km</td>
-            <td class="text-end">{{ reg.distance|floatformat:1 }} km</td>
+            <td>{{ weekly_progress.user.profile.voz_name }}</td>
+            <td class="text-end">{{ weekly_progress.runs }}</td>
+            <td class="text-end">{{ weekly_progress.average_pace|pace_format }}/km</td>
+            <td class="text-end">{{ weekly_progress.distance|floatformat:1 }} km</td>
             <td class="text-end">
-                {% if reg.registered_mileage.distance > 0 %}
-                    {{ reg.registered_mileage.distance|floatformat:0 }} km
+                {% if weekly_progress.registered_mileage.distance > 0 %}
+                    {{ weekly_progress.registered_mileage.distance|floatformat:0 }} km
                 {% else %}
                     <span class="text-secondary">--</span>
                 {% endif %}
             </td>
-            <td class="text-end">{{ reg|missing_distance_str }}</td>
-            <td class="text-end">{{ reg|donation }}</td>
+            <td class="text-end">{{ weekly_progress|missing_distance_str }}</td>
+            <td class="text-end">{{ weekly_progress|donation }}</td>
         </tr>
     {% endfor %}
     </tbody>
