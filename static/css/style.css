@@ -11866,6 +11866,18 @@ body {
   color: #fc4c02;
 }
 
+.btn-strava {
+  color: #fff;
+  background-color: #fc4c02;
+  border-color: #fc4c02;
+}
+
+.btn-strava:hover {
+  color: #fff;
+  background-color: #e63a00;
+  border-color: #e63a00;
+}
+
 .small-caps {
   font-variant: small-caps;
 }

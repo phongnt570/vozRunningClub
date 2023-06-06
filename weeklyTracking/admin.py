@@ -1,10 +1,9 @@
 from django.contrib import admin
 
-from weeklyTracking.models import StravaRunner, WeeklyProgress, SettingStravaClub, SettingRegisteredMileage, \
+from weeklyTracking.models import WeeklyProgress, SettingStravaClub, SettingRegisteredMileage, \
     SettingDefaultDonation, SettingClubDescription, SettingWeekBaseDonation, SettingDefaultWeekBaseDonation, \
-    SettingDefaultDonationByWeek, SettingStravaAPIClient
+    SettingDefaultDonationByWeek, UserProfile
 
-admin.site.register(StravaRunner)
 admin.site.register(WeeklyProgress)
 admin.site.register(SettingStravaClub)
 admin.site.register(SettingRegisteredMileage)
@@ -13,4 +12,4 @@ admin.site.register(SettingClubDescription)
 admin.site.register(SettingWeekBaseDonation)
 admin.site.register(SettingDefaultWeekBaseDonation)
 admin.site.register(SettingDefaultDonationByWeek)
-admin.site.register(SettingStravaAPIClient)
+admin.site.register(UserProfile)

@@ -1,21 +1,18 @@
 import datetime
-import json
 import logging
 
-import requests
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
+from social_django.utils import load_strategy
 
-from .forms import JoinChallengeForm, UpdateAfterRegForm
-from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, StravaRunner, \
-    SettingStravaAPIClient
-from .registration import handle_get_user_by_refresh_token, handle_join_challenge_request, \
-    handle_strava_exchange_code
-from .utils import handle_leaderboard_update_request, is_registration_open, get_current_registration_week, \
-    validate_year_week, \
-    get_available_weeks
+from .forms import WeeklyRegistrationForm, UserProfileForm
+from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, UserProfile
+from .utils.generics import get_available_weeks_in_db
+from .utils.registration import is_registration_open, get_current_registration_week, create_or_get_weekly_progress
+from .utils.strava_auth_model import get_strava_profile
+from .utils.time import validate_year_week
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -37,8 +34,7 @@ def leaderboard(request):
 
     requested_week_data = WeeklyProgress.objects.filter(week_num=requested_week_num,
                                                         year=requested_year).order_by("-distance",
-                                                                                      "-registered_mileage__distance",
-                                                                                      "runner__strava_name")
+                                                                                      "-registered_mileage__distance")
 
     requested_week_start = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 1)
     requested_week_end = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 7)
@@ -62,7 +58,7 @@ def leaderboard(request):
             "-last_updated").first().last_updated
 
     available_weeks = {}
-    for year, week_num in sorted(get_available_weeks(), reverse=True):
+    for year, week_num in sorted(get_available_weeks_in_db(), reverse=True):
         if year == this_year and week_num == this_week_num:
             value = "This week"
         else:
@@ -93,29 +89,6 @@ def leaderboard(request):
     return render(request, "weeklyTracking/leaderboard.html", context=context)
 
 
-@staff_member_required
-@require_POST
-def post_update_leaderboard(request):
-    try:
-        handle_leaderboard_update_request()
-    except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
-    return JsonResponse({"status": "success"})
-
-
-# @staff_member_required
-# def upload_file(request):
-#     if request.method == "POST":
-#         form = UploadFileForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             handle_uploaded_week_reg_file(request.FILES["file"])
-#             return redirect("index")
-#     else:
-#         form = UploadFileForm()
-#
-#     return render(request, "weeklyTracking/upload.html", {"form": form})
-
-
 def about(request):
     return render(request, "weeklyTracking/about.html", context={
         "club_description": SettingClubDescription.objects.get().club_description})
@@ -126,42 +99,21 @@ def top_donates(request):
 
 
 def registration(request):
-    strava_client_id = "108204"
-    callback_url = request.build_absolute_uri()
-
-    strava_login_url = f"https://www.strava.com/oauth/authorize?client_id=" \
-                       f"{strava_client_id}&response_type=code&redirect_uri=" \
-                       f"{callback_url}&approval_prompt=auto&scope=read&state=test"
-
-    strava_code = request.GET.get("code")
-    refresh_token = request.session.get("user_strava_refresh_token")
-
-    if refresh_token:  # user logged in
-        try:
-            strava_runner, weekly_progress = handle_get_user_by_refresh_token(refresh_token)
-        except StravaRunner.DoesNotExist:
-            strava_runner = None
-            weekly_progress = None
-            request.session.pop("user_strava_refresh_token", None)
-    elif strava_code:  # user logged in for the first time
-        strava_runner, weekly_progress = handle_strava_exchange_code(strava_code)
-        # save refresh token in session cookies
-        if strava_runner and weekly_progress:
-            request.session["user_strava_refresh_token"] = strava_runner.strava_refresh_token
-    else:  # user not logged in
-        strava_runner = None
-        weekly_progress = None
-
     # other data
     current_registration_week_start_date, current_registration_week_end_date = get_current_registration_week()
     current_registration_week_num = current_registration_week_start_date.isocalendar()[1]
     current_registration_week_year = current_registration_week_start_date.isocalendar()[0]
     available_mileages = SettingRegisteredMileage.objects.all().order_by("distance")
 
+    weekly_progress = None
+    if request.user.is_authenticated:
+        if get_strava_profile(request.user):
+            weekly_progress = create_or_get_weekly_progress(user=request.user, week_num=current_registration_week_num,
+                                                            year=current_registration_week_year)
+        UserProfile.objects.get_or_create(user=request.user)
+
     return render(request, "weeklyTracking/registration.html", context={
-        "strava_runner": strava_runner,
         "weekly_progress": weekly_progress,
-        "strava_login_url": strava_login_url,
         "is_registration_open": is_registration_open(),
         "current_registration_week_start_date": current_registration_week_start_date,
         "current_registration_week_end_date": current_registration_week_end_date,
@@ -172,144 +124,91 @@ def registration(request):
     })
 
 
-def check_matching_refresh_tokens(request, strava_runner: StravaRunner):
-    if not request.session.get("user_strava_refresh_token") or not strava_runner.strava_refresh_token:
-        return False
-    if strava_runner.strava_refresh_token != request.session.get("user_strava_refresh_token"):
-        return False
-    return True
-
-
 @require_POST
-def join_challenge(request):
-    if not is_registration_open():
-        return JsonResponse({"status": "error", "message": "Registration is closed"})
+@login_required
+def weekly_registration(request):
+    if not get_strava_profile(request.user):
+        return JsonResponse({"status": "error", "message": "You need to connect your Strava account first"})
 
-    form = JoinChallengeForm(request.POST)
+    form = WeeklyRegistrationForm(request.POST)
 
     if form.is_valid():
-        strava_runner_id = form.cleaned_data["strava_runner_id"]
-        voz_name = form.cleaned_data.get("voz_name", "")
         registered_mileage_distance = form.cleaned_data.get("registered_mileage_distance", 0)
         week_num = form.cleaned_data["week_num"]
         year = form.cleaned_data["year"]
-
-        try:
-            strava_runner = StravaRunner.objects.get(strava_id=strava_runner_id)
-        except StravaRunner.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Invalid session"})
-
-        if not check_matching_refresh_tokens(request, strava_runner):
-            return JsonResponse({"status": "error", "message": "Invalid session"})
-
-        try:
-            handle_join_challenge_request(
-                strava_runner_id=strava_runner_id,
-                registered_mileage_distance=registered_mileage_distance,
-                voz_name=voz_name,
-                year=year,
-                week_num=week_num
-            )
-            logger.info(
-                f"Updated registration for "
-                f"strava={strava_runner_id} voz={voz_name} "
-                f"dis={registered_mileage_distance}km "
-                f"year={year} week={week_num}")
-        except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)})
-        return JsonResponse({"status": "success"})
-    else:
-        return JsonResponse({"status": "error", "message": "Invalid form"})
-
-
-@require_POST
-def update_after_registration(request):
-    form = UpdateAfterRegForm(request.POST)
-
-    if form.is_valid():
-        strava_runner_id = form.cleaned_data["strava_runner_id"]
-        voz_name = form.cleaned_data.get("voz_name", "")
         note = form.cleaned_data.get("note", "")
-        week_num = form.cleaned_data["week_num"]
-        year = form.cleaned_data["year"]
 
-        try:
-            strava_runner = StravaRunner.objects.get(strava_id=strava_runner_id)
-        except StravaRunner.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Strava runner not found"})
+        current_registration_week_start_date, current_registration_week_end_date = get_current_registration_week()
+        current_registration_week_num = current_registration_week_start_date.isocalendar()[1]
+        current_registration_week_year = current_registration_week_start_date.isocalendar()[0]
 
-        if not check_matching_refresh_tokens(request, strava_runner):
-            return JsonResponse({"status": "error", "message": "Invalid session"})
+        if week_num != current_registration_week_num or year != current_registration_week_year:
+            return JsonResponse({"status": "error", "message": "Invalid week/year"})
 
-        try:
-            weekly_progress = WeeklyProgress.objects.get(
-                runner=strava_runner,
-                week_num=week_num,
-                year=year
-            )
-        except WeeklyProgress.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Weekly progress not found"})
+        weekly_progress = create_or_get_weekly_progress(user=request.user, week_num=week_num, year=year)
 
-        strava_runner.voz_name = voz_name
-        strava_runner.save()
+        if is_registration_open():
+            weekly_progress.registered_mileage_distance = registered_mileage_distance
 
         weekly_progress.note = note
         weekly_progress.save()
 
-        logger.info(
-            f"Updated VOZ name for strava={strava_runner_id} voz={voz_name} year={year} week={week_num} note={note}")
+        return JsonResponse({"status": "success"})
+
+    else:
+        return JsonResponse({"status": "error", "message": "Invalid form"})
+
+
+# @require_POST
+@require_POST
+def disconnect_strava(request):
+    return JsonResponse({"status": "success"})
+
+
+@login_required
+def profile(request):
+    UserProfile.objects.get_or_create(user=request.user)
+    return render(request, "weeklyTracking/profile.html")
+
+
+@login_required
+@require_POST
+def update_profile(request):
+    form = UserProfileForm(request.POST)
+
+    if form.is_valid():
+        user_profile = UserProfile.objects.get_or_create(user=request.user)[0]
+        user_profile.voz_name = form.cleaned_data.get("voz_name", "")
+        user_profile.save()
 
         return JsonResponse({"status": "success"})
     else:
         return JsonResponse({"status": "error", "message": "Invalid form"})
 
 
-def get_strava_access_token(strava_runner):
-    refresh_token = strava_runner.strava_refresh_token
-    if not refresh_token:
-        return None
-
-    strava_client_setting = SettingStravaAPIClient.objects.get()
-    strava_client_id, strava_client_secret = strava_client_setting.client_id, strava_client_setting.client_secret
-
-    query = {
-        "client_id": strava_client_id,
-        "client_secret": strava_client_secret,
-        "refresh_token": refresh_token,
-        "grant_type": 'refresh_token'
-    }
-    response = requests.post("https://www.strava.com/oauth/token", params=query)
-
-    if response.status_code == 200:
-        response_json = response.json()
-        strava_runner.strava_refresh_token = response_json["refresh_token"]
-        return response_json["access_token"]
-
-    return None
-
-
+@login_required
 @require_POST
-def forget_strava(request):
-    data = json.loads(request.body)
-    strava_runner_id = data["strava_runner_id"]
-
+def update_strava(request):
     try:
-        strava_runner = StravaRunner.objects.get(strava_id=strava_runner_id)
-    except StravaRunner.DoesNotExist:
-        return JsonResponse({"status": "error", "message": "Strava runner not found"})
+        strava_profile = get_strava_profile(request.user)
+        if not strava_profile:
+            return JsonResponse({"status": "error", "message": "You need to connect your Strava account first"})
+        try:
+            strategy = load_strategy()
+            access_token = strava_profile.get_access_token(strategy)
+            backend = strava_profile.get_backend_instance(strategy)
+            user_details = backend.user_data(access_token=access_token)
+        except Exception:
+            return JsonResponse(
+                {"status": "error", "message": "Strava authentication failed! Please log out and try again."})
 
-    if not check_matching_refresh_tokens(request, strava_runner):
-        return JsonResponse({"status": "error", "message": "Invalid session"})
+        request.user.first_name = user_details.get("firstname", "")
+        request.user.last_name = user_details.get("lastname", "")
+        request.user.save()
 
-    access_token = get_strava_access_token(strava_runner)
-    try:
-        requests.post("https://www.strava.com/oauth/deauthorize", params={"access_token": access_token})
+        return JsonResponse({
+            "status": "success",
+            "strava_name": request.user.get_full_name()
+        })
     except Exception as e:
-        logger.error(f"Error forgetting strava: {e}")
-
-    strava_runner.strava_refresh_token = None
-    strava_runner.save()
-
-    request.session.pop("user_strava_refresh_token", None)
-
-    return JsonResponse({"status": "success"})
+        return JsonResponse({"status": "error", "message": f"Error: {str(e)}"})

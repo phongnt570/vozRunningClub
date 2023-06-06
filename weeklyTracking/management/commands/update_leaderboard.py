@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from weeklyTracking.utils import handle_leaderboard_update_request
+from weeklyTracking.utils.strava_web_scrape import handle_leaderboard_update_request
 
 
 class Command(BaseCommand):

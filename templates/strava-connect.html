@@ -1,0 +1,23 @@
+{% load static %}
+<div id="connect-strava">
+    <div>
+        <div>
+            <p>
+                Để đăng ký hoặc sửa cự ly chạy, bạn cần kết nối với tài khoản
+                <span class="fw-bold text-strava">Strava</span>
+                của mình.
+                <br>
+                * Chúng tôi chỉ lấy thông tin về <b>Tên của bạn</b> từ tài khoản
+                <span class="fw-bold text-strava">Strava</span>
+                mà bạn cung cấp,
+                ngoài ra chúng tôi không lưu hoặc đọc bất cứ thông tin nào khác.
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'social:begin' 'strava' %}">
+                <img src="{% static 'img/connect-strava.png' %}" alt="Strava logo"
+                     style="max-width: 100%; height: 3rem">
+            </a>
+        </div>
+    </div>
+</div>

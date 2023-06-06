@@ -19,12 +19,12 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>
-                <a href="https://strava.com/athletes/{{ reg.runner.strava_id }}" target="_blank"
+                <a href="https://strava.com/athletes/{{ reg.user|get_strava_id }}" target="_blank"
                    class="text-decoration-none">
-                    {{ reg.runner.strava_name }}
+                    {{ reg.user.get_full_name }}
                 </a>
             </td>
-            <td>{{ reg.runner.voz_name }}</td>
+            <td>{{ reg.user.profile.voz_name }}</td>
             <td class="text-end">{{ reg.runs }}</td>
             <td class="text-end">{{ reg.average_pace|pace_format }}/km</td>
             <td class="text-end">{{ reg.distance|floatformat:1 }} km</td>
