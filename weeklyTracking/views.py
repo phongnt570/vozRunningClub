@@ -207,9 +207,10 @@ def update_strava(request):
             backend = strava_profile.get_backend_instance(strategy)
             user_details = backend.user_data(access_token=access_token)
         except Exception as e:
-            raise e
-            # return JsonResponse(
-            #     {"status": "error", "message": "Strava authentication failed! Please log out and try again."})
+            # raise e
+            return JsonResponse(
+                {"status": "error",
+                 "message": "Strava authentication failed! Please log out and try again. Error: " + str(e)})
 
         request.user.first_name = user_details.get("firstname", "")
         request.user.last_name = user_details.get("lastname", "")
@@ -220,5 +221,5 @@ def update_strava(request):
             "strava_name": request.user.get_full_name()
         })
     except Exception as e:
-        raise e
-        # return JsonResponse({"status": "error", "message": f"Error: {str(e)}"})
+        # raise e
+        return JsonResponse({"status": "error", "message": f"Error: {str(e)}"})
