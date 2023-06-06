@@ -1,5 +1,4 @@
 import csv
-import json
 import os
 
 import requests
@@ -92,13 +91,13 @@ class Command(BaseCommand):
                 try:
                     strava_profile = user.social_auth.get(provider="strava")
                 except UserSocialAuth.DoesNotExist:
-                    strava_profile = user.social_auth.create(user=user,
-                                                             provider="strava",
-                                                             uid=strava_id,
-                                                             extra_data=json.dumps({}))
+                    strava_profile = UserSocialAuth.objects.create(user=user,
+                                                                   provider="strava",
+                                                                   uid=strava_id,
+                                                                   extra_data="{}")
 
                 extra_data = do_refresh_token(refresh_token)
-                strava_profile.extra_data = json.dumps(extra_data)
+                strava_profile.set_extra_data(extra_data)
                 strava_profile.save()
         self.stdout.write('Importing Strava Runners - Done')
 
