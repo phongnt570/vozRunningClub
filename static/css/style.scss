@@ -2,6 +2,9 @@ $primary-dark: #004ba0;
 $primary-light: #63a4ff;
 $primary: #1976d2;
 
+$strava-orange: #fc4c02;
+$strava-orange-dark: #e63a00;
+
 $negative-color: rgba(234, 34, 81, 1);
 $neutral-color: rgba(100, 100, 100, 1);
 $positive-color: rgba(29, 159, 152, 1);
@@ -13,7 +16,19 @@ body {
 }
 
 .text-strava {
-  color: #fc4c02;
+  color: $strava-orange;
+}
+
+.btn-strava {
+  color: $white;
+  background-color: $strava-orange;
+  border-color: $strava-orange;
+}
+
+.btn-strava:hover {
+  color: $white;
+  background-color: $strava-orange-dark;
+  border-color: $strava-orange-dark;
 }
 
 .small-caps {

@@ -21,10 +21,15 @@ pip install -r requirements.txt
 5. First time running the app, run the release tasks:
 
 ```bash
-./release-tasks.sh
+bash release-tasks.sh
 ```
 
-6. Run the app
+6. Set the following environment variables:
+
+- `SOCIAL_AUTH_STRAVA_KEY`: Strava Client ID
+- `SOCIAL_AUTH_STRAVA_SECRET`: Strava Client Secret
+
+7. Run the app
 
 ```bash
 python manage.py runserver

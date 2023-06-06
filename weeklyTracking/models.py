@@ -1,18 +1,18 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 from .singleton_model import SingletonModel
 
 
-class StravaRunner(models.Model):
-    strava_id = models.IntegerField(primary_key=True)
-    strava_name = models.CharField(max_length=64)
-    strava_refresh_token = models.CharField(max_length=64, null=True, blank=True, db_index=True)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, related_name="profile")
+
     voz_name = models.CharField(max_length=64, blank=True, default="")
 
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.strava_id} | {self.strava_name} | {self.voz_name} | {self.strava_refresh_token}"
+        return f"{self.user.get_full_name()} | voz_name: {self.voz_name}"
 
 
 class SettingWeekBaseDonation(models.Model):
@@ -54,7 +54,7 @@ class SettingRegisteredMileage(models.Model):
 
 
 class WeeklyProgress(models.Model):
-    runner = models.ForeignKey(StravaRunner, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="weekly_progress")
 
     year = models.IntegerField()
     week_num = models.IntegerField()
@@ -72,14 +72,14 @@ class WeeklyProgress(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ["runner", "year", "week_num"]
+        unique_together = ["user", "year", "week_num"]
         indexes = [
             models.Index(fields=["year", "week_num"]),
-            models.Index(fields=["runner", "year", "week_num"]),
+            models.Index(fields=["user", "year", "week_num"]),
         ]
 
     def __str__(self):
-        return f"{self.runner} | {self.year} | {self.week_num} | {self.registered_mileage.distance} km"
+        return f"{self.user.get_full_name()} | {self.year} | {self.week_num} | {self.registered_mileage.distance} km"
 
 
 class SettingStravaClub(SingletonModel):
@@ -124,13 +124,3 @@ class SettingClubDescription(SingletonModel):
 
     def __str__(self):
         return self.club_description
-
-
-class SettingStravaAPIClient(SingletonModel):
-    client_id = models.CharField(max_length=512)
-    client_secret = models.CharField(max_length=512)
-
-    last_updated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.client_id} | {self.client_secret}"

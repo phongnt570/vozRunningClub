@@ -1,9 +1,7 @@
-import os
-
 from django.core.management import BaseCommand
 
 from weeklyTracking.models import SettingDefaultDonation, SettingClubDescription, SettingStravaClub, \
-    SettingDefaultWeekBaseDonation, SettingRegisteredMileage, SettingStravaAPIClient
+    SettingDefaultWeekBaseDonation, SettingRegisteredMileage
 
 
 class Command(BaseCommand):
@@ -35,14 +33,3 @@ class Command(BaseCommand):
             SettingRegisteredMileage.objects.create(distance=50)
             SettingRegisteredMileage.objects.create(distance=70)
             SettingRegisteredMileage.objects.create(distance=100)
-
-        # SettingStravaAPIClient
-        if not SettingStravaAPIClient.objects.filter().exists():
-            client_id = os.environ.get("STRAVA_CLIENT_ID")
-            client_secret = os.environ.get("STRAVA_CLIENT_SECRET")
-
-            if client_id and client_secret:
-                SettingStravaAPIClient.objects.create(client_id=client_id, client_secret=client_secret)
-            else:
-                self.stdout.write("STRAVA_CLIENT_ID and/or STRAVA_CLIENT_SECRET not found in environment variables. "
-                                  "Please set them up and run this command again.")

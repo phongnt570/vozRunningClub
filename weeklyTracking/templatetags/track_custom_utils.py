@@ -1,6 +1,8 @@
 import math
 
 from django import template
+from django.contrib.auth.models import User
+from social_django.models import UserSocialAuth
 
 from weeklyTracking.models import WeeklyProgress, SettingDefaultDonation, SettingWeekBaseDonation, \
     SettingDefaultWeekBaseDonation, SettingDefaultDonationByWeek
@@ -53,3 +55,11 @@ def donation(week_progress: WeeklyProgress):
         amount = donation_per_km * missing_distance(week_progress)
 
     return f"{math.ceil(amount):,} ₫"
+
+
+@register.filter
+def get_strava_id(user: User):
+    try:
+        return user.social_auth.get(provider="strava").uid
+    except UserSocialAuth.DoesNotExist:
+        return None

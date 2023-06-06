@@ -31,7 +31,7 @@ if 'SECRET_KEY' in os.environ:
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG_PROPAGATE_EXCEPTIONS = True
+# DEBUG_PROPAGATE_EXCEPTIONS = True
 
 if not IS_HEROKU_APP:
     DEBUG = True
@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'weeklyTracking.apps.WeeklytrackingConfig',
+
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +75,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'weeklyTracking.middleware.StravaAuthAlreadyAssociatedMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.strava.StravaOAuth',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 ROOT_URLCONF = 'vozRunningClub.urls'
 
@@ -89,6 +98,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -174,3 +186,13 @@ WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+SOCIAL_AUTH_STRAVA_KEY = os.environ.get('SOCIAL_AUTH_STRAVA_KEY')
+SOCIAL_AUTH_STRAVA_SECRET = os.environ.get('SOCIAL_AUTH_STRAVA_SECRET')
+SOCIAL_AUTH_STRAVA_SCOPE = ['read']
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/registration/'
+LOGIN_URL = '/registration/'
+LOGOUT_REDIRECT_URL = '/registration/'
