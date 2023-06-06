@@ -220,4 +220,5 @@ def update_strava(request):
             "strava_name": request.user.get_full_name()
         })
     except Exception as e:
-        return JsonResponse({"status": "error", "message": f"Error: {str(e)}"})
+        raise e
+        # return JsonResponse({"status": "error", "message": f"Error: {str(e)}"})
