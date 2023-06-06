@@ -196,3 +196,6 @@ SOCIAL_AUTH_STRAVA_SCOPE = ['read']
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/registration/'
 LOGIN_URL = '/registration/'
 LOGOUT_REDIRECT_URL = '/registration/'
+
+if IS_HEROKU_APP:
+    SOCIAL_AUTH_JSONFIELD_ENABLED = True
