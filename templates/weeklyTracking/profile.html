@@ -18,29 +18,28 @@
             {% endif %}
 
             <div class="row mb-3">
-                <label class="col-md-2 col-form-label" for="strava_name">
-                    Strava Name
+                <label class="col-md-1 col-form-label fw-semibold" for="strava_name">
+                    Strava
                 </label>
-                <div class="col-10 col-md-auto">
+                <div class="col-md-auto">
                     <input type="text" name="strava_name" id="strava_name" value="{{ user.get_full_name }}"
                            class="form-control" disabled>
                 </div>
-                <div class="col-1">
-                    {% if user|get_strava_id %}
-                        <button type="button" class="btn btn-strava" onclick="updateStrava()" title="Refresh">
-                            <i class="fa-brands fa-strava"></i>
-                        </button>
-                    {% else %}
-                        <a class="btn btn-strava" href="{% url 'social:begin' 'strava' %}"
-                           title="Connect with Strava">
-                            <i class="fa-brands fa-strava"></i>
-                        </a>
-                    {% endif %}
-                </div>
+                {% if strava_connected %}
+                    <span class="fw-semibold text-secondary col-form-label col-md-2">
+                        Connected <i class="fa-solid fa-check"></i>
+                    </span>
+                {% else %}
+                    <a class="fw-semibold text-strava text-decoration-none col-form-label col-md-2"
+                       href="{% url 'social:begin' 'strava' %}"
+                       title="Connect with Strava">
+                        Connect <i class="fa-brands fa-strava"></i>
+                    </a>
+                {% endif %}
             </div>
             <form id="profileForm">
                 <div class="row mb-3">
-                    <label class="col-md-2 col-form-label" for="voz_name">Voz Name</label>
+                    <label class="col-md-1 col-form-label fw-semibold" for="voz_name">Voz</label>
                     <div class="col-md-auto">
                         <input type="text" name="voz_name" id="voz_name" value="{{ user.profile.voz_name }}"
                                class="form-control">
@@ -89,21 +88,6 @@
                     });
                     hideSpinner();
                 };
-
-                function updateStrava() {
-                    showSpinner();
-                    axios.post("{% url 'update-strava' %}").then(function (response) {
-                        if (response.data.status === "success") {
-                            document.getElementById("strava_name").value = response.data.strava_name;
-                            alert("Updated successfully!");
-                        } else {
-                            alert(response.data.message);
-                        }
-                    }).catch(function (error) {
-                        alert("Error updating Strava: " + error);
-                    });
-                    hideSpinner();
-                }
             </script>
         {% else %}
             {% include "strava-connect.html" %}

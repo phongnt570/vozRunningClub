@@ -167,16 +167,38 @@ def weekly_registration(request):
         return JsonResponse({"status": "error", "message": "Invalid form"})
 
 
-# @require_POST
-@require_POST
-def disconnect_strava(request):
-    return JsonResponse({"status": "success"})
-
-
 @login_required
 def profile(request):
-    UserProfile.objects.get_or_create(user=request.user)
-    return render(request, "weeklyTracking/profile.html")
+    user_profile = UserProfile.objects.get_or_create(user=request.user)[0]
+
+    strava_connected = True
+
+    strava_profile = get_strava_profile(request.user)
+    if not strava_profile:
+        strava_connected = False
+    else:
+        try:
+            strategy = load_strategy()
+            access_token = strava_profile.get_access_token(strategy)
+            backend = strava_profile.get_backend_instance(strategy)
+            user_details = backend.user_data(access_token=access_token)
+
+            request.user.first_name = user_details.get("firstname", "")
+            request.user.last_name = user_details.get("lastname", "")
+            request.user.save()
+        except Exception:
+            strava_connected = False
+
+    if not strava_connected:
+        if strava_profile:
+            strava_profile.set_extra_data({})
+            strava_profile.save()
+
+    return render(request, "weeklyTracking/profile.html", context={
+        "user_profile": user_profile,
+        "strava_connected": strava_connected,
+        "strava_profile": strava_profile,
+    })
 
 
 @login_required
@@ -192,34 +214,3 @@ def update_profile(request):
         return JsonResponse({"status": "success"})
     else:
         return JsonResponse({"status": "error", "message": "Invalid form"})
-
-
-@login_required
-@require_POST
-def update_strava(request):
-    try:
-        strava_profile = get_strava_profile(request.user)
-        if not strava_profile:
-            return JsonResponse({"status": "error", "message": "You need to connect your Strava account first"})
-        try:
-            strategy = load_strategy()
-            access_token = strava_profile.get_access_token(strategy)
-            backend = strava_profile.get_backend_instance(strategy)
-            user_details = backend.user_data(access_token=access_token)
-        except Exception as e:
-            # raise e
-            return JsonResponse(
-                {"status": "error",
-                 "message": "Strava authentication failed! Please log out and try again. Error: " + str(e)})
-
-        request.user.first_name = user_details.get("firstname", "")
-        request.user.last_name = user_details.get("lastname", "")
-        request.user.save()
-
-        return JsonResponse({
-            "status": "success",
-            "strava_name": request.user.get_full_name()
-        })
-    except Exception as e:
-        # raise e
-        return JsonResponse({"status": "error", "message": f"Error: {str(e)}"})
