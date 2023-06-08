@@ -22,5 +22,13 @@ def update_donation(weekly_progress: WeeklyProgress):
     else:
         donation = donation_per_km * (weekly_progress.registered_mileage.distance - weekly_progress.distance)
 
-    weekly_progress.donation = max(int(donation), 0)
+    donation = int(donation)
+    if donation < 0:
+        donation = 0
+    if donation % 10 >= 5:
+        donation = donation + 10 - (donation % 10)
+    else:
+        donation = donation - (donation % 10)
+
+    weekly_progress.donation = donation
     weekly_progress.save()
