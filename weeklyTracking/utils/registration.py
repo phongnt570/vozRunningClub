@@ -47,7 +47,6 @@ def create_or_get_weekly_progress(user: User, year: int, week_num: int) -> Weekl
             week_num=week_num,
             year=year
         )
-        print("exists: ", weekly_progress)
     else:
         weekly_progress = WeeklyProgress.objects.create(
             user=user,
@@ -61,6 +60,5 @@ def create_or_get_weekly_progress(user: User, year: int, week_num: int) -> Weekl
             elevation_gain=0,
             note="",
         )
-        print("created: ", weekly_progress)
 
     return weekly_progress
