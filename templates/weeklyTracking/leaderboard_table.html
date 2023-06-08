@@ -37,7 +37,13 @@
                 {% endif %}
             </td>
             <td class="text-end">{{ weekly_progress|missing_distance_str }}</td>
-            <td class="text-end">{{ weekly_progress|donation }}</td>
+            <td class="text-end">
+                {% if weekly_progress.registered_mileage.distance == 0 %}
+                    <span class="text-secondary">--</span>
+                {% else %}
+                    {{ weekly_progress.donation|floatformat:"g" }} ₫
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
     </tbody>

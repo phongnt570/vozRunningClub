@@ -10,6 +10,7 @@ from social_django.utils import load_strategy
 
 from .forms import WeeklyRegistrationForm, UserProfileForm
 from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, UserProfile
+from .utils.donation import update_donation
 from .utils.generics import get_available_weeks_in_db
 from .utils.registration import is_registration_open, get_current_registration_week, create_or_get_weekly_progress
 from .utils.strava_auth_model import get_strava_profile
@@ -37,17 +38,20 @@ def leaderboard(request):
                                                         year=requested_year).order_by("-distance",
                                                                                       "-registered_mileage__distance")
 
+    # for weekly_progress in requested_week_data:
+    #     update_donation(weekly_progress=weekly_progress)
+
     requested_week_start = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 1)
     requested_week_end = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 7)
 
     this_week_start = datetime.datetime.fromisocalendar(this_year, this_week_num, 1)
 
     reg_map = {}
-    for week_progress in requested_week_data:
-        reg_dis = week_progress.registered_mileage.distance
+    for weekly_progress in requested_week_data:
+        reg_dis = weekly_progress.registered_mileage.distance
         if reg_dis not in reg_map:
             reg_map[reg_dis] = []
-        reg_map[reg_dis].append(week_progress)
+        reg_map[reg_dis].append(weekly_progress)
 
     sorted_reg_map = {}
     for key in sorted(reg_map.keys(), reverse=True):
@@ -80,6 +84,28 @@ def leaderboard(request):
 
         available_weeks[(year, week_num)] = value
 
+    # create a week summary
+    total_distance = 0
+    total_runs = 0
+    total_donation = 0
+    completed_challenges = 0
+    total_challenges = 0
+    for weekly_progress in requested_week_data:
+        total_distance += weekly_progress.distance
+        total_runs += weekly_progress.runs
+        if weekly_progress.registered_mileage.distance > 0:
+            total_donation += weekly_progress.donation
+            total_challenges += 1
+            if weekly_progress.distance >= weekly_progress.registered_mileage.distance:
+                completed_challenges += 1
+    week_summary = {
+        "total_distance": total_distance,
+        "total_runs": total_runs,
+        "total_donation": total_donation,
+        "completed_challenges": completed_challenges,
+        "total_challenges": total_challenges,
+    }
+
     context = {
         "requested_year": requested_year,
         "requested_week_num": requested_week_num,
@@ -91,6 +117,7 @@ def leaderboard(request):
         "is_last_week": requested_week_end == this_week_start + datetime.timedelta(days=-1),
         "available_weeks": available_weeks,
         "user_2_strava_id": user_2_strava_id,
+        "week_summary": week_summary,
         "last_updated": last_updated,
     }
 
