@@ -232,6 +232,8 @@ def profile(request):
             continue
         total_donation_till_now += weekly_progress.donation
 
+    print("after: ", weekly_progress)
+
     return render(request, "weeklyTracking/profile.html", context={
         "user_profile": user_profile,
         "strava_connected": strava_connected,
