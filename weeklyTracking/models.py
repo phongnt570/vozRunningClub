@@ -69,6 +69,9 @@ class WeeklyProgress(models.Model):
 
     note = models.TextField(blank=True, default="")
 
+    donation = models.IntegerField(default=0)
+    actual_donation = models.IntegerField(default=0)
+
     last_updated = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -76,6 +79,8 @@ class WeeklyProgress(models.Model):
         indexes = [
             models.Index(fields=["year", "week_num"]),
             models.Index(fields=["user", "year", "week_num"]),
+            models.Index(fields=["year", "week_num", "distance"]),
+            models.Index(fields=["year", "week_num", "donation"]),
         ]
 
     def __str__(self):

@@ -13,6 +13,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from social_django.models import UserSocialAuth
 
 from weeklyTracking.models import SettingStravaClub, WeeklyProgress, SettingRegisteredMileage
+from weeklyTracking.utils.donation import update_donation
 from weeklyTracking.utils.time import get_last_week_year_and_week_num
 
 logging.basicConfig(level=logging.INFO)
@@ -168,7 +169,7 @@ def update_week_progress(strava_runners: List[Dict], remove_non_strava_runners: 
             obj.elevation_gain = runner["elevation_gain"]
             obj.save()
         else:
-            WeeklyProgress.objects.create(
+            obj = WeeklyProgress.objects.create(
                 user=user,
                 week_num=week_num,
                 year=year,
@@ -179,6 +180,8 @@ def update_week_progress(strava_runners: List[Dict], remove_non_strava_runners: 
                 average_pace=runner["average_pace"],
                 elevation_gain=runner["elevation_gain"]
             )
+
+        update_donation(weekly_progress=obj)
 
     # Check if any runners have been removed from the real-time Strava leaderboard
     # If so, delete them from the database

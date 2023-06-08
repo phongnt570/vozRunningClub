@@ -31,30 +31,30 @@ def pace_format(seconds: int):
     return f"{int(seconds // 60)}:{int(seconds % 60):02d}"
 
 
-@register.filter
-def donation(week_progress: WeeklyProgress):
-    reg_dis = int(week_progress.registered_mileage.distance)
-    if SettingWeekBaseDonation.objects.filter(distance=reg_dis, year=week_progress.year,
-                                              week_num=week_progress.week_num).exists():
-        donation_per_km = SettingWeekBaseDonation.objects.get(distance=reg_dis, year=week_progress.year,
-                                                              week_num=week_progress.week_num).base_donation
-    else:
-        donation_per_km = SettingDefaultWeekBaseDonation.objects.get(distance=reg_dis).base_donation
-
-    if reg_dis == 0:
-        return "--"
-
-    if reg_dis > 0 and week_progress.distance == 0:
-        if SettingDefaultDonationByWeek.objects.filter(year=week_progress.year,
-                                                       week_num=week_progress.week_num).exists():
-            amount = SettingDefaultDonationByWeek.objects.get(year=week_progress.year,
-                                                              week_num=week_progress.week_num).default_donation
-        else:
-            amount = SettingDefaultDonation.objects.get().default_donation
-    else:
-        amount = donation_per_km * missing_distance(week_progress)
-
-    return f"{math.ceil(amount):,} ₫"
+# @register.filter
+# def donation(week_progress: WeeklyProgress):
+#     reg_dis = int(week_progress.registered_mileage.distance)
+#     if SettingWeekBaseDonation.objects.filter(distance=reg_dis, year=week_progress.year,
+#                                               week_num=week_progress.week_num).exists():
+#         donation_per_km = SettingWeekBaseDonation.objects.get(distance=reg_dis, year=week_progress.year,
+#                                                               week_num=week_progress.week_num).base_donation
+#     else:
+#         donation_per_km = SettingDefaultWeekBaseDonation.objects.get(distance=reg_dis).base_donation
+#
+#     if reg_dis == 0:
+#         return "--"
+#
+#     if reg_dis > 0 and week_progress.distance == 0:
+#         if SettingDefaultDonationByWeek.objects.filter(year=week_progress.year,
+#                                                        week_num=week_progress.week_num).exists():
+#             amount = SettingDefaultDonationByWeek.objects.get(year=week_progress.year,
+#                                                               week_num=week_progress.week_num).default_donation
+#         else:
+#             amount = SettingDefaultDonation.objects.get().default_donation
+#     else:
+#         amount = donation_per_km * missing_distance(week_progress)
+#
+#     return f"{math.ceil(amount):,} ₫"
 
 
 @register.filter
