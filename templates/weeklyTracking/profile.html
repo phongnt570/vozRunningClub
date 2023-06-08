@@ -61,17 +61,33 @@
                                class="form-control" disabled>
                     </div>
                     {% if strava_connected %}
-                        <span class="fw-semibold text-secondary col-form-label col-md-2">
-                        Connected <i class="fa-solid fa-check"></i>
-                    </span>
+                        <span class="fw-semibold text-secondary col-form-label col-md-auto">
+                            Connected <i class="fa-solid fa-check"></i>
+                        </span>
+
                     {% else %}
-                        <a class="fw-semibold text-strava text-decoration-none col-form-label col-md-2"
+                        <a class="fw-semibold text-strava text-decoration-none col-form-label col-md-auto"
                            href="{% url 'social:begin' 'strava' %}"
                            title="Connect with Strava">
-                            Connect <i class="fa-brands fa-strava"></i>
+                            Connect with Strava <i class="fa-brands fa-strava"></i>
                         </a>
                     {% endif %}
+
+                    {% if strava_club_joined %}
+                        <span class="fw-semibold text-secondary col-form-label col-md-auto">
+                                Strava club joined <i class="fa-solid fa-check"></i>
+                            </span>
+                    {% else %}
+                        <a class="fw-semibold text-strava text-decoration-none col-form-label col-md-auto"
+                           href="{{ strava_club_url }}"
+                           target="_blank"
+                           title="Join Voz Running Club on Strava">
+                            Join Strava club <i class="fa-brands fa-strava"></i>
+                        </a>
+                    {% endif %}
+
                 </div>
+
                 <form id="profileForm">
                     <div class="row mb-3">
                         <label class="col-md-1 col-form-label fw-semibold" for="voz_name">Voz</label>

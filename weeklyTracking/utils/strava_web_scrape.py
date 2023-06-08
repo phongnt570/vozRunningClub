@@ -12,8 +12,9 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from social_django.models import UserSocialAuth
 
-from weeklyTracking.models import SettingStravaClub, WeeklyProgress, SettingRegisteredMileage
+from weeklyTracking.models import SettingStravaClub, WeeklyProgress, SettingRegisteredMileage, UserProfile
 from weeklyTracking.utils.donation import update_donation
+from weeklyTracking.utils.strava_auth_model import check_strava_club_joined, get_strava_profile
 from weeklyTracking.utils.time import get_last_week_year_and_week_num
 
 logging.basicConfig(level=logging.INFO)
@@ -222,3 +223,23 @@ def handle_leaderboard_update_request():
     # update_week_progress(this_week_runners, remove_non_strava_runners=True)
     # update_week_progress(last_week_runners, remove_non_strava_runners=False)
     logger.info("Leaderboard update complete")
+
+    logger.info("Updating Club Join Status")
+    for runner in this_week_runners:
+        try:
+            user_profile = UserProfile.objects.get(user__social_auth__provider="strava",
+                                                   user__social_auth__uid=runner["id"])
+            user_profile.strava_club_joined = True
+            user_profile.save()
+        except UserProfile.DoesNotExist:
+            continue
+
+    fetched_ids = set([str(runner["id"]) for runner in this_week_runners])
+    users = User.objects.filter(social_auth__provider="strava").all()
+    for user in users:
+        strava_profile = get_strava_profile(user)
+        if not strava_profile:
+            continue
+        if strava_profile.uid not in fetched_ids:
+            check_strava_club_joined(user, save=True)
+    logger.info("Club join status update complete")

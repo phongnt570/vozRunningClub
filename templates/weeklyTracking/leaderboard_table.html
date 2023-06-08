@@ -19,6 +19,19 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>
+                {% if club_status %}
+                    {% if weekly_progress.user.profile.strava_club_joined %}
+                        <span class="text-success" title="Đã tham gia Strava Club">
+                            <i class="fas fa-check-circle"></i>
+                        </span>
+                    {% else %}
+                        <span class="text-danger"
+                              title="Chưa tham gia Strava Club">
+                            <i class="fas fa-times-circle"></i>
+                        </span>
+                    {% endif %}
+                    &nbsp;
+                {% endif %}
                 <a href="https://strava.com/athletes/{{ user_2_strava_id|get_item:weekly_progress.user.id }}"
                    target="_blank"
                    class="text-decoration-none fw-semibold">

@@ -42,6 +42,6 @@ python manage.py runserver
 - [x] New domain name (https://www.vozrun.club)
 - [x] Automatically fetching data from Strava
 - [x] Add Strava OAuth
+- [x] Week summary section
 - [ ] Build Top-donates Page
 - [ ] Build Admin Page
-- [ ] Week summary section
