@@ -198,30 +198,20 @@ def update_week_progress(strava_runners: List[Dict], remove_non_strava_runners: 
                                       year=year, week_num=week_num).delete()
 
 
-def handle_leaderboard_update_request():
+def handle_leaderboard_update_request(time_aware: bool = False):
+    # if time aware, if it's Monday and the time is before 8am, don't update
+    # otherwise, update
+    if time_aware:
+        if datetime.datetime.now().weekday() == 0:
+            if datetime.datetime.now().hour < 8:
+                logger.info("Not updating leaderboard because it's Monday before 8am")
+                return
+
     logger.info("Fetching Strava Leaderboards")
     this_week_runners, last_week_runners = get_strava_leaderboards()
 
-    # check if the leaderboard has been updated for the new week
-    # issues happen on sunday night (time zone issues?)
-    # compare strava this week vs db last week
-    last_week_year, last_week_num = get_last_week_year_and_week_num()
-    db_this_week_progress = WeeklyProgress.objects.filter(
-        year=last_week_year, week_num=last_week_num).order_by("-distance").all()
-    db_total_runs = sum([obj.runs for obj in db_this_week_progress])
-    db_total_runners = len(db_this_week_progress)
-
-    strava_total_runs = sum([runner["runs"] for runner in this_week_runners])
-    strava_total_runners = len(this_week_runners)
-
-    if db_total_runners == strava_total_runners and db_total_runs == strava_total_runs:
-        logger.info("Leaderboard has not been updated for the new week")
-        return
-
     logger.info("Updating Week Progress Table")
     update_week_progress(this_week_runners, remove_non_strava_runners=False)
-    # update_week_progress(this_week_runners, remove_non_strava_runners=True)
-    # update_week_progress(last_week_runners, remove_non_strava_runners=False)
     logger.info("Leaderboard update complete")
 
     logger.info("Updating Club Join Status")
