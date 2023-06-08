@@ -31,12 +31,16 @@
                         </li>
                         <li>
                             <span class="fw-semibold">Registration:</span>
-                            {{ weekly_progress.registered_mileage.distance }} km
+                            {% if weekly_progress.registered_mileage.distance == 0 %}
+                                Không đăng ký
+                            {% else %}
+                                {{ weekly_progress.registered_mileage.distance }} km
+                            {% endif %}
                         </li>
                         <li>
                             <span class="fw-semibold">Donation:</span>
                             {% if weekly_progress.registered_mileage.distance == 0 %}
-                                --
+                                Không đăng ký
                             {% else %}
                                 {{ weekly_progress.donation|floatformat:"g" }} ₫
                                 {% if weekly_progress.donation == 0 %}
