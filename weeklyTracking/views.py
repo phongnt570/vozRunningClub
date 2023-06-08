@@ -10,7 +10,6 @@ from social_django.utils import load_strategy
 
 from .forms import WeeklyRegistrationForm, UserProfileForm
 from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, UserProfile
-from .utils.donation import update_donation
 from .utils.generics import get_available_weeks_in_db
 from .utils.registration import is_registration_open, get_current_registration_week, create_or_get_weekly_progress
 from .utils.strava_auth_model import get_strava_profile
@@ -221,10 +220,21 @@ def profile(request):
             strava_profile.set_extra_data({})
             strava_profile.save()
 
+    this_year, this_week_num, _ = datetime.date.today().isocalendar()
+    weekly_progress = create_or_get_weekly_progress(user=request.user, week_num=this_week_num, year=this_year)
+
+    total_donation_till_now = 0
+    for weekly_progress in WeeklyProgress.objects.filter(user=request.user):
+        if weekly_progress.week_num == this_week_num and weekly_progress.year == this_year:
+            continue
+        total_donation_till_now += weekly_progress.donation
+
     return render(request, "weeklyTracking/profile.html", context={
         "user_profile": user_profile,
         "strava_connected": strava_connected,
         "strava_profile": strava_profile,
+        "weekly_progress": weekly_progress,
+        "total_donation_till_now": total_donation_till_now,
     })
 
 

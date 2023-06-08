@@ -17,39 +17,76 @@
                 </div>
             {% endif %}
 
-            <div class="row mb-3">
-                <label class="col-md-1 col-form-label fw-semibold" for="strava_name">
-                    Strava
-                </label>
-                <div class="col-md-auto">
-                    <input type="text" name="strava_name" id="strava_name" value="{{ user.get_full_name }}"
-                           class="form-control" disabled>
+            <div class="mb-4">
+                <h4>Your week summary</h4>
+                <div>
+                    <ul>
+                        <li>
+                            <span class="fw-semibold">Runs:</span>
+                            {{ weekly_progress.runs }}
+                        </li>
+                        <li>
+                            <span class="fw-semibold">Distance:</span>
+                            {{ weekly_progress.distance|floatformat:1 }} km
+                        </li>
+                        <li>
+                            <span class="fw-semibold">Registration:</span>
+                            {{ weekly_progress.registered_mileage.distance|floatformat:1 }} km
+                        </li>
+                        <li>
+                            <span class="fw-semibold">Donation:</span>
+                            {% if weekly_progress.registered_mileage.distance == 0 %}
+                                --
+                            {% else %}
+                                {{ weekly_progress.donation|floatformat:"g" }} ₫
+                                {% if weekly_progress.donation == 0 %}
+                                    <span class="fw-semibold">(challenge completed)</span>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                    </ul>
                 </div>
-                {% if strava_connected %}
-                    <span class="fw-semibold text-secondary col-form-label col-md-2">
+                <p><span class="fw-semibold">Total donation (before this week):</span>
+                    {{ total_donation_till_now|floatformat:"g" }} ₫</p>
+            </div>
+
+            <div>
+                <h4>Your profile</h4>
+                <div class="row my-4">
+                    <label class="col-md-1 col-form-label fw-semibold" for="strava_name">
+                        Strava
+                    </label>
+                    <div class="col-md-auto">
+                        <input type="text" name="strava_name" id="strava_name" value="{{ user.get_full_name }}"
+                               class="form-control" disabled>
+                    </div>
+                    {% if strava_connected %}
+                        <span class="fw-semibold text-secondary col-form-label col-md-2">
                         Connected <i class="fa-solid fa-check"></i>
                     </span>
-                {% else %}
-                    <a class="fw-semibold text-strava text-decoration-none col-form-label col-md-2"
-                       href="{% url 'social:begin' 'strava' %}"
-                       title="Connect with Strava">
-                        Connect <i class="fa-brands fa-strava"></i>
-                    </a>
-                {% endif %}
-            </div>
-            <form id="profileForm">
-                <div class="row mb-3">
-                    <label class="col-md-1 col-form-label fw-semibold" for="voz_name">Voz</label>
-                    <div class="col-md-auto">
-                        <input type="text" name="voz_name" id="voz_name" value="{{ user.profile.voz_name }}"
-                               class="form-control">
+                    {% else %}
+                        <a class="fw-semibold text-strava text-decoration-none col-form-label col-md-2"
+                           href="{% url 'social:begin' 'strava' %}"
+                           title="Connect with Strava">
+                            Connect <i class="fa-brands fa-strava"></i>
+                        </a>
+                    {% endif %}
+                </div>
+                <form id="profileForm">
+                    <div class="row mb-3">
+                        <label class="col-md-1 col-form-label fw-semibold" for="voz_name">Voz</label>
+                        <div class="col-md-auto">
+                            <input type="text" name="voz_name" id="voz_name" value="{{ user.profile.voz_name }}"
+                                   class="form-control">
+                        </div>
                     </div>
-                </div>
-                <div class="text-center text-md-start">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <a class="btn btn-outline-secondary" href="{% url 'logout' %}">Logout</a>
-                </div>
-            </form>
+                    <div class="text-center text-md-start">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <a class="btn btn-outline-secondary" href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </form>
+            </div>
+
             <div id="spinner-wrapper" class="d-none">
                 <div class="loading">Loading&#8230;</div>
             </div>
