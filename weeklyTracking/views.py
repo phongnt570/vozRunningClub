@@ -38,8 +38,8 @@ def leaderboard(request):
                                                         year=requested_year).order_by("-distance",
                                                                                       "-registered_mileage__distance")
 
-    for weekly_progress in requested_week_data:
-        update_donation(weekly_progress=weekly_progress)
+    # for weekly_progress in requested_week_data:
+    #     update_donation(weekly_progress=weekly_progress)
 
     requested_week_start = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 1)
     requested_week_end = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 7)
