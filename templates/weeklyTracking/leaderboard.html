@@ -11,7 +11,7 @@
         <div class="mb-4">
             <div>
                 <div>
-                    <h4>Leaderboard
+                    <h3>Leaderboard
                         {% if is_this_week %}
                             (this week)
                         {% elif is_last_week %}
@@ -19,7 +19,7 @@
                         {% else %}
                             ({{ requested_week_start|date:"d/m/Y" }} - {{ requested_week_end|date:"d/m/Y" }})
                         {% endif %}
-                    </h4>
+                    </h3>
                     <p>
                         {% get_current_timezone as TIME_ZONE %}
                         {% timezone TIME_ZONE %}
@@ -52,30 +52,56 @@
             </select>
         </div>
 
-        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pills-all-runners-tab" data-bs-toggle="pill"
-                        data-bs-target="#all-runners-leaderboard"
-                        type="button" role="tab" aria-controls="all-runners-leaderboard" aria-selected="true">
-                    All runners ({{ requested_week_data|length }})
-                </button>
-            </li>
-            {% for reg_dis, data in reg_map.items %}
+        <div class="mb-4">
+            <h4>Week summary</h4>
+            <div>
+                <ul>
+                    <li>
+                        <span class="fw-bold">Total runs:</span>
+                        <span>{{ week_summary.total_runs }}</span>
+                    </li>
+                    <li>
+                        <span class="fw-bold">Total distance:</span>
+                        <span>{{ week_summary.total_distance|floatformat:2 }} km</span>
+                    </li>
+                    <li>
+                        <span class="fw-bold">Completed challenges:</span>
+                        <span>{{ week_summary.completed_challenges }} / {{ week_summary.total_challenges }} registrations</span>
+                    </li>
+                    <li>
+                        <span class="fw-bold">Total donation:</span>
+                        <span>{{ week_summary.total_donation|floatformat:"g" }} ₫</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div>
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-{{ reg_dis }}-km-runners-tab" data-bs-toggle="pill"
-                            data-bs-target="#{{ reg_dis }}-km-runners-leaderboard"
-                            type="button" role="tab" aria-controls="{{ reg_dis }}-km-runners-leaderboard"
-                            aria-selected="false">
-                        {% if reg_dis == 0 %}
-                            Not registered
-                        {% else %}
-                            {{ reg_dis }} km
-                        {% endif %}
-                        ({{ data|length }})
+                    <button class="nav-link active" id="pills-all-runners-tab" data-bs-toggle="pill"
+                            data-bs-target="#all-runners-leaderboard"
+                            type="button" role="tab" aria-controls="all-runners-leaderboard" aria-selected="true">
+                        All runners ({{ requested_week_data|length }})
                     </button>
                 </li>
-            {% endfor %}
-        </ul>
+                {% for reg_dis, data in reg_map.items %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-{{ reg_dis }}-km-runners-tab" data-bs-toggle="pill"
+                                data-bs-target="#{{ reg_dis }}-km-runners-leaderboard"
+                                type="button" role="tab" aria-controls="{{ reg_dis }}-km-runners-leaderboard"
+                                aria-selected="false">
+                            {% if reg_dis == 0 %}
+                                Not registered
+                            {% else %}
+                                {{ reg_dis }} km
+                            {% endif %}
+                            ({{ data|length }})
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="all-runners-leaderboard" role="tabpanel"
                  aria-labelledby="pills-all-runners-tab"
