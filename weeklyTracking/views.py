@@ -220,7 +220,8 @@ def profile(request):
             strava_profile.set_extra_data({})
             strava_profile.save()
 
-    this_year, this_week_num, _ = datetime.date.today().isocalendar()
+    this_year = datetime.date.today().isocalendar()[0]
+    this_week_num = datetime.date.today().isocalendar()[1]
     weekly_progress = create_or_get_weekly_progress(user=request.user, week_num=this_week_num, year=this_year)
 
     total_donation_till_now = 0
