@@ -7,6 +7,8 @@ from .singleton_model import SingletonModel
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, related_name="profile")
 
+    strava_club_joined = models.BooleanField(default=False)
+
     voz_name = models.CharField(max_length=64, blank=True, default="")
 
     last_updated = models.DateTimeField(auto_now=True)

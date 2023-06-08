@@ -6,13 +6,12 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from social_django.models import UserSocialAuth
-from social_django.utils import load_strategy
 
 from .forms import WeeklyRegistrationForm, UserProfileForm
-from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, UserProfile
+from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, UserProfile, SettingStravaClub
 from .utils.generics import get_available_weeks_in_db
 from .utils.registration import is_registration_open, get_current_registration_week, create_or_get_weekly_progress
-from .utils.strava_auth_model import get_strava_profile
+from .utils.strava_auth_model import get_strava_profile, check_strava_connection, check_strava_club_joined
 from .utils.time import validate_year_week
 
 logging.basicConfig(level=logging.INFO)
@@ -146,6 +145,11 @@ def registration(request):
                                                             year=current_registration_week_year)
         UserProfile.objects.get_or_create(user=request.user)
 
+    strava_connected = check_strava_connection(request.user)
+    strava_profile = get_strava_profile(request.user)
+    strava_club_joined = check_strava_club_joined(request.user, save=True)
+    strava_club_url = SettingStravaClub.objects.get().club_url
+
     return render(request, "weeklyTracking/registration.html", context={
         "weekly_progress": weekly_progress,
         "is_registration_open": is_registration_open(),
@@ -155,6 +159,10 @@ def registration(request):
         "current_registration_week_num": current_registration_week_num,
         "current_registration_week_year": current_registration_week_year,
         "club_description": SettingClubDescription.objects.get().club_description,
+        "strava_connected": strava_connected,
+        "strava_profile": strava_profile,
+        "strava_club_joined": strava_club_joined,
+        "strava_club_url": strava_club_url,
     })
 
 
@@ -197,28 +205,11 @@ def weekly_registration(request):
 def profile(request):
     user_profile = UserProfile.objects.get_or_create(user=request.user)[0]
 
-    strava_connected = True
-
     strava_profile = get_strava_profile(request.user)
-    if not strava_profile:
-        strava_connected = False
-    else:
-        try:
-            strategy = load_strategy()
-            access_token = strava_profile.get_access_token(strategy)
-            backend = strava_profile.get_backend_instance(strategy)
-            user_details = backend.user_data(access_token=access_token)
+    strava_connected = check_strava_connection(request.user)
+    strava_club_joined = check_strava_club_joined(request.user, save=True)
 
-            request.user.first_name = user_details.get("firstname", "")
-            request.user.last_name = user_details.get("lastname", "")
-            request.user.save()
-        except Exception:
-            strava_connected = False
-
-    if not strava_connected:
-        if strava_profile:
-            strava_profile.set_extra_data({})
-            strava_profile.save()
+    strava_club_url = SettingStravaClub.objects.get().club_url
 
     this_year = datetime.date.today().isocalendar()[0]
     this_week_num = datetime.date.today().isocalendar()[1]
@@ -233,6 +224,8 @@ def profile(request):
     return render(request, "weeklyTracking/profile.html", context={
         "user_profile": user_profile,
         "strava_connected": strava_connected,
+        "strava_club_joined": strava_club_joined,
+        "strava_club_url": strava_club_url,
         "strava_profile": strava_profile,
         "weekly_progress": weekly_progress,
         "total_donation_till_now": total_donation_till_now,

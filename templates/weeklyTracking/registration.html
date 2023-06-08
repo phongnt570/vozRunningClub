@@ -30,12 +30,11 @@
                     </li>
                 </ul>
 
-
-                {% if user|get_strava_id %}
+                {% if strava_connected %}
                     <p class="text-secondary">
                         You are connected with <span class="fw-bold text-strava">Strava</span> account:
                         <a class="fw-bold text-decoration-none"
-                           href="https://strava.com/athletes/{{ user|get_strava_id }}"
+                           href="https://strava.com/athletes/{{ strava_profile.uid }}"
                            target="_blank">
                             {{ user.first_name }} {{ user.last_name }}</a>
                         (<a href="{% url 'logout' %}" class="text-secondary">Logout</a>)
@@ -45,47 +44,60 @@
                 {% endif %}
 
             </div>
-            {% if user|get_strava_id %}
-                <div>
-                    {% csrf_token %}
-                    <form id="regForm">
-                        <input type="hidden" class="form-control" name="year"
-                               value="{{ current_registration_week_year }}">
-                        <input type="hidden" class="form-control" name="week_num"
-                               value="{{ current_registration_week_num }}">
-                        <div class="my-3">
-                            <label for="registered_mileage_distance" class="form-label">Cự ly đăng ký cho tuần
-                                này
-                                <span class="fw-bold">
+            {% if strava_connected %}
+                {% if strava_club_joined %}
+                    <div>
+                        {% csrf_token %}
+                        <form id="regForm">
+                            <input type="hidden" class="form-control" name="year"
+                                   value="{{ current_registration_week_year }}">
+                            <input type="hidden" class="form-control" name="week_num"
+                                   value="{{ current_registration_week_num }}">
+                            <div class="my-3">
+                                <label for="registered_mileage_distance" class="form-label">Cự ly đăng ký cho tuần
+                                    này
+                                    <span class="fw-bold">
                                         ({{ current_registration_week_start_date|date:"d/m/Y" }}
                                     - {{ current_registration_week_end_date|date:"d/m/Y" }})</span></label>
-                            <select class="form-select" aria-label="Select distance"
-                                    id="registered_mileage_distance"
-                                    name="registered_mileage_distance"
-                                    {% if not is_registration_open %}disabled{% endif %}>
-                                {% for am in available_mileages %}
-                                    <option value="{{ am.distance }}"
-                                            {% if am.distance == weekly_progress.registered_mileage.distance %}selected{% endif %}>
-                                    {% if am.distance == 0 %}
-                                        Tuần này nghỉ, không đăng ký chạy
-                                    {% else %}
-                                        {{ am.distance }} km
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
+                                <select class="form-select" aria-label="Select distance"
+                                        id="registered_mileage_distance"
+                                        name="registered_mileage_distance"
+                                        {% if not is_registration_open %}disabled{% endif %}>
+                                    {% for am in available_mileages %}
+                                        <option value="{{ am.distance }}"
+                                                {% if am.distance == weekly_progress.registered_mileage.distance %}selected{% endif %}>
+                                        {% if am.distance == 0 %}
+                                            Tuần này nghỉ, không đăng ký chạy
+                                        {% else %}
+                                            {{ am.distance }} km
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
 
-                        <div class="my-3">
-                            <label for="note" class="form-label">Note <span
-                                    class="text-secondary">(không bắt buộc)</span></label>
-                            <textarea class="form-control" placeholder="Leave a note here"
-                                      id="note" name="note"
-                                      style="height: 100px;">{{ weekly_progress.note }}</textarea>
-                        </div>
-                        <button class="btn btn-primary" type="submit">Save</button>
-                    </form>
-                </div>
+                            <div class="my-3">
+                                <label for="note" class="form-label">Note <span
+                                        class="text-secondary">(không bắt buộc)</span></label>
+                                <textarea class="form-control" placeholder="Leave a note here"
+                                          id="note" name="note"
+                                          style="height: 100px;">{{ weekly_progress.note }}</textarea>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Save</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div>
+                        <p class="text-secondary">
+                            Bạn không phải là member của <span class="fw-bold text-strava">Strava</span> Voz Running
+                            Club.
+                            Bạn cần <a class="fw-bold"
+                                      href="{{ strava_club_url }}"
+                                      target="_blank">đăng ký</a> vào club trước khi có thể đăng ký mốc cho tuần này.
+                        </p>
+                    </div>
+                {% endif %}
             {% endif %}
+
 
             <div id="spinner-wrapper" class="d-none">
                 <div class="loading">Loading&#8230;</div>
