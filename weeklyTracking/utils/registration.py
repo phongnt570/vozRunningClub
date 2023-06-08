@@ -48,7 +48,7 @@ def create_or_get_weekly_progress(user: User, year: int, week_num: int) -> Weekl
             year=year
         )
     else:
-        weekly_progress = WeeklyProgress(
+        weekly_progress = WeeklyProgress.objects.create(
             user=user,
             week_num=week_num,
             year=year,
@@ -60,6 +60,5 @@ def create_or_get_weekly_progress(user: User, year: int, week_num: int) -> Weekl
             elevation_gain=0,
             note="",
         )
-        weekly_progress.save()
 
     return weekly_progress
