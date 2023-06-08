@@ -145,9 +145,14 @@ def registration(request):
                                                             year=current_registration_week_year)
         UserProfile.objects.get_or_create(user=request.user)
 
-    strava_connected = check_strava_connection(request.user)
-    strava_profile = get_strava_profile(request.user)
-    strava_club_joined = check_strava_club_joined(request.user, save=True)
+    if request.user.is_authenticated:
+        strava_connected = check_strava_connection(request.user)
+        strava_profile = get_strava_profile(request.user)
+        strava_club_joined = check_strava_club_joined(request.user, save=True)
+    else:
+        strava_connected = False
+        strava_profile = None
+        strava_club_joined = False
     strava_club_url = SettingStravaClub.objects.get().club_url
 
     return render(request, "weeklyTracking/registration.html", context={

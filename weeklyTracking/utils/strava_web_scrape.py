@@ -226,13 +226,10 @@ def handle_leaderboard_update_request():
 
     logger.info("Updating Club Join Status")
     for runner in this_week_runners:
-        try:
-            user_profile = UserProfile.objects.get(user__social_auth__provider="strava",
-                                                   user__social_auth__uid=runner["id"])
-            user_profile.strava_club_joined = True
-            user_profile.save()
-        except UserProfile.DoesNotExist:
-            continue
+        user = User.objects.get(social_auth__provider="strava", social_auth__uid=runner["id"])
+        user_profile = UserProfile.objects.get_or_create(user=user)[0]
+        user_profile.strava_club_joined = True
+        user_profile.save()
 
     fetched_ids = set([str(runner["id"]) for runner in this_week_runners])
     users = User.objects.filter(social_auth__provider="strava").all()
