@@ -194,7 +194,8 @@ def weekly_registration(request):
         weekly_progress = create_or_get_weekly_progress(user=request.user, week_num=week_num, year=year)
 
         if is_registration_open():
-            weekly_progress.registered_mileage_distance = registered_mileage_distance
+            weekly_progress.registered_mileage = SettingRegisteredMileage.objects.get(
+                distance=registered_mileage_distance)
 
         weekly_progress.note = note
         weekly_progress.save()
