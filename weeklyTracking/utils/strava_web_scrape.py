@@ -204,6 +204,13 @@ def handle_leaderboard_update_request(time_aware: bool = False):
         if datetime.datetime.now().weekday() == 0:
             if datetime.datetime.now().hour < 8:
                 logger.info("Not updating leaderboard because it's Monday before 8am")
+
+                logger.info("Updating donation amounts")
+                this_year, this_week_num = datetime.datetime.now().isocalendar()[:2]
+                for obj in WeeklyProgress.objects.filter(year=this_year, week_num=this_week_num).all():
+                    update_donation(weekly_progress=obj)
+                logger.info("Donation amounts updated")
+
                 return
 
     logger.info("Fetching Strava Leaderboards")
