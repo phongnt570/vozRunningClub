@@ -3,14 +3,17 @@
 <table class="table table-striped table-hover">
     <thead>
     <tr>
-        <th>Rank</th>
+        <th>
+            <span class="d-none d-lg-inline">Rank</span>
+            <span class="d-inline d-lg-none">#</span>
+        </th>
         <th>Strava</th>
-        <th>Voz</th>
-        <th class="text-end">Runs</th>
-        <th class="text-end">Avg. Pace</th>
+        <th class="d-none d-lg-table-cell">Voz</th>
+        <th class="text-end d-none d-md-table-cell">Runs</th>
+        <th class="text-end d-none d-lg-table-cell">Avg. Pace</th>
         <th class="text-end">Distance</th>
-        <th class="text-end">Registration</th>
-        <th class="text-end">Missing</th>
+        <th class="text-end d-none d-md-table-cell">Registration</th>
+        <th class="text-end d-none d-md-table-cell">Missing</th>
         <th class="text-end">Donation</th>
     </tr>
     </thead>
@@ -38,18 +41,18 @@
                     {{ weekly_progress.user.get_full_name }}
                 </a>
             </td>
-            <td>{{ weekly_progress.user.profile.voz_name }}</td>
-            <td class="text-end">{{ weekly_progress.runs }}</td>
-            <td class="text-end">{{ weekly_progress.average_pace|pace_format }}/km</td>
+            <td class="d-none d-lg-table-cell">{{ weekly_progress.user.profile.voz_name }}</td>
+            <td class="text-end d-none d-md-table-cell">{{ weekly_progress.runs }}</td>
+            <td class="text-end d-none d-lg-table-cell">{{ weekly_progress.average_pace|pace_format }}/km</td>
             <td class="text-end">{{ weekly_progress.distance|floatformat:1 }} km</td>
-            <td class="text-end">
+            <td class="text-end d-none d-md-table-cell">
                 {% if weekly_progress.registered_mileage.distance > 0 %}
                     {{ weekly_progress.registered_mileage.distance|floatformat:0 }} km
                 {% else %}
                     <span class="text-secondary">--</span>
                 {% endif %}
             </td>
-            <td class="text-end">{{ weekly_progress|missing_distance_str }}</td>
+            <td class="text-end d-none d-md-table-cell">{{ weekly_progress|missing_distance_str }}</td>
             <td class="text-end">
                 {% if weekly_progress.registered_mileage.distance == 0 %}
                     <span class="text-secondary">--</span>
