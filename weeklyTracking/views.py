@@ -9,6 +9,7 @@ from social_django.models import UserSocialAuth
 
 from .forms import WeeklyRegistrationForm, UserProfileForm
 from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, UserProfile, SettingStravaClub
+from .utils.donation import update_donation
 from .utils.generics import get_available_weeks_in_db
 from .utils.registration import is_registration_open, get_current_registration_week, create_or_get_weekly_progress
 from .utils.strava_auth_model import get_strava_profile, check_strava_connection, check_strava_club_joined
@@ -196,6 +197,7 @@ def weekly_registration(request):
         if is_registration_open():
             weekly_progress.registered_mileage = SettingRegisteredMileage.objects.get(
                 distance=registered_mileage_distance)
+            update_donation(weekly_progress)
 
         weekly_progress.note = note
         weekly_progress.save()

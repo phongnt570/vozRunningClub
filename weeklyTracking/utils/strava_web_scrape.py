@@ -181,8 +181,6 @@ def update_week_progress(strava_runners: List[Dict], remove_non_strava_runners: 
                 elevation_gain=runner["elevation_gain"]
             )
 
-        update_donation(weekly_progress=obj)
-
     # Check if any runners have been removed from the real-time Strava leaderboard
     # If so, delete them from the database
     if not remove_non_strava_runners:
@@ -197,6 +195,14 @@ def update_week_progress(strava_runners: List[Dict], remove_non_strava_runners: 
                                       year=year, week_num=week_num).delete()
 
 
+def update_this_week_donation_amounts():
+    logger.info("Updating donation amounts")
+    this_year, this_week_num = datetime.datetime.now().isocalendar()[:2]
+    for obj in WeeklyProgress.objects.filter(year=this_year, week_num=this_week_num).all():
+        update_donation(weekly_progress=obj)
+    logger.info("Donation amounts updated")
+
+
 def handle_leaderboard_update_request(time_aware: bool = False):
     # if time aware, if it's Monday and the time is before 8am, don't update
     # otherwise, update
@@ -204,13 +210,7 @@ def handle_leaderboard_update_request(time_aware: bool = False):
         if datetime.datetime.now().weekday() == 0:
             if datetime.datetime.now().hour < 8:
                 logger.info("Not updating leaderboard because it's Monday before 8am")
-
-                logger.info("Updating donation amounts")
-                this_year, this_week_num = datetime.datetime.now().isocalendar()[:2]
-                for obj in WeeklyProgress.objects.filter(year=this_year, week_num=this_week_num).all():
-                    update_donation(weekly_progress=obj)
-                logger.info("Donation amounts updated")
-
+                update_this_week_donation_amounts()
                 return
 
     logger.info("Fetching Strava Leaderboards")
@@ -227,13 +227,6 @@ def handle_leaderboard_update_request(time_aware: bool = False):
         user_profile.strava_club_joined = True
         user_profile.save()
 
-    # fetched_ids = set([str(runner["id"]) for runner in this_week_runners])
-    # users = User.objects.filter(social_auth__provider="strava").all()
-    # for user in users:
-    #     strava_profile = get_strava_profile(user)
-    #     if not strava_profile:
-    #         continue
-    #     if strava_profile.uid not in fetched_ids:
-    #         check_strava_club_joined(user, save=True)
+    update_this_week_donation_amounts()
 
     logger.info("Club join status update complete")
