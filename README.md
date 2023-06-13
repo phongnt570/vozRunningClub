@@ -43,5 +43,6 @@ python manage.py runserver
 - [x] Automatically fetching data from Strava
 - [x] Add Strava OAuth
 - [x] Week summary section
+- [ ] Week summary section - add donation proof
 - [ ] Build Top-donates Page
 - [ ] Build Admin Page
