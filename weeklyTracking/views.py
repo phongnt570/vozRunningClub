@@ -8,7 +8,8 @@ from django.views.decorators.http import require_POST
 from social_django.models import UserSocialAuth
 
 from .forms import WeeklyRegistrationForm, UserProfileForm
-from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, UserProfile, SettingStravaClub
+from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, UserProfile, SettingStravaClub, \
+    WeeklyPost, ActualDonation
 from .utils.donation import update_donation
 from .utils.generics import get_available_weeks_in_db
 from .utils.registration import is_registration_open, get_current_registration_week, create_or_get_weekly_progress
@@ -105,6 +106,16 @@ def leaderboard(request):
         "total_challenges": total_challenges,
     }
 
+    try:
+        actual_donation = ActualDonation.objects.get(week_num=requested_week_num, year=requested_year)
+    except ActualDonation.DoesNotExist:
+        actual_donation = None
+
+    try:
+        weekly_post = WeeklyPost.objects.get(week_num=requested_week_num, year=requested_year)
+    except WeeklyPost.DoesNotExist:
+        weekly_post = None
+
     context = {
         "requested_year": requested_year,
         "requested_week_num": requested_week_num,
@@ -117,6 +128,8 @@ def leaderboard(request):
         "available_weeks": available_weeks,
         "user_2_strava_id": user_2_strava_id,
         "week_summary": week_summary,
+        "actual_donation": actual_donation,
+        "weekly_post": weekly_post,
         "last_updated": last_updated,
     }
 

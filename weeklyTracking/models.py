@@ -14,7 +14,7 @@ class UserProfile(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.get_full_name()} | voz_name: {self.voz_name}"
+        return f"{self.user.id} | {self.user.get_full_name()} | {self.voz_name}"
 
 
 class SettingWeekBaseDonation(models.Model):
@@ -86,7 +86,8 @@ class WeeklyProgress(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.get_full_name()} | {self.year} | {self.week_num} | {self.registered_mileage.distance} km"
+        return f"{self.user.id} | {self.user.get_full_name()} | " \
+               f"{self.year} | {self.week_num} | {self.registered_mileage.distance} km"
 
 
 class SettingStravaClub(SingletonModel):
@@ -131,3 +132,39 @@ class SettingClubDescription(SingletonModel):
 
     def __str__(self):
         return self.club_description
+
+
+class WeeklyPost(models.Model):
+    year = models.IntegerField()
+    week_num = models.IntegerField()
+
+    post = models.TextField()
+
+    last_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ["year", "week_num"]
+        indexes = [
+            models.Index(fields=["year", "week_num"]),
+        ]
+
+    def __str__(self):
+        return f"{self.year} | {self.week_num} | {self.post}"
+
+
+class ActualDonation(models.Model):
+    year = models.IntegerField()
+    week_num = models.IntegerField()
+
+    amount = models.IntegerField()
+
+    last_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ["year", "week_num"]
+        indexes = [
+            models.Index(fields=["year", "week_num"]),
+        ]
+
+    def __str__(self):
+        return f"{self.year} | {self.week_num} | {self.amount:,} ₫"

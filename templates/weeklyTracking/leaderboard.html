@@ -72,8 +72,30 @@
                         <span class="fw-bold">Total donation:</span>
                         <span>{{ week_summary.total_donation|floatformat:"g" }} ₫</span>
                     </li>
+                    {% if actual_donation %}
+                        <li>
+                            <span class="fw-bold bg-success p-1 rounded text-white">Actual donation:</span>
+                            <span>{{ actual_donation.amount|floatformat:"g" }} ₫</span>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
+            {% if weekly_post and weekly_post.post %}
+                <div>
+                    <div>
+                        <button class="btn btn-sm btn-outline-success"
+                                type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse-transaction" aria-expanded="false"
+                                aria-controls="collapse-transaction" title="Show transaction">
+                            <span>Transactions</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div id="collapse-transaction" class="mt-3 collapse">
+                        {{ weekly_post.post|safe }}
+                    </div>
+                </div>
+            {% endif %}
         </div>
 
         <div>
