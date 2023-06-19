@@ -36,8 +36,9 @@ def leaderboard(request):
         requested_week_num = int(requested_week_num)
 
     requested_week_data = WeeklyProgress.objects.filter(Q(year=requested_year) & Q(week_num=requested_week_num) & (
-                Q(distance__gt=0) | Q(registered_mileage__distance__gt=0))).order_by("-distance",
-                                                                                     "-registered_mileage__distance")
+            Q(distance__gt=0) | Q(registered_mileage__distance__gt=0))).order_by("-distance",
+                                                                                 "-registered_mileage__distance",
+                                                                                 "user__first_name")
 
     requested_week_start = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 1)
     requested_week_end = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 7)
@@ -51,17 +52,17 @@ def leaderboard(request):
             reg_map[reg_dis] = []
         reg_map[reg_dis].append(weekly_progress)
 
-    sorted_reg_map = {}
+    distance2weekly_progress_list = {}
     for key in sorted(reg_map.keys(), reverse=True):
-        sorted_reg_map[key] = reg_map[key]
+        distance2weekly_progress_list[key] = reg_map[key]
 
     last_updated = None
-    if sorted_reg_map:
-        last_updated = sorted([wp for wps in sorted_reg_map.values() for wp in wps], key=lambda x: x.last_updated)[
-            -1].last_updated
+    if distance2weekly_progress_list:
+        last_updated = sorted([wp for wps in distance2weekly_progress_list.values() for wp in wps],
+                              key=lambda x: x.last_updated)[-1].last_updated
 
     user_2_strava_id = {}
-    all_user_ids_in_week = [wp.user.id for wps in sorted_reg_map.values() for wp in wps]
+    all_user_ids_in_week = [wp.user.id for wps in distance2weekly_progress_list.values() for wp in wps]
     all_strava_profiles = UserSocialAuth.objects.filter(user_id__in=all_user_ids_in_week, provider="strava")
     for strava_profile in all_strava_profiles:
         user_2_strava_id[strava_profile.user_id] = strava_profile.uid
@@ -120,7 +121,7 @@ def leaderboard(request):
         "requested_week_data": requested_week_data,
         "requested_week_start": requested_week_start,
         "requested_week_end": requested_week_end,
-        "reg_map": sorted_reg_map,
+        "distance2weekly_progress_list": distance2weekly_progress_list,
         "is_this_week": requested_week_start == this_week_start,
         "is_last_week": requested_week_end == this_week_start + datetime.timedelta(days=-1),
         "available_weeks": available_weeks,
