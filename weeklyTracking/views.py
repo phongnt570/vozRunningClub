@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
@@ -34,12 +35,9 @@ def leaderboard(request):
         requested_year = int(requested_year)
         requested_week_num = int(requested_week_num)
 
-    requested_week_data = WeeklyProgress.objects.filter(week_num=requested_week_num,
-                                                        year=requested_year).order_by("-distance",
-                                                                                      "-registered_mileage__distance")
-
-    # for weekly_progress in requested_week_data:
-    #     update_donation(weekly_progress=weekly_progress)
+    requested_week_data = WeeklyProgress.objects.filter(Q(year=requested_year) & Q(week_num=requested_week_num) & (
+                Q(distance__gt=0) | Q(registered_mileage__distance__gt=0))).order_by("-distance",
+                                                                                     "-registered_mileage__distance")
 
     requested_week_start = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 1)
     requested_week_end = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 7)
