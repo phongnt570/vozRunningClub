@@ -2,7 +2,6 @@ import datetime
 import logging
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
@@ -13,6 +12,7 @@ from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMil
     WeeklyPost, ActualDonation
 from .utils.donation import update_donation
 from .utils.generics import get_available_weeks_in_db
+from .utils.ranking import get_ranked_users, user_rank_change
 from .utils.registration import is_registration_open, get_current_registration_week, create_or_get_weekly_progress
 from .utils.strava_auth_model import get_strava_profile, check_strava_connection, check_strava_club_joined
 from .utils.time import validate_year_week, get_last_week_year_and_week_num
@@ -35,10 +35,8 @@ def leaderboard(request):
         requested_year = int(requested_year)
         requested_week_num = int(requested_week_num)
 
-    requested_week_data = WeeklyProgress.objects.filter(Q(year=requested_year) & Q(week_num=requested_week_num) & (
-            Q(distance__gt=0) | Q(registered_mileage__distance__gt=0))).order_by("-distance",
-                                                                                 "-registered_mileage__distance",
-                                                                                 "user__first_name")
+    requested_week_progresses = get_ranked_users(year=requested_year, week_num=requested_week_num)
+    rank_changes = user_rank_change(year=requested_year, week_num=requested_week_num)
 
     requested_week_start = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 1)
     requested_week_end = datetime.datetime.fromisocalendar(requested_year, requested_week_num, 7)
@@ -46,15 +44,18 @@ def leaderboard(request):
     this_week_start = datetime.datetime.fromisocalendar(this_year, this_week_num, 1)
 
     reg_map = {}
-    for weekly_progress in requested_week_data:
+    for weekly_progress in requested_week_progresses:
         reg_dis = weekly_progress.registered_mileage.distance
         if reg_dis not in reg_map:
             reg_map[reg_dis] = []
         reg_map[reg_dis].append(weekly_progress)
 
     distance2weekly_progress_list = {}
-    for key in sorted(reg_map.keys(), reverse=True):
-        distance2weekly_progress_list[key] = reg_map[key]
+    distance2rank_change = {}
+    for reg_dis in sorted(reg_map.keys(), reverse=True):
+        distance2weekly_progress_list[reg_dis] = reg_map[reg_dis]
+        distance2rank_change[reg_dis] = user_rank_change(year=requested_year, week_num=requested_week_num,
+                                                         reg_distance=reg_dis)
 
     last_updated = None
     if distance2weekly_progress_list:
@@ -89,7 +90,7 @@ def leaderboard(request):
     total_donation = 0
     completed_challenges = 0
     total_challenges = 0
-    for weekly_progress in requested_week_data:
+    for weekly_progress in requested_week_progresses:
         total_distance += weekly_progress.distance
         total_runs += weekly_progress.runs
         if weekly_progress.registered_mileage.distance > 0:
@@ -118,10 +119,12 @@ def leaderboard(request):
     context = {
         "requested_year": requested_year,
         "requested_week_num": requested_week_num,
-        "requested_week_data": requested_week_data,
+        "requested_week_progresses": requested_week_progresses,
+        "rank_changes": rank_changes,
         "requested_week_start": requested_week_start,
         "requested_week_end": requested_week_end,
         "distance2weekly_progress_list": distance2weekly_progress_list,
+        "distance2rank_change": distance2rank_change,
         "is_this_week": requested_week_start == this_week_start,
         "is_last_week": requested_week_end == this_week_start + datetime.timedelta(days=-1),
         "available_weeks": available_weeks,

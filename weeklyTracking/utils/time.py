@@ -23,6 +23,10 @@ def validate_year_week(requested_year, requested_week_num):
     return True
 
 
-def get_last_week_year_and_week_num():
-    ic_last_week = (datetime.date.today() + datetime.timedelta(days=-7)).isocalendar()
-    return ic_last_week[0], ic_last_week[1]
+def get_last_week_year_and_week_num(year: int = None, week_num: int = None):
+    if year is None and week_num is None:
+        ic_last_week = (datetime.date.today() + datetime.timedelta(days=-7)).isocalendar()
+        return ic_last_week[0], ic_last_week[1]
+    else:
+        ic_last_week = datetime.datetime.fromisocalendar(year, week_num, 1) + datetime.timedelta(days=-7)
+        return ic_last_week.isocalendar()[0], ic_last_week.isocalendar()[1]

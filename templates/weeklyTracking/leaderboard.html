@@ -106,7 +106,7 @@
                     <button class="nav-link active" id="pills-all-runners-tab" data-bs-toggle="pill"
                             data-bs-target="#all-runners-leaderboard"
                             type="button" role="tab" aria-controls="all-runners-leaderboard" aria-selected="true">
-                        Tất cả ({{ requested_week_data|length }})
+                        Tất cả ({{ requested_week_progresses|length }})
                     </button>
                 </li>
                 {% for reg_dis, data in distance2weekly_progress_list.items %}
@@ -130,13 +130,13 @@
             <div class="tab-pane fade show active" id="all-runners-leaderboard" role="tabpanel"
                  aria-labelledby="pills-all-runners-tab"
                  tabindex="0">
-                {% include "weeklyTracking/leaderboard_table.html" with data=requested_week_data %}
+                {% include "weeklyTracking/leaderboard_table.html" with data=requested_week_progresses rank_changes=rank_changes %}
             </div>
             {% for reg_dis, data in distance2weekly_progress_list.items %}
                 <div class="tab-pane fade" id="{{ reg_dis }}-km-runners-leaderboard" role="tabpanel"
                      aria-labelledby="pills-{{ reg_dis }}-km-runners-tab"
                      tabindex="0">
-                    {% include "weeklyTracking/leaderboard_table.html" with data=data %}
+                    {% include "weeklyTracking/leaderboard_table.html" with data=data rank_changes=distance2rank_change|get_item:reg_dis %}
                 </div>
             {% endfor %}
         </div>

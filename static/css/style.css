@@ -11918,6 +11918,12 @@ hr.big-hr {
   opacity: 100%;
 }
 
+.rank-change {
+  font-size: 0.75rem;
+  font-weight: bold;
+  display: inline;
+}
+
 .text-primary-dark {
   color: #004ba0;
 }

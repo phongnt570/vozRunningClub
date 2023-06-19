@@ -85,3 +85,8 @@ def week_time_str(year: int, week_num: int) -> str:
         return "Tuần trước"
 
     return f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
+
+
+@register.filter
+def absolute(value):
+    return abs(value)
