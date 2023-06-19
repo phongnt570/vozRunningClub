@@ -277,16 +277,16 @@ def statistics(request):
     for wp in WeeklyProgress.objects.all():
         key = (wp.year, wp.week_num)
 
-        start_date = datetime.datetime.fromisocalendar(wp.year, wp.week_num, 1)
-        end_date = datetime.datetime.fromisocalendar(wp.year, wp.week_num, 7)
-
-        time = f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
-        if wp.week_num == this_week_num and wp.year == this_year:
-            time = "Tuần này"
-        elif wp.week_num == last_week_num and wp.year == last_week_year:
-            time = "Tuần trước"
-
         if key not in week_summaries:
+            start_date = datetime.datetime.fromisocalendar(wp.year, wp.week_num, 1)
+            end_date = datetime.datetime.fromisocalendar(wp.year, wp.week_num, 7)
+
+            time = f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
+            if wp.week_num == this_week_num and wp.year == this_year:
+                time = "Tuần này"
+            elif wp.week_num == last_week_num and wp.year == last_week_year:
+                time = "Tuần trước"
+
             week_summaries[key] = {
                 "year": wp.year,
                 "week_num": wp.week_num,
