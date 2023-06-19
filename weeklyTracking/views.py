@@ -71,16 +71,16 @@ def leaderboard(request):
     available_weeks = {}
     for year, week_num in sorted(get_available_weeks_in_db(), reverse=True):
         if year == this_year and week_num == this_week_num:
-            value = "This week"
+            value = "Tuần này"
         else:
             start_date = datetime.datetime.fromisocalendar(year, week_num, 1)
             end_date = datetime.datetime.fromisocalendar(year, week_num, 7)
             if end_date == this_week_start + datetime.timedelta(days=-1):
-                value = "Last week"
+                value = "Tuần trước"
             elif start_date == this_week_start + datetime.timedelta(days=7):
-                value = "Next week"
+                value = "Tuần sau"
             else:
-                value = f"Week: {start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
+                value = f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
 
         available_weeks[(year, week_num)] = value
 
@@ -266,3 +266,7 @@ def update_profile(request):
         return JsonResponse({"status": "success"})
     else:
         return JsonResponse({"status": "error", "message": "Invalid form"})
+
+
+def statistics(request):
+    return render(request, "weeklyTracking/statistics.html")

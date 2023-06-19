@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% load track_custom_utils %}
 
 {% block pagetitle %}Profile | Voz Running Club{% endblock %}
@@ -18,19 +19,19 @@
             {% endif %}
 
             <div class="mb-4">
-                <h4>Your week summary</h4>
+                <h4>Thống kê tuần này của bạn</h4>
                 <div>
                     <ul>
                         <li>
-                            <span class="fw-semibold">Runs:</span>
+                            <span class="fw-semibold">Lượt chạy:</span>
                             {{ weekly_progress.runs }}
                         </li>
                         <li>
-                            <span class="fw-semibold">Distance:</span>
+                            <span class="fw-semibold">Quãng đường:</span>
                             {{ weekly_progress.distance|floatformat:1 }} km
                         </li>
                         <li>
-                            <span class="fw-semibold">Registration:</span>
+                            <span class="fw-semibold">Cự ly đăng ký:</span>
                             {% if weekly_progress.registered_mileage.distance == 0 %}
                                 Không đăng ký
                             {% else %}
@@ -38,24 +39,24 @@
                             {% endif %}
                         </li>
                         <li>
-                            <span class="fw-semibold">Donation:</span>
+                            <span class="fw-semibold">Số tiền sẽ ủng hộ:</span>
                             {% if weekly_progress.registered_mileage.distance == 0 %}
                                 Không đăng ký
                             {% else %}
-                                {{ weekly_progress.donation|floatformat:"g" }} ₫
+                                {{ weekly_progress.donation|intcomma }} ₫
                                 {% if weekly_progress.donation == 0 %}
-                                    <span class="fw-semibold">(challenge completed)</span>
+                                    <span class="fw-semibold">(đã xong)</span>
                                 {% endif %}
                             {% endif %}
                         </li>
                     </ul>
                 </div>
-                <p><span class="fw-semibold">Total donation (before this week):</span>
-                    {{ total_donation_till_now|floatformat:"g" }} ₫</p>
+                <p><span class="fw-semibold">Tổng số tiền ủng hộ (tính đến trước tuần này):</span>
+                    {{ total_donation_till_now|intcomma }} ₫</p>
             </div>
 
             <div>
-                <h4>Your profile</h4>
+                <h4>Thông tin của bạn</h4>
                 <div class="row my-4">
                     <label class="col-md-1 col-form-label fw-semibold" for="strava_name">
                         Strava
@@ -66,27 +67,27 @@
                     </div>
                     {% if strava_connected %}
                         <span class="fw-semibold text-secondary col-form-label col-md-auto">
-                            Connected <i class="fa-solid fa-check"></i>
+                            Đã kết nối <i class="fa-solid fa-check"></i>
                         </span>
 
                     {% else %}
                         <a class="fw-semibold text-strava text-decoration-none col-form-label col-md-auto"
                            href="{% url 'social:begin' 'strava' %}"
                            title="Connect with Strava">
-                            Connect with Strava <i class="fa-brands fa-strava"></i>
+                            Kết nối Strava <i class="fa-brands fa-strava"></i>
                         </a>
                     {% endif %}
 
                     {% if strava_club_joined %}
                         <span class="fw-semibold text-secondary col-form-label col-md-auto">
-                                Strava club joined <i class="fa-solid fa-check"></i>
+                                Đã tham gia Strava Club <i class="fa-solid fa-check"></i>
                             </span>
                     {% else %}
                         <a class="fw-semibold text-strava text-decoration-none col-form-label col-md-auto"
                            href="{{ strava_club_url }}"
                            target="_blank"
                            title="Join Voz Running Club on Strava">
-                            Join Strava club <i class="fa-brands fa-strava"></i>
+                            Tham gia Strava Club <i class="fa-brands fa-strava"></i>
                         </a>
                     {% endif %}
 
@@ -101,8 +102,8 @@
                         </div>
                     </div>
                     <div class="text-center text-md-start">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <a class="btn btn-outline-secondary" href="{% url 'logout' %}">Logout</a>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <a class="btn btn-outline-secondary" href="{% url 'logout' %}">Đăng xuất</a>
                     </div>
                 </form>
             </div>

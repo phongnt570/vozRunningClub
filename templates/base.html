@@ -48,11 +48,15 @@
                         {#                        {% endfor %}#}
                         <a href="{% url 'leaderboard' %}"
                            class="nav-item-link">
-                            Leaderboard
+                            Xếp hạng tuần
+                        </a>
+                        <a href="{% url 'statistics' %}"
+                           class="nav-item-link">
+                            Thống kê
                         </a>
                         <a href="{% url 'registration' %}"
                            class="nav-item-link">
-                            Registration
+                            Đăng ký chạy
                         </a>
                         {#                        <a href="{% url 'top-donates' %}"#}
                         {#                           class="nav-item-link">#}
@@ -61,7 +65,7 @@
                         {% if request.user.is_authenticated %}
                             <a href="{% url 'profile' %}"
                                class="nav-item-link">
-                                Your profile
+                                Hồ sơ
                             </a>
                         {% endif %}
                         {#                        <a href="{% url 'about' %}"#}

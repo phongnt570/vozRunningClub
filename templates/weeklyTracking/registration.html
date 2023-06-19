@@ -26,27 +26,27 @@
             <div id="settings">
                 <p>
                 <h3>
-                    Weekly registration
+                    Đăng ký chạy hàng tuần
                 </h3>
 
                 <ul class="text-secondary">
-                    <li>Registration for week: <span
+                    <li>Thời gian chạy: <span
                             class="fw-bold">{{ current_registration_week_start_date|date:"d/m/Y" }}
                             - {{ current_registration_week_end_date|date:"d/m/Y" }}</span>
                     </li>
-                    <li>Registration closed at: <span
+                    <li>Thời gian đóng đăng ký: <span
                             class="fw-bold">23h59, {{ current_registration_week_start_date|date:"d/m/Y" }} (giờ Việt Nam)</span>
                     </li>
                 </ul>
 
                 {% if strava_connected %}
                     <p class="text-secondary">
-                        You are connected with <span class="fw-bold text-strava">Strava</span> account:
+                        Bạn đã kết nối với tài khoản <span class="fw-bold text-strava">Strava</span>:
                         <a class="fw-bold text-decoration-none"
                            href="https://strava.com/athletes/{{ strava_profile.uid }}"
                            target="_blank">
                             {{ user.first_name }} {{ user.last_name }}</a>
-                        (<a href="{% url 'logout' %}" class="text-secondary">Logout</a>)
+                        (<a href="{% url 'logout' %}" class="text-secondary">Đăng xuất</a>)
                     </p>
                 {% else %}
                     {% include "strava-connect.html" %}
@@ -87,11 +87,11 @@
                             <div class="my-3">
                                 <label for="note" class="form-label">Note <span
                                         class="text-secondary">(không bắt buộc)</span></label>
-                                <textarea class="form-control" placeholder="Leave a note here"
+                                <textarea class="form-control" placeholder="Bạn có lưu ý gì không?"
                                           id="note" name="note"
                                           style="height: 100px;">{{ weekly_progress.note }}</textarea>
                             </div>
-                            <button class="btn btn-primary" type="submit">Save</button>
+                            <button class="btn btn-primary" type="submit">Đăng ký</button>
                         </form>
                     </div>
                 {% else %}

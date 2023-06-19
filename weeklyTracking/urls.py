@@ -8,6 +8,7 @@ urlpatterns = [
     path("leaderboard/", views.leaderboard, name="leaderboard"),
     # path("top-donates/", views.top_donates, name="top-donates"),
     # path("about/", views.about, name="about"),
+    path("statistics/", views.statistics, name="statistics"),
 
     path("registration/", views.registration, name="registration"),
     path("weekly-registration/", views.weekly_registration, name="weekly-registration"),

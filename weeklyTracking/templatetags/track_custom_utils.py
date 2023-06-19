@@ -21,7 +21,7 @@ def missing_distance_str(week_progress: WeeklyProgress):
         return "--"
 
     if d == 0:
-        return "Completed!"
+        return "Đã xong!"
 
     return f"{d:.1f} km"
 
