@@ -26,7 +26,7 @@
                             <span class="text-secondary">
                                 <span>Cập nhật:</span>
                                 <span id="last-updated-time">
-                                    {{ last_updated|naturaltime }}
+                                    {{ last_updated|date:"d/m/Y H:i:s" }}
                                 </span>
                             </span>
                         {% endtimezone %}
@@ -241,7 +241,7 @@
 
         function updateLastUpdated() {
             let lastUpdated = document.getElementById("last-updated-time");
-            lastUpdated.innerText = timeAgo(Date.parse("{{ last_updated|date:'Y-m-d H:m:sO' }}"));
+            lastUpdated.innerText = timeAgo(Date.parse("{{ last_updated|date:'Y-m-d H:i:sO' }}"));
         }
 
         // Update last updated time every second
