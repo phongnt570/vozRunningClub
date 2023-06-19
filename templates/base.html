@@ -30,48 +30,24 @@
             <nav class="my-navbar">
                 <div>
                     <div class="nav-items">
-                        {#                        {% if not custom_home %}#}
-                        {#                            <a href="{% url 'index' %}"#}
-                        {#                               class="nav-item-link">#}
-                        {#                                <span class="small-caps h5"><strong>Leaderboard</strong></span>#}
-                        {#                            </a>#}
-                        {#                        {% else %}#}
-                        {#                            <a href="{{ custom_home.url }}" class="nav-item-link">#}
-                        {#                                <span class="small-caps h5"><strong>{{ custom_home.name }}</strong></span>#}
-                        {#                            </a>#}
-                        {#                        {% endif %}#}
-                        {##}
-                        {#                        {% for link in custom_nav_links %}#}
-                        {#                            <a href="{{ link.url }}" class="nav-item-link">#}
-                        {#                                {{ link.name }}#}
-                        {#                            </a>#}
-                        {#                        {% endfor %}#}
                         <a href="{% url 'leaderboard' %}"
-                           class="nav-item-link">
+                           class="nav-item-link{% if request.resolver_match.url_name == 'leaderboard' %} selected{% endif %}">
                             Xếp hạng
                         </a>
                         <a href="{% url 'statistics' %}"
-                           class="nav-item-link">
+                           class="nav-item-link{% if request.resolver_match.url_name == 'statistics' %} selected{% endif %}">
                             Thống kê
                         </a>
                         <a href="{% url 'registration' %}"
-                           class="nav-item-link">
+                           class="nav-item-link{% if request.resolver_match.url_name == 'registration' %} selected{% endif %}">
                             Đăng ký
                         </a>
-                        {#                        <a href="{% url 'top-donates' %}"#}
-                        {#                           class="nav-item-link">#}
-                        {#                            Top donates#}
-                        {#                        </a>#}
                         {% if request.user.is_authenticated %}
                             <a href="{% url 'profile' %}"
-                               class="nav-item-link">
+                               class="nav-item-link{% if request.resolver_match.url_name == 'profile' %} selected{% endif %}">
                                 Hồ sơ
                             </a>
                         {% endif %}
-                        {#                        <a href="{% url 'about' %}"#}
-                        {#                           class="nav-item-link">#}
-                        {#                            About#}
-                        {#                        </a>#}
                     </div>
                 </div>
             </nav>

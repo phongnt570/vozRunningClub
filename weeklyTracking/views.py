@@ -234,13 +234,15 @@ def profile(request):
 
     this_year = datetime.date.today().isocalendar()[0]
     this_week_num = datetime.date.today().isocalendar()[1]
-    weekly_progress = create_or_get_weekly_progress(user=request.user, week_num=this_week_num, year=this_year)
+    current_week = create_or_get_weekly_progress(user=request.user, week_num=this_week_num, year=this_year)
 
-    total_donation_till_now = 0
-    for wp in WeeklyProgress.objects.filter(user=request.user):
-        if wp.week_num == this_week_num and wp.year == this_year:
-            continue
-        total_donation_till_now += wp.donation
+    # total_donation_till_now = 0
+    # for wp in WeeklyProgress.objects.filter(user=request.user):
+    #     if wp.week_num == this_week_num and wp.year == this_year:
+    #         continue
+    #     total_donation_till_now += wp.donation
+
+    weekly_progresses = WeeklyProgress.objects.filter(user=request.user).order_by("-year", "-week_num")
 
     return render(request, "weeklyTracking/profile.html", context={
         "user_profile": user_profile,
@@ -248,8 +250,9 @@ def profile(request):
         "strava_club_joined": strava_club_joined,
         "strava_club_url": strava_club_url,
         "strava_profile": strava_profile,
-        "weekly_progress": weekly_progress,
-        "total_donation_till_now": total_donation_till_now,
+        "current_week": current_week,
+        # "total_donation_till_now": total_donation_till_now,
+        "weekly_progresses": weekly_progresses,
     })
 
 

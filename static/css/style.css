@@ -11890,19 +11890,25 @@ nav.my-navbar a {
   text-decoration: none;
 }
 nav.my-navbar .nav-item-link {
-  margin: 0 1.5% 0 0;
+  padding: 0.25rem 0.5rem;
+  margin: 0 0.25rem;
 }
 nav.my-navbar .search-bar {
   position: absolute;
   top: -4px;
   right: 0;
 }
+nav.my-navbar .nav-item-link.selected, nav.my-navbar .nav-item-link:hover {
+  color: white;
+  background-color: #004ba0;
+  border-radius: 0.25rem;
+}
 
 img.nav-logo {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  height: 7rem;
+  height: 5rem;
   margin-bottom: 1rem;
 }
 

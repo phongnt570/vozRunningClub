@@ -6,8 +6,6 @@ from . import views
 urlpatterns = [
     path("", views.leaderboard, name="index"),
     path("leaderboard/", views.leaderboard, name="leaderboard"),
-    # path("top-donates/", views.top_donates, name="top-donates"),
-    # path("about/", views.about, name="about"),
     path("statistics/", views.statistics, name="statistics"),
 
     path("registration/", views.registration, name="registration"),
@@ -16,6 +14,7 @@ urlpatterns = [
     path("update-profile/", views.update_profile, name="update-profile"),
 
     path("oauth/", include("social_django.urls", namespace="social")),
+
     path("profile/", views.profile, name="profile"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
 ]

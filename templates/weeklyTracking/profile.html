@@ -19,43 +19,6 @@
             {% endif %}
 
             <div class="mb-4">
-                <h4>Thống kê tuần này của bạn</h4>
-                <div>
-                    <ul>
-                        <li>
-                            <span class="fw-semibold">Lượt chạy:</span>
-                            {{ weekly_progress.runs }}
-                        </li>
-                        <li>
-                            <span class="fw-semibold">Quãng đường:</span>
-                            {{ weekly_progress.distance|floatformat:1 }} km
-                        </li>
-                        <li>
-                            <span class="fw-semibold">Cự ly đăng ký:</span>
-                            {% if weekly_progress.registered_mileage.distance == 0 %}
-                                Không đăng ký
-                            {% else %}
-                                {{ weekly_progress.registered_mileage.distance }} km
-                            {% endif %}
-                        </li>
-                        <li>
-                            <span class="fw-semibold">Số tiền sẽ ủng hộ:</span>
-                            {% if weekly_progress.registered_mileage.distance == 0 %}
-                                Không đăng ký
-                            {% else %}
-                                {{ weekly_progress.donation|intcomma }} ₫
-                                {% if weekly_progress.donation == 0 %}
-                                    <span class="fw-semibold">(đã xong)</span>
-                                {% endif %}
-                            {% endif %}
-                        </li>
-                    </ul>
-                </div>
-                <p><span class="fw-semibold">Tổng số tiền ủng hộ (tính đến trước tuần này):</span>
-                    {{ total_donation_till_now|intcomma }} ₫</p>
-            </div>
-
-            <div>
                 <h4>Thông tin của bạn</h4>
                 <div class="row my-4">
                     <label class="col-md-1 col-form-label fw-semibold" for="strava_name">
@@ -107,6 +70,86 @@
                     </div>
                 </form>
             </div>
+
+            <hr>
+
+            <div class="mb-4">
+                <h4>Thống kê tuần này của bạn</h4>
+                <div>
+                    <ul>
+                        <li>
+                            <span class="fw-semibold">Lượt chạy:</span>
+                            {{ current_week.runs }}
+                        </li>
+                        <li>
+                            <span class="fw-semibold">Quãng đường:</span>
+                            {{ current_week.distance|floatformat:1 }} km
+                        </li>
+                        <li>
+                            <span class="fw-semibold">Cự ly đăng ký:</span>
+                            {% if current_week.registered_mileage.distance == 0 %}
+                                Không đăng ký
+                            {% else %}
+                                {{ current_week.registered_mileage.distance }} km
+                            {% endif %}
+                        </li>
+                        <li>
+                            <span class="fw-semibold">Số tiền sẽ ủng hộ:</span>
+                            {% if current_week.registered_mileage.distance == 0 %}
+                                Không đăng ký
+                            {% else %}
+                                {{ current_week.donation|intcomma }} ₫
+                                {% if current_week.donation == 0 %}
+                                    <span class="fw-semibold">(đã xong)</span>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="my-4">
+                <h4>Lịch sử chạy</h4>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Thời gian</th>
+                        <th scope="col" class="text-end">Lượt</th>
+                        <th scope="col" class="text-end">Tốc độ TB</th>
+                        <th scope="col" class="text-end">Q. đường</th>
+                        <th scope="col" class="text-end">Cự ly đăng ký</th>
+                        <th scope="col" class="text-end">Thiếu</th>
+                        <th scope="col" class="text-end">Ủng hộ</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for wp in weekly_progresses %}
+                        <tr>
+                            <td>{{ wp.year|week_time_str:wp.week_num }}</td>
+                            <td class="text-end">{{ wp.runs }}</td>
+                            <td class="text-end">{{ wp.average_pace|pace_format }}/km</td>
+                            <td class="text-end">{{ wp.distance|floatformat:1 }} km</td>
+                            <td class="text-end">
+                                {% if wp.registered_mileage.distance > 0 %}
+                                    {{ wp.registered_mileage.distance|floatformat:0 }} km
+                                {% else %}
+                                    <span class="text-secondary">--</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if wp.registered_mileage.distance > 0 %}
+                                    {{ wp.registered_mileage.distance|floatformat:0 }} km
+                                {% else %}
+                                    <span class="text-secondary">--</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">{{ wp.donation|intcomma }} ₫</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
 
             <div id="spinner-wrapper" class="d-none">
                 <div class="loading">Loading&#8230;</div>

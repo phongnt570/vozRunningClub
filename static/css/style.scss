@@ -44,7 +44,8 @@ nav.my-navbar {
   }
 
   .nav-item-link {
-    margin: 0 1.5% 0 0;
+    padding: 0.25rem 0.5rem;
+    margin: 0 0.25rem;
   }
 
   .search-bar {
@@ -52,13 +53,19 @@ nav.my-navbar {
     top: -4px;
     right: 0;
   }
+
+  .nav-item-link.selected, .nav-item-link:hover {
+    color: white;
+    background-color: $primary-dark;
+    border-radius: 0.25rem;
+  }
 }
 
 img.nav-logo {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  height: 7rem;
+  height: 5rem;
   margin-bottom: 1rem;
 }
 

@@ -1,11 +1,11 @@
-import math
+import datetime
 
 from django import template
 from django.contrib.auth.models import User
 from social_django.models import UserSocialAuth
 
-from weeklyTracking.models import WeeklyProgress, SettingDefaultDonation, SettingWeekBaseDonation, \
-    SettingDefaultWeekBaseDonation, SettingDefaultDonationByWeek
+from weeklyTracking.models import WeeklyProgress
+from weeklyTracking.utils.time import get_last_week_year_and_week_num
 
 register = template.Library()
 
@@ -68,3 +68,20 @@ def get_strava_id(user: User):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+
+@register.filter
+def week_time_str(year: int, week_num: int) -> str:
+    start_date = datetime.datetime.fromisocalendar(year, week_num, 1)
+    end_date = datetime.datetime.fromisocalendar(year, week_num, 7)
+
+    this_year, this_week_num, _ = datetime.datetime.now().isocalendar()
+    last_week_year, last_week_num = get_last_week_year_and_week_num()
+
+    if year == this_year and week_num == this_week_num:
+        return "Tuần này"
+
+    if year == last_week_year and week_num == last_week_num:
+        return "Tuần trước"
+
+    return f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
