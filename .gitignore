@@ -113,3 +113,6 @@ GitHub.sublime-settings
 .sass-cache
 .vscode
 /staticfiles/
+
+db*.sqlite3
+db*.json
