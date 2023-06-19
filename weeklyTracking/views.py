@@ -14,7 +14,7 @@ from .utils.donation import update_donation
 from .utils.generics import get_available_weeks_in_db
 from .utils.registration import is_registration_open, get_current_registration_week, create_or_get_weekly_progress
 from .utils.strava_auth_model import get_strava_profile, check_strava_connection, check_strava_club_joined
-from .utils.time import validate_year_week
+from .utils.time import validate_year_week, get_last_week_year_and_week_num
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -269,4 +269,64 @@ def update_profile(request):
 
 
 def statistics(request):
-    return render(request, "weeklyTracking/statistics.html")
+    this_year, this_week_num, _ = datetime.date.today().isocalendar()
+    last_week_year, last_week_num = get_last_week_year_and_week_num()
+
+    week_summaries = {}
+
+    for wp in WeeklyProgress.objects.all():
+        key = (wp.year, wp.week_num)
+
+        start_date = datetime.datetime.fromisocalendar(wp.year, wp.week_num, 1)
+        end_date = datetime.datetime.fromisocalendar(wp.year, wp.week_num, 7)
+
+        time = f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
+        if wp.week_num == this_week_num and wp.year == this_year:
+            time = "Tuần này"
+        elif wp.week_num == last_week_num and wp.year == last_week_year:
+            time = "Tuần trước"
+
+        if key not in week_summaries:
+            week_summaries[key] = {
+                "year": wp.year,
+                "week_num": wp.week_num,
+                "time": time,
+                "runners": 0,
+                "runs": 0,
+                "distance": 0,
+                "registrations": 0,
+                "completed": 0,
+                "donation": 0,
+            }
+
+        if wp.distance > 0 or wp.registered_mileage.distance > 0:
+            week_summaries[key]["runners"] += 1
+        week_summaries[key]["runs"] += wp.runs
+        week_summaries[key]["distance"] += wp.distance
+        if wp.registered_mileage.distance > 0:
+            week_summaries[key]["registrations"] += 1
+            if wp.distance >= wp.registered_mileage.distance:
+                week_summaries[key]["completed"] += 1
+        week_summaries[key]["donation"] += wp.donation
+
+    for _, ws in week_summaries.items():
+        try:
+            ws["actual_donation"] = ActualDonation.objects.get(year=ws["year"], week_num=ws["week_num"]).amount
+        except ActualDonation.DoesNotExist:
+            ws["actual_donation"] = 0
+        ws["donation_diff"] = ws["actual_donation"] - ws["donation"]
+        if ws["year"] == this_year and ws["week_num"] == this_week_num:
+            ws["donation_diff"] = 0
+
+    all_time = {
+        "runs": sum([ws["runs"] for _, ws in week_summaries.items()]),
+        "distance": sum([ws["distance"] for _, ws in week_summaries.items()]),
+        "actual_donation": sum([ws["actual_donation"] for _, ws in week_summaries.items()]),
+    }
+
+    context = {
+        "all_time": all_time,
+        "week_summaries": sorted(week_summaries.values(), key=lambda x: (x["year"], x["week_num"]), reverse=True),
+    }
+
+    return render(request, "weeklyTracking/statistics.html", context=context)

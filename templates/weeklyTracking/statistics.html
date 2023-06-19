@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% load tz %}
+{% load track_custom_utils %}
+
+{% block pagetitle %}Thống kê | Voz Running Club{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <div class="mb-4">
+            <h4>Thống kê toàn thời gian</h4>
+            <div>
+                <ul>
+                    <li>
+                        <span class="fw-bold">Tổng số lượt chạy:</span>
+                        <span>{{ all_time.runs|intcomma }}</span>
+                    </li>
+                    <li>
+                        <span class="fw-bold">Tổng quãng đường:</span>
+                        <span>{{ all_time.distance|floatformat:"1g" }} km</span>
+                    </li>
+                    <li>
+                        <span class="fw-bold">Tổng số tiền đã ủng hộ:</span>
+                        <span>{{ all_time.actual_donation|intcomma }} ₫</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Thời gian</th>
+                <th scope="col" class="text-end">Runners</th>
+                <th scope="col" class="text-end">Lượt chạy</th>
+                <th scope="col" class="text-end">Quãng đường</th>
+                <th scope="col" class="text-end">Đăng ký</th>
+                <th scope="col" class="text-end">Xong</th>
+                <th scope="col" class="text-end">Ủng hộ</th>
+                <th scope="col" class="text-end">Ủng hộ thực tế</th>
+                <th scope="col" class="text-end">Chênh lệch</th>
+                <th scope="col" class="text-end">Chi tiết</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ws in week_summaries %}
+                <tr>
+                    <td>{{ ws.time }}</td>
+                    <td class="text-end">{{ ws.runners }}</td>
+                    <td class="text-end">{{ ws.runs }}</td>
+                    <td class="text-end">{{ ws.distance|floatformat:1 }} km</td>
+                    <td class="text-end">{{ ws.registrations }}</td>
+                    <td class="text-end">{{ ws.completed }}</td>
+                    <td class="text-end">{{ ws.donation|intcomma }} ₫</td>
+                    <td class="text-end">
+                        {% if ws.actual_donation > 0 %}
+                            {{ ws.actual_donation|intcomma:0 }} ₫
+                        {% else %}
+                            --
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        {% if ws.donation_diff > 0 %}
+                            <span class="text-success">+{{ ws.donation_diff|intcomma:0 }} ₫</span>
+                        {% elif ws.donation_diff < 0 %}
+                            <span class="text-danger">{{ ws.donation_diff|intcomma:0 }} ₫</span>
+                        {% else %}
+                            <span class="text-muted">--</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'leaderboard' %}?year={{ ws.year }}&week={{ ws.week_num }}">Chi tiết</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
