@@ -40,7 +40,7 @@
 
 
         <div class="mb-4">
-            <label for="select-week" class="form-label">Chọn tuần</label>
+            <label for="select-week" class="form-label fw-semibold">Chọn tuần</label>
             <select id="select-week" class="form-select" aria-label="Select week" onchange="changeWeek()">
                 {% for key, value in available_weeks.items %}
                     {% if key.0 == requested_year and key.1 == requested_week_num %}
