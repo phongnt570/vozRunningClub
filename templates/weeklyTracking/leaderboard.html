@@ -133,13 +133,13 @@
             <div class="tab-pane fade show active" id="all-runners-leaderboard" role="tabpanel"
                  aria-labelledby="pills-all-runners-tab"
                  tabindex="0">
-                {% include "weeklyTracking/leaderboard_table.html" with data=requested_week_data club_status=is_this_week %}
+                {% include "weeklyTracking/leaderboard_table.html" with data=requested_week_data %}
             </div>
             {% for reg_dis, data in reg_map.items %}
                 <div class="tab-pane fade" id="{{ reg_dis }}-km-runners-leaderboard" role="tabpanel"
                      aria-labelledby="pills-{{ reg_dis }}-km-runners-tab"
                      tabindex="0">
-                    {% include "weeklyTracking/leaderboard_table.html" with data=data club_status=is_this_week %}
+                    {% include "weeklyTracking/leaderboard_table.html" with data=data %}
                 </div>
             {% endfor %}
         </div>
