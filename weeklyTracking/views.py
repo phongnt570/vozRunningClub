@@ -129,6 +129,7 @@ def leaderboard(request):
         "user_2_strava_id": user_2_strava_id,
         "week_summary": week_summary,
         "actual_donation": actual_donation,
+        "donation_diff": actual_donation.amount - total_donation if actual_donation else None,
         "weekly_post": weekly_post,
         "last_updated": last_updated,
     }

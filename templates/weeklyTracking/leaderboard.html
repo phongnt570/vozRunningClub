@@ -70,12 +70,17 @@
                     </li>
                     <li>
                         <span class="fw-bold">Total donation:</span>
-                        <span>{{ week_summary.total_donation|floatformat:"g" }} ₫</span>
+                        <span>{{ week_summary.total_donation|intcomma }} ₫</span>
                     </li>
                     {% if actual_donation %}
                         <li>
-                            <span class="fw-bold bg-success p-1 rounded text-white">Actual donation</span>
-                            <span>{{ actual_donation.amount|floatformat:"g" }} ₫</span>
+                            <span class="fw-bold">Actual donation:</span>
+                            <span>{{ actual_donation.amount|intcomma }} ₫</span>
+                            {% if donation_diff > 0 %}
+                                <span class="fw-semibold text-success">(+{{ donation_diff|intcomma }} ₫)</span>
+                            {% else %}
+                                <span class="fw-semibold text-danger">({{ donation_diff|intcomma }} ₫)</span>
+                            {% endif %}
                         </li>
                     {% endif %}
                 </ul>
