@@ -28,9 +28,6 @@
                                 <span id="last-updated-time">
                                     {{ last_updated|naturaltime }}
                                 </span>
-{#                                {% if is_this_week %}#}
-{#                                    <span>(automatically refreshed every 10 minutes)</span>#}
-{#                                {% endif %}#}
                             </span>
                         {% endtimezone %}
                     </p>
@@ -109,7 +106,7 @@
                     <button class="nav-link active" id="pills-all-runners-tab" data-bs-toggle="pill"
                             data-bs-target="#all-runners-leaderboard"
                             type="button" role="tab" aria-controls="all-runners-leaderboard" aria-selected="true">
-                        Toàn bộ runners ({{ requested_week_data|length }})
+                        Tất cả runners ({{ requested_week_data|length }})
                     </button>
                 </li>
                 {% for reg_dis, data in reg_map.items %}
