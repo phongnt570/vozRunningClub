@@ -18,7 +18,7 @@ def missing_distance(week_progress: WeeklyProgress):
 def missing_distance_str(week_progress: WeeklyProgress):
     d = max(0.0, week_progress.registered_mileage.distance - week_progress.distance)
     if week_progress.registered_mileage.distance == 0:
-        return "--"
+        return "<span class='text-secondary'>--</span>"
 
     if d == 0:
         return "Xong!"
