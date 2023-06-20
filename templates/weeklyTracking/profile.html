@@ -6,8 +6,7 @@
 
 {% block body %}
 
-
-    <div class="container my-4">
+    <div class="container mb-4">
         {% if user.is_authenticated %}
             {% if messages %}
                 <div class="alert alert-danger mb-4" role="alert">
@@ -94,7 +93,7 @@
                             {% endif %}
                         </li>
                         <li>
-                            <span class="fw-semibold">Số tiền sẽ ủng hộ:</span>
+                            <span class="fw-semibold">Số tiền sẽ đóng góp:</span>
                             {% if current_week.registered_mileage.distance == 0 %}
                                 Không đăng ký
                             {% else %}
@@ -120,7 +119,7 @@
                             <th scope="col" class="text-end">Q/đường</th>
                             <th scope="col" class="text-end">Đ/ký</th>
                             <th scope="col" class="text-end">Thiếu</th>
-                            <th scope="col" class="text-end">U/hộ</th>
+                            <th scope="col" class="text-end">Đ/góp</th>
                         </tr>
                         </thead>
                         <tbody>

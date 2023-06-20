@@ -6,7 +6,8 @@ $font-family-sans-serif: 'Be Vietnam Pro', system-ui, -apple-system, "Segoe UI",
 
 $primary: #555395;
 $light: #e1e3e8;
-$super-light: #c4c4c4;
+$border-color: #c4c4c4;
+$title-color: #333;
 
 $strava-orange: #fc4c02;
 $strava-orange-dark: #e63a00;
@@ -42,7 +43,7 @@ body {
   text-align: center;
   background: white;
   padding: 1.375em 0;
-  border-bottom: 1px solid $super-light;
+  border-bottom: 1px solid $border-color;
 
   position: fixed;
   top: 0;
@@ -236,7 +237,7 @@ hr.big-hr {
 
 /* Leaderboard Results */
 .leaderboard-table-wrapper {
-  border: 1px solid $super-light;
+  border: 1px solid $border-color;
   border-radius: 0.375em;
   overflow: auto;
 
@@ -248,18 +249,18 @@ hr.big-hr {
 
     thead {
       background-color: $light;
-      border-bottom: 1px solid $super-light;
+      border-bottom: 1px solid $border-color;
 
       th {
         font-weight: bold;
-        color: #333;
+        color: $title-color;
         padding: 0.8em 1em;
       }
     }
 
     tbody {
       tr {
-        border-bottom: 1px solid $super-light;
+        border-bottom: 1px solid $border-color;
         transition: all 0.3s ease;
 
         &:hover {
@@ -309,3 +310,28 @@ hr.big-hr {
 }
 
 /* /end Leaderboard Results */
+
+.statistic-box {
+  background-color: $light;
+  border-radius: 0.375em;
+  padding: 1em;
+  margin-bottom: 1em;
+  text-align: center;
+
+  .statistic-title {
+    color: $title-color;
+    font-size: 0.875em;
+  }
+
+  .statistic-value {
+    font-size: 1.375em;
+    font-weight: bold;
+    color: $primary;
+  }
+}
+
+.weekly-post {
+  img {
+    max-width: 100%;
+  }
+}

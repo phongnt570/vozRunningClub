@@ -7,7 +7,7 @@
 {% block pagetitle %}Thống kê | Voz Running Club{% endblock %}
 
 {% block body %}
-    <div class="container my-4">
+    <div class="container mb-4">
         <div class="mb-4">
             <h4>Thống kê toàn thời gian</h4>
             <div>
@@ -21,7 +21,7 @@
                         <span>{{ all_time.distance|floatformat:"1g" }} km</span>
                     </li>
                     <li>
-                        <span class="fw-bold">Tổng số tiền đã ủng hộ:</span>
+                        <span class="fw-bold">Tổng số tiền đã đóng góp:</span>
                         <span>{{ all_time.actual_donation|intcomma }} ₫</span>
                     </li>
                 </ul>
@@ -38,8 +38,8 @@
                     <th scope="col" class="text-end">Q/đường</th>
                     <th scope="col" class="text-end">Đ/ký</th>
                     <th scope="col" class="text-end">Xong</th>
-                    <th scope="col" class="text-end">U/hộ</th>
-                    <th scope="col" class="text-end">Đã gửi</th>
+                    <th scope="col" class="text-end">Ước tính</th>
+                    <th scope="col" class="text-end">Đã đ/góp</th>
                     <th scope="col" class="text-end">Chênh</th>
                     <th scope="col" class="text-end">Chi tiết</th>
                 </tr>

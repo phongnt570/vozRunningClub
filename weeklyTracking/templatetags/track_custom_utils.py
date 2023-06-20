@@ -21,9 +21,9 @@ def missing_distance_str(week_progress: WeeklyProgress):
         return "--"
 
     if d == 0:
-        return "Đã xong!"
+        return "Xong!"
 
-    return f"{d:.1f} <span class='d-none d-md-inline'>km</span>"
+    return f"{d:.1f}km"
 
 
 @register.filter

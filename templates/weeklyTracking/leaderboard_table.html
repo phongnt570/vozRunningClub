@@ -14,13 +14,13 @@
             {#                </th>#}
             {#            {% endif %}#}
             <th>Runner</th>
-            <th class="">Voz</th>
+            {#            <th class="">Voz</th>#}
             <th class="text-end">Chạy</th>
             <th class="text-end">T/độ</th>
             <th class="text-end">Q/đường</th>
             <th class="text-end">Đ/ký</th>
             <th class="text-end">Thiếu</th>
-            <th class="text-end">U/hộ</th>
+            <th class="text-end">Đ/góp</th>
         </tr>
         </thead>
         <tbody>
@@ -62,21 +62,21 @@
                 <td>
                     <a href="https://strava.com/athletes/{{ user_2_strava_id|get_item:weekly_progress.user.id }}"
                        target="_blank"
-                       class="text-decoration-none text-dark">
+                       class="text-decoration-none">
                         {{ weekly_progress.user.get_full_name }}
                     </a>
                 </td>
-                <td class="">{{ weekly_progress.user.profile.voz_name }}</td>
+                {#                <td class="">{{ weekly_progress.user.profile.voz_name }}</td>#}
                 <td class="text-end">{{ weekly_progress.runs }}</td>
                 <td class="text-end">{{ weekly_progress.average_pace|pace_format }}</td>
                 <td class="text-end">
-                    {{ weekly_progress.distance|floatformat:1 }}
-                    <span class="d-none d-md-inline">km</span>
+                    {{ weekly_progress.distance|floatformat:1 }}km
+                    {#                    <span class="d-none d-md-inline">km</span>#}
                 </td>
                 <td class="text-end">
                     {% if weekly_progress.registered_mileage.distance > 0 %}
-                        {{ weekly_progress.registered_mileage.distance|floatformat:0 }}
-                        <span class="d-none d-md-inline">km</span>
+                        {{ weekly_progress.registered_mileage.distance|floatformat:0 }}km
+                        {#                        <span class="d-none d-md-inline">km</span>#}
                     {% else %}
                         <span class="text-secondary">--</span>
                     {% endif %}
@@ -86,8 +86,8 @@
                     {% if weekly_progress.registered_mileage.distance == 0 %}
                         <span class="text-secondary">--</span>
                     {% else %}
-                        {{ weekly_progress.donation|intcomma }}
-                        <span class="d-none d-md-inline">₫</span>
+                        {{ weekly_progress.donation|intcomma }}₫
+                        {#                        <span class="d-none d-md-inline">₫</span>#}
                     {% endif %}
                 </td>
             </tr>
