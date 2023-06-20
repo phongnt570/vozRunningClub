@@ -18,38 +18,30 @@
 </head>
 <body>
 
-<div class="container mt-3 mb-4">
-    <div>
+<div class="my-navbar-container">
+    <nav class="my-navbar">
         <div>
-            <a href="{% url 'index' %}">
-                <img src="{% static 'img/logo-color.png' %}" alt="logo" class="nav-logo">
-            </a>
+            <div class="nav-items">
+                <a href="{% url 'leaderboard' %}"
+                   class="nav-item-link{% if request.resolver_match.url_name == 'leaderboard' %} selected{% endif %}">
+                    Xếp hạng</a>
+                <a href="{% url 'statistics' %}"
+                   class="nav-item-link{% if request.resolver_match.url_name == 'statistics' %} selected{% endif %}">
+                    Thống kê</a>
+                <a href="{% url 'registration' %}"
+                   class="nav-item-link{% if request.resolver_match.url_name == 'registration' %} selected{% endif %}">
+                    Đăng ký</a>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'profile' %}"
+                       class="nav-item-link{% if request.resolver_match.url_name == 'profile' %} selected{% endif %}">
+                        Hồ sơ</a>
+                {% endif %}
+            </div>
         </div>
+    </nav>
+</div>
 
-        <div class="my-3 text-center">
-            <nav class="my-navbar">
-                <div>
-                    <div class="nav-items">
-                        <a href="{% url 'leaderboard' %}"
-                           class="nav-item-link{% if request.resolver_match.url_name == 'leaderboard' %} selected{% endif %}">
-                            Xếp hạng</a>
-                        <a href="{% url 'statistics' %}"
-                           class="nav-item-link{% if request.resolver_match.url_name == 'statistics' %} selected{% endif %}">
-                            Thống kê</a>
-                        <a href="{% url 'registration' %}"
-                           class="nav-item-link{% if request.resolver_match.url_name == 'registration' %} selected{% endif %}">
-                            Đăng ký</a>
-                        {% if request.user.is_authenticated %}
-                            <a href="{% url 'profile' %}"
-                               class="nav-item-link{% if request.resolver_match.url_name == 'profile' %} selected{% endif %}">
-                                Hồ sơ</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
-            <hr class="big-hr">
-        </div>
-    </div>
+<div class="py-5">
 </div>
 
 {% block body %}{% endblock %}

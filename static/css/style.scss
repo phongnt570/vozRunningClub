@@ -1,18 +1,21 @@
-$primary-dark: #004ba0;
-$primary-light: #63a4ff;
-$primary: #1976d2;
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+// Default variable overrides
+$font-family-sans-serif: 'Be Vietnam Pro', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+// stylelint-enable value-keyword-case
+
+$primary: #555395;
+$light: #e1e3e8;
+$super-light: #c4c4c4;
 
 $strava-orange: #fc4c02;
 $strava-orange-dark: #e63a00;
-
-$negative-color: rgba(234, 34, 81, 1);
-$neutral-color: rgba(100, 100, 100, 1);
-$positive-color: rgba(29, 159, 152, 1);
 
 @import "bootstrap/bootstrap";
 
 body {
   overflow-y: scroll; /* Show vertical scrollbar */
+  background: #F7F7F8;
 }
 
 .text-strava {
@@ -35,29 +38,42 @@ body {
   font-variant: small-caps;
 }
 
-nav.my-navbar {
-  position: relative;
+.my-navbar-container {
+  text-align: center;
+  background: white;
+  padding: 1.375em 0;
+  border-bottom: 1px solid $super-light;
 
-  a {
-    color: $primary-dark;
-    text-decoration: none;
-  }
+  position: fixed;
+  top: 0;
+  width: 100%;
 
-  .nav-item-link {
-    padding: 0.25rem 0.5rem;
-    margin: 0 0.25rem;
-  }
+  nav.my-navbar {
+    position: relative;
 
-  .search-bar {
-    position: absolute;
-    top: -4px;
-    right: 0;
-  }
+    a {
+      color: $secondary;
+      text-decoration: none;
+    }
 
-  .nav-item-link.selected, .nav-item-link:hover {
-    color: white;
-    background-color: $primary-dark;
-    border-radius: 0.25rem;
+    .nav-item-link {
+      padding: 0.25rem 0.5rem;
+      margin: 0 0.25rem;
+    }
+
+    .search-bar {
+      position: absolute;
+      top: -4px;
+      right: 0;
+    }
+
+    .nav-item-link.selected, .nav-item-link:hover {
+      color: $primary;
+    }
+
+    .nav-item-link.selected {
+      font-weight: 600;
+    }
   }
 }
 
@@ -70,37 +86,15 @@ img.nav-logo {
 }
 
 hr.big-hr {
-  border: 1px solid $primary-dark;
+  border: 1px solid $primary;
   margin: 0.5rem 0;
   opacity: 100%;
 }
 
 .rank-change {
-  font-size: 0.75rem;
+  //font-size: 0.75rem;
   font-weight: bold;
   display: inline;
-}
-
-.text-primary-dark {
-  color: $primary-dark;
-}
-
-.btn-primary-dark {
-  color: $white;
-  background-color: $primary-dark;
-  border-color: $primary-dark;
-}
-
-.border-primary-dark {
-  border-color: $primary-dark !important;
-}
-
-.text-primary-light {
-  color: $primary-light;
-}
-
-.table-fluid {
-  width: 100%;
 }
 
 .big-search-container {
@@ -239,3 +233,79 @@ hr.big-hr {
     transform: rotate(360deg);
   }
 }
+
+/* Leaderboard Results */
+.leaderboard-table-wrapper {
+  border: 1px solid $super-light;
+  border-radius: 0.375em;
+  overflow: hidden;
+
+
+  .leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    thead {
+      background-color: $light;
+      border-bottom: 1px solid $super-light;
+
+      th {
+        font-weight: bold;
+        color: #333;
+        padding: 0.8em 1em;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid $super-light;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: $light;
+        }
+
+
+      }
+
+      tr.focused-row {
+        background-color: $light;
+      }
+
+      tr:last-child {
+        border-bottom: none;
+      }
+
+      td {
+        padding: 0.8em 1em;
+      }
+    }
+
+    .rank {
+      text-align: center;
+      width: 1.5em;
+      height: 1.5em;
+      line-height: 1.5em;
+      border-radius: 50%;
+    }
+
+    .rank-1, .rank-2, .rank-3 {
+      color: #fff;
+    }
+
+    .rank-1 {
+      background-color: #e6c200;
+    }
+
+    .rank-2 {
+      background-color: #b4b9c5;
+    }
+
+    .rank-3 {
+      background-color: #a46628;
+    }
+  }
+}
+
+/* /end Leaderboard Results */

@@ -1,91 +1,98 @@
 {% load humanize %}
 {% load track_custom_utils %}
 
-<div class="border border-bottom-0 shadow-sm">
-    <table class="table">
-        <thead class="table-light">
+<div class="leaderboard-table-wrapper">
+    <table class="leaderboard-table">
+        <thead>
         <tr>
-            <th>
+            <th class="text-center">
                 {#            <span class="d-none d-lg-inline">Hạng</span>#}
                 {#            <span class="d-inline d-lg-none">#</span>#}
-                <span></span>
+                <div class="rank">#</div>
             </th>
-            {% if rank_changes is not None %}
-                <th>
-                    <span></span>
-                </th>
-            {% endif %}
+            {#            {% if rank_changes is not None %}#}
+            {#                <th>#}
+            {#                    <span></span>#}
+            {#                </th>#}
+            {#            {% endif %}#}
             <th>
                 Runner
             </th>
             <th class="d-none d-lg-table-cell">Voz</th>
-            <th class="text-end d-none d-md-table-cell">Lượt</th>
-            <th class="text-end d-none d-lg-table-cell">Tốc độ TB</th>
-            <th class="text-end">Q. đường</th>
-            <th class="text-end d-none d-md-table-cell">Cự ly đ/k</th>
-            <th class="text-end d-none d-md-table-cell">Thiếu</th>
-            <th class="text-end">Ủng hộ</th>
+            <th class="text-start d-none d-md-table-cell">Ch</th>
+            <th class="text-start d-none d-lg-table-cell">TĐ</th>
+            <th class="text-start">QĐ</th>
+            <th class="text-start d-none d-md-table-cell">ĐK</th>
+            <th class="text-start d-none d-md-table-cell">Th</th>
+            <th class="text-start">
+                UH
+            </th>
         </tr>
         </thead>
         <tbody>
         {% for weekly_progress in data %}
-            <tr class="{% if weekly_progress.user.id == user.id %}table-secondary{% endif %}">
-                <td>
-                    {{ forloop.counter }}</td>
-                {% if rank_changes is not None %}
-                    <td>
-                        <div class="rank-change">
-                            {% if weekly_progress.user.id in rank_changes %}
-                                {% with rank_change=rank_changes|get_item:weekly_progress.user.id %}
-                                    {% if rank_change > 0 %}
-                                        <span class="text-success">
-                                        <i class="fa-solid fa-arrow-up"></i>
-                                        {{ rank_change }}
-                                    </span>
-                                    {% elif rank_change < 0 %}
-                                        <span class="text-danger">
-                                        <i class="fa-solid fa-arrow-down"></i>
-                                        {{ rank_change|absolute }}
-                                    </span>
-                                    {% else %}
-                                        <span class="text-secondary">
-                                        <i class="fa-solid fa-minus"></i>
-                                    </span>
-                                    {% endif %}
-                                {% endwith %}
-                            {% else %}
-                                <span class="text-secondary">
-                                (new)
-                            </span>
-                            {% endif %}
-                        </div>
-                    </td>
-                {% endif %}
+            <tr class="{% if weekly_progress.user.id == user.id %}focused-row{% endif %}">
+                <td class="text-center">
+                    <div class="rank rank-{{ forloop.counter }}">{{ forloop.counter }}</div>
+                </td>
+                {#                {% if rank_changes is not None %}#}
+                {#                    <td>#}
+                {#                        <div class="rank-change">#}
+                {#                            {% if weekly_progress.user.id in rank_changes %}#}
+                {#                                {% with rank_change=rank_changes|get_item:weekly_progress.user.id %}#}
+                {#                                    {% if rank_change > 0 %}#}
+                {#                                        <span class="text-success">#}
+                {#                                        <i class="fa-solid fa-arrow-up"></i>#}
+                {#                                        {{ rank_change }}#}
+                {#                                    </span>#}
+                {#                                    {% elif rank_change < 0 %}#}
+                {#                                        <span class="text-danger">#}
+                {#                                        <i class="fa-solid fa-arrow-down"></i>#}
+                {#                                        {{ rank_change|absolute }}#}
+                {#                                    </span>#}
+                {#                                    {% else %}#}
+                {#                                        <span class="text-secondary">#}
+                {#                                        <i class="fa-solid fa-minus"></i>#}
+                {#                                    </span>#}
+                {#                                    {% endif %}#}
+                {#                                {% endwith %}#}
+                {#                            {% else %}#}
+                {#                                <span class="text-secondary">#}
+                {#                                (new)#}
+                {#                            </span>#}
+                {#                            {% endif %}#}
+                {#                        </div>#}
+                {#                    </td>#}
+                {#                {% endif %}#}
 
                 <td>
                     <a href="https://strava.com/athletes/{{ user_2_strava_id|get_item:weekly_progress.user.id }}"
                        target="_blank"
-                       class="text-decoration-none fw-semibold">
+                       class="text-decoration-none text-dark">
                         {{ weekly_progress.user.get_full_name }}
                     </a>
                 </td>
                 <td class="d-none d-lg-table-cell">{{ weekly_progress.user.profile.voz_name }}</td>
-                <td class="text-end d-none d-md-table-cell">{{ weekly_progress.runs }}</td>
-                <td class="text-end d-none d-lg-table-cell">{{ weekly_progress.average_pace|pace_format }}/km</td>
-                <td class="text-end">{{ weekly_progress.distance|floatformat:1 }} km</td>
-                <td class="text-end d-none d-md-table-cell">
+                <td class="text-start d-none d-md-table-cell">{{ weekly_progress.runs }}</td>
+                <td class="text-start d-none d-lg-table-cell">{{ weekly_progress.average_pace|pace_format }}</td>
+                <td class="text-start">
+                    {{ weekly_progress.distance|floatformat:1 }}
+                    <span class="text-start d-none d-md-inline">km</span>
+                </td>
+                <td class="text-start d-none d-md-table-cell">
                     {% if weekly_progress.registered_mileage.distance > 0 %}
                         {{ weekly_progress.registered_mileage.distance|floatformat:0 }} km
                     {% else %}
                         <span class="text-secondary">--</span>
                     {% endif %}
                 </td>
-                <td class="text-end d-none d-md-table-cell">{{ weekly_progress|missing_distance_str }}</td>
-                <td class="text-end">
+                <td class="text-start d-none d-md-table-cell">{{ weekly_progress|missing_distance_str }}</td>
+                <td class="text-start">
                     {% if weekly_progress.registered_mileage.distance == 0 %}
                         <span class="text-secondary">--</span>
                     {% else %}
-                        {{ weekly_progress.donation|intcomma }} ₫
+                        {{ weekly_progress.donation|intcomma }}
+                        <span class="text-start d-none d-md-inline">₫</span>
                     {% endif %}
                 </td>
             </tr>
