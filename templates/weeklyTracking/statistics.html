@@ -18,11 +18,11 @@
                     </li>
                     <li>
                         <span class="fw-bold">Tổng quãng đường:</span>
-                        <span>{{ all_time.distance|floatformat:"1g" }} km</span>
+                        <span>{{ all_time.distance|floatformat:"1g" }}km</span>
                     </li>
                     <li>
                         <span class="fw-bold">Tổng số tiền đã đóng góp:</span>
-                        <span>{{ all_time.actual_donation|intcomma }} ₫</span>
+                        <span>{{ all_time.actual_donation|intcomma }}₫</span>
                     </li>
                 </ul>
             </div>
@@ -51,19 +51,19 @@
                         <td class="text-end">{{ ws.runners }}</td>
                         <td class="text-end">{{ ws.runs }}</td>
                         <td class="text-end">
-                            {{ ws.distance|floatformat:1 }}
-                            <span class="text-start d-none d-md-inline">km</span>
+                            {{ ws.distance|floatformat:1 }}km
+                            {#                            <span class="text-start d-none d-md-inline">km</span>#}
                         </td>
                         <td class="text-end">{{ ws.registrations }}</td>
                         <td class="text-end">{{ ws.completed }}</td>
                         <td class="text-end">
-                            {{ ws.donation|intcomma }}
-                            <span class="text-start d-none d-md-inline">₫</span>
+                            {{ ws.donation|intcomma }}₫
+                            {#                            <span class="text-start d-none d-md-inline">₫</span>#}
                         </td>
                         <td class="text-end">
                             {% if ws.actual_donation > 0 %}
-                                {{ ws.actual_donation|intcomma:0 }}
-                                <span class="text-start d-none d-md-inline">₫</span>
+                                {{ ws.actual_donation|intcomma:0 }}₫
+                                {#                                <span class="text-start d-none d-md-inline">₫</span>#}
                             {% else %}
                                 --
                             {% endif %}
@@ -71,13 +71,13 @@
                         <td class="text-end">
                             {% if ws.donation_diff > 0 %}
                                 <span class="text-success">
-                                    +{{ ws.donation_diff|intcomma:0 }}
-                                    <span class="text-start d-none d-md-inline">₫</span>
+                                    +{{ ws.donation_diff|intcomma:0 }}₫
+{#                                    <span class="text-start d-none d-md-inline">₫</span>#}
                                 </span>
                             {% elif ws.donation_diff < 0 %}
                                 <span class="text-danger">
-                                    {{ ws.donation_diff|intcomma:0 }}
-                                    <span class="text-start d-none d-md-inline">₫</span>
+                                    {{ ws.donation_diff|intcomma:0 }}₫
+{#                                    <span class="text-start d-none d-md-inline">₫</span>#}
                                 </span>
                             {% else %}
                                 <span class="text-muted">--</span>

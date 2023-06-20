@@ -129,13 +129,13 @@
                                 <td class="text-end">{{ wp.runs }}</td>
                                 <td class="text-end">{{ wp.average_pace|pace_format }}</td>
                                 <td class="text-end">
-                                    {{ wp.distance|floatformat:1 }}
-                                    <span class="d-none d-md-inline">km</span>
+                                    {{ wp.distance|floatformat:1 }}km
+                                    {#                                    <span class="d-none d-md-inline">km</span>#}
                                 </td>
                                 <td class="text-end">
                                     {% if wp.registered_mileage.distance > 0 %}
-                                        {{ wp.registered_mileage.distance|floatformat:0 }}
-                                        <span class="d-none d-md-inline">km</span>
+                                        {{ wp.registered_mileage.distance|floatformat:0 }}km
+                                        {#                                        <span class="d-none d-md-inline">km</span>#}
                                     {% else %}
                                         <span class="text-secondary">--</span>
                                     {% endif %}
@@ -144,8 +144,8 @@
                                     {{ wp|missing_distance_str|safe }}
                                 </td>
                                 <td class="text-end">
-                                    {{ wp.donation|intcomma }}
-                                    <span class="d-none d-md-inline">₫</span>
+                                    {{ wp.donation|intcomma }}₫
+                                    {#                                    <span class="d-none d-md-inline">₫</span>#}
                                 </td>
                             </tr>
                         {% endfor %}
