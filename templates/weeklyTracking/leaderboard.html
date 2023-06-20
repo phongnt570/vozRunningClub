@@ -10,7 +10,7 @@
     <div class="container mb-4">
         <div class="mb-3 row">
             {#            <div class="d-none d-lg-block col-lg-4"></div>#}
-            <div class="col col-lg-3 text-center">
+            <div class="col-12 col-xxl-3 text-center">
                 {#                <label for="select-week" class="form-label fw-semibold">Chọn tuần</label>#}
                 <select id="select-week" class="form-select" aria-label="Select week" onchange="changeWeek()">
                     {% for key, value in available_weeks.items %}
@@ -43,7 +43,7 @@
         {#        </div>#}
 
         <div class="row">
-            <div class="col col-lg-8">
+            <div class="col-12 col-xxl-8">
                 <div class="text-center">
                     <h3>Bảng xếp hạng</h3>
                 </div>
@@ -90,7 +90,7 @@
                 </div>
             </div>
 
-            <div class="col mt-4 mt-lg-0 col-lg-4">
+            <div class="col-12 mt-4 mt-xl-0 col-xxl-4">
                 <div class="text-center">
                     <h3>Thống kê tuần</h3>
                     <div class="mt-3">

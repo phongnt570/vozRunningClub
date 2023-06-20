@@ -21,6 +21,12 @@
 <div class="my-navbar-container">
     <nav class="my-navbar">
         <div>
+            <div class="nav-home">
+                <a href="{% url 'index' %}"
+                   class="nav-item-link selected">
+                    Voz Running Club
+                </a>
+            </div>
             <div class="nav-items">
                 <a href="{% url 'leaderboard' %}"
                    class="nav-item-link{% if request.resolver_match.url_name == 'leaderboard' %} selected{% endif %}">
@@ -37,9 +43,32 @@
                         Hồ sơ</a>
                 {% endif %}
             </div>
+            {% if request.user.is_authenticated %}
+                <div class="nav-logout">
+                    <a href="{% url 'logout' %}" class="nav-item-link">
+                        Đăng xuất
+                    </a>
+                </div>
+            {% endif %}
+            <div class="bars">
+                <a href="javascript:void(0);" onclick="toggleNavbar()">
+                    <i class="fa-solid fa-bars"></i>
+                </a>
+            </div>
         </div>
     </nav>
 </div>
+
+<script>
+    function toggleNavbar() {
+        let navbar = document.getElementsByClassName("my-navbar")[0];
+        if (navbar.classList.contains("responsive")) {
+            navbar.classList.remove("responsive");
+        } else {
+            navbar.classList.add("responsive");
+        }
+    }
+</script>
 
 <div class="py-5">
 </div>
