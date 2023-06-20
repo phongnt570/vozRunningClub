@@ -12087,6 +12087,7 @@ hr.big-hr {
   padding: 0.8em 1em;
 }
 .leaderboard-table-wrapper .leaderboard-table tbody tr {
+  background: white;
   border-bottom: 1px solid #c4c4c4;
   transition: all 0.3s ease;
 }
