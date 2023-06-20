@@ -6,8 +6,6 @@
         <thead>
         <tr>
             <th class="text-center">
-                {#            <span class="d-none d-lg-inline">Hạng</span>#}
-                {#            <span class="d-inline d-lg-none">#</span>#}
                 <div class="rank">#</div>
             </th>
             {#            {% if rank_changes is not None %}#}
@@ -15,18 +13,14 @@
             {#                    <span></span>#}
             {#                </th>#}
             {#            {% endif %}#}
-            <th>
-                Runner
-            </th>
-            <th class="d-none d-lg-table-cell">Voz</th>
-            <th class="text-start d-none d-md-table-cell">Ch</th>
-            <th class="text-start d-none d-lg-table-cell">TĐ</th>
-            <th class="text-start">QĐ</th>
-            <th class="text-start d-none d-md-table-cell">ĐK</th>
-            <th class="text-start d-none d-md-table-cell">Th</th>
-            <th class="text-start">
-                UH
-            </th>
+            <th>Runner</th>
+            <th class="">Voz</th>
+            <th class="text-end">Chạy</th>
+            <th class="text-end">T/độ</th>
+            <th class="text-end">Q/đường</th>
+            <th class="text-end">Đ/ký</th>
+            <th class="text-end">Thiếu</th>
+            <th class="text-end">U/hộ</th>
         </tr>
         </thead>
         <tbody>
@@ -72,27 +66,28 @@
                         {{ weekly_progress.user.get_full_name }}
                     </a>
                 </td>
-                <td class="d-none d-lg-table-cell">{{ weekly_progress.user.profile.voz_name }}</td>
-                <td class="text-start d-none d-md-table-cell">{{ weekly_progress.runs }}</td>
-                <td class="text-start d-none d-lg-table-cell">{{ weekly_progress.average_pace|pace_format }}</td>
-                <td class="text-start">
+                <td class="">{{ weekly_progress.user.profile.voz_name }}</td>
+                <td class="text-end">{{ weekly_progress.runs }}</td>
+                <td class="text-end">{{ weekly_progress.average_pace|pace_format }}</td>
+                <td class="text-end">
                     {{ weekly_progress.distance|floatformat:1 }}
-                    <span class="text-start d-none d-md-inline">km</span>
+                    <span class="d-none d-md-inline">km</span>
                 </td>
-                <td class="text-start d-none d-md-table-cell">
+                <td class="text-end">
                     {% if weekly_progress.registered_mileage.distance > 0 %}
-                        {{ weekly_progress.registered_mileage.distance|floatformat:0 }} km
+                        {{ weekly_progress.registered_mileage.distance|floatformat:0 }}
+                        <span class="d-none d-md-inline">km</span>
                     {% else %}
                         <span class="text-secondary">--</span>
                     {% endif %}
                 </td>
-                <td class="text-start d-none d-md-table-cell">{{ weekly_progress|missing_distance_str }}</td>
-                <td class="text-start">
+                <td class="text-end">{{ weekly_progress|missing_distance_str|safe }}</td>
+                <td class="text-end">
                     {% if weekly_progress.registered_mileage.distance == 0 %}
                         <span class="text-secondary">--</span>
                     {% else %}
                         {{ weekly_progress.donation|intcomma }}
-                        <span class="text-start d-none d-md-inline">₫</span>
+                        <span class="d-none d-md-inline">₫</span>
                     {% endif %}
                 </td>
             </tr>

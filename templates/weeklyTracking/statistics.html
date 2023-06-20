@@ -34,13 +34,13 @@
                 <tr>
                     <th scope="col">Thời gian</th>
                     <th scope="col" class="text-end">Runners</th>
-                    <th scope="col" class="text-end">Lượt chạy</th>
-                    <th scope="col" class="text-end">Q. đường</th>
-                    <th scope="col" class="text-end">Đăng ký</th>
+                    <th scope="col" class="text-end">Chạy</th>
+                    <th scope="col" class="text-end">Q/đường</th>
+                    <th scope="col" class="text-end">Đ/ký</th>
                     <th scope="col" class="text-end">Xong</th>
-                    <th scope="col" class="text-end">Ủng hộ</th>
+                    <th scope="col" class="text-end">U/hộ</th>
                     <th scope="col" class="text-end">Đã gửi</th>
-                    <th scope="col" class="text-end">Chênh lệch</th>
+                    <th scope="col" class="text-end">Chênh</th>
                     <th scope="col" class="text-end">Chi tiết</th>
                 </tr>
                 </thead>
@@ -50,28 +50,41 @@
                         <td>{{ ws.time }}</td>
                         <td class="text-end">{{ ws.runners }}</td>
                         <td class="text-end">{{ ws.runs }}</td>
-                        <td class="text-end">{{ ws.distance|floatformat:1 }} km</td>
+                        <td class="text-end">
+                            {{ ws.distance|floatformat:1 }}
+                            <span class="text-start d-none d-md-inline">km</span>
+                        </td>
                         <td class="text-end">{{ ws.registrations }}</td>
                         <td class="text-end">{{ ws.completed }}</td>
-                        <td class="text-end">{{ ws.donation|intcomma }} ₫</td>
+                        <td class="text-end">
+                            {{ ws.donation|intcomma }}
+                            <span class="text-start d-none d-md-inline">₫</span>
+                        </td>
                         <td class="text-end">
                             {% if ws.actual_donation > 0 %}
-                                {{ ws.actual_donation|intcomma:0 }} ₫
+                                {{ ws.actual_donation|intcomma:0 }}
+                                <span class="text-start d-none d-md-inline">₫</span>
                             {% else %}
                                 --
                             {% endif %}
                         </td>
                         <td class="text-end">
                             {% if ws.donation_diff > 0 %}
-                                <span class="text-success">+{{ ws.donation_diff|intcomma:0 }} ₫</span>
+                                <span class="text-success">
+                                    +{{ ws.donation_diff|intcomma:0 }}
+                                    <span class="text-start d-none d-md-inline">₫</span>
+                                </span>
                             {% elif ws.donation_diff < 0 %}
-                                <span class="text-danger">{{ ws.donation_diff|intcomma:0 }} ₫</span>
+                                <span class="text-danger">
+                                    {{ ws.donation_diff|intcomma:0 }}
+                                    <span class="text-start d-none d-md-inline">₫</span>
+                                </span>
                             {% else %}
                                 <span class="text-muted">--</span>
                             {% endif %}
                         </td>
                         <td class="text-end">
-                            <a href="{% url 'leaderboard' %}?year={{ ws.year }}&week={{ ws.week_num }}">Chi tiết</a>
+                            <a href="{% url 'leaderboard' %}?year={{ ws.year }}&week={{ ws.week_num }}">Xem</a>
                         </td>
                     </tr>
                 {% endfor %}

@@ -238,7 +238,7 @@ hr.big-hr {
 .leaderboard-table-wrapper {
   border: 1px solid $super-light;
   border-radius: 0.375em;
-  overflow: hidden;
+  overflow: auto;
 
 
   .leaderboard-table {

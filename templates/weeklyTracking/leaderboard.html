@@ -74,28 +74,24 @@
                             <span class="fw-bold">Số tiền đã ủng hộ thực tế:</span>
                             <span>{{ actual_donation.amount|intcomma }} ₫</span>
                             {% if donation_diff > 0 %}
-                                <span class="fw-semibold text-success">(+{{ donation_diff|intcomma }} ₫)</span>
+                                <span class="text-success">(+{{ donation_diff|intcomma }} ₫)</span>
                             {% else %}
-                                <span class="fw-semibold text-danger">({{ donation_diff|intcomma }} ₫)</span>
+                                <span class="text-danger">({{ donation_diff|intcomma }} ₫)</span>
                             {% endif %}
+                            &nbsp;
+                            <a class="text-primary"
+                               type="button" data-bs-toggle="collapse"
+                               data-bs-target="#collapse-transaction" aria-expanded="false"
+                               aria-controls="collapse-transaction" title="Show transaction">
+                                <span>Chi tiết</span>
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
             </div>
             {% if weekly_post and weekly_post.post %}
-                <div>
-                    <div>
-                        <button class="btn btn-sm btn-outline-success"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapse-transaction" aria-expanded="false"
-                                aria-controls="collapse-transaction" title="Show transaction">
-                            <span>Xem ảnh giao dịch</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </div>
-                    <div id="collapse-transaction" class="mt-3 collapse">
-                        {{ weekly_post.post|safe }}
-                    </div>
+                <div id="collapse-transaction" class="mt-3 collapse">
+                    {{ weekly_post.post|safe }}
                 </div>
             {% endif %}
         </div>

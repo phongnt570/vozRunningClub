@@ -12070,7 +12070,7 @@ hr.big-hr {
 .leaderboard-table-wrapper {
   border: 1px solid #c4c4c4;
   border-radius: 0.375em;
-  overflow: hidden;
+  overflow: auto;
 }
 .leaderboard-table-wrapper .leaderboard-table {
   width: 100%;

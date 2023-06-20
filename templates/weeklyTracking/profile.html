@@ -115,12 +115,12 @@
                         <thead>
                         <tr>
                             <th scope="col">Thời gian</th>
-                            <th scope="col" class="text-end">Lượt</th>
-                            <th scope="col" class="text-end">Tốc độ TB</th>
-                            <th scope="col" class="text-end">Q. đường</th>
-                            <th scope="col" class="text-end">Cự ly đăng ký</th>
+                            <th scope="col" class="text-end">Chạy</th>
+                            <th scope="col" class="text-end">T/độ</th>
+                            <th scope="col" class="text-end">Q/đường</th>
+                            <th scope="col" class="text-end">Đ/ký</th>
                             <th scope="col" class="text-end">Thiếu</th>
-                            <th scope="col" class="text-end">Ủng hộ</th>
+                            <th scope="col" class="text-end">U/hộ</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -128,23 +128,26 @@
                             <tr>
                                 <td>{{ wp.year|week_time_str:wp.week_num }}</td>
                                 <td class="text-end">{{ wp.runs }}</td>
-                                <td class="text-end">{{ wp.average_pace|pace_format }}/km</td>
-                                <td class="text-end">{{ wp.distance|floatformat:1 }} km</td>
+                                <td class="text-end">{{ wp.average_pace|pace_format }}</td>
+                                <td class="text-end">
+                                    {{ wp.distance|floatformat:1 }}
+                                    <span class="d-none d-md-inline">km</span>
+                                </td>
                                 <td class="text-end">
                                     {% if wp.registered_mileage.distance > 0 %}
-                                        {{ wp.registered_mileage.distance|floatformat:0 }} km
+                                        {{ wp.registered_mileage.distance|floatformat:0 }}
+                                        <span class="d-none d-md-inline">km</span>
                                     {% else %}
                                         <span class="text-secondary">--</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-end">
-                                    {% if wp.registered_mileage.distance > 0 %}
-                                        {{ wp.registered_mileage.distance|floatformat:0 }} km
-                                    {% else %}
-                                        <span class="text-secondary">--</span>
-                                    {% endif %}
+                                    {{ wp|missing_distance_str|safe }}
                                 </td>
-                                <td class="text-end">{{ wp.donation|intcomma }} ₫</td>
+                                <td class="text-end">
+                                    {{ wp.donation|intcomma }}
+                                    <span class="d-none d-md-inline">₫</span>
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>
