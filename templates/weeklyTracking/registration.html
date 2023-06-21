@@ -50,7 +50,6 @@
                                    href="https://strava.com/athletes/{{ strava_profile.uid }}"
                                    target="_blank">
                                     {{ user.first_name }} {{ user.last_name }}</a>
-                                {#                                (<a href="{% url 'logout' %}" class="text-secondary">Đăng xuất</a>)#}
                             </p>
                         {% else %}
                             {% include "strava-connect.html" %}
@@ -70,10 +69,6 @@
                                         <label for="registered_mileage_distance" class="form-label fw-bold">
                                             Cự ly
                                             <span class="text-danger">*</span>
-                                            {#                                            đăng ký cho tuần này#}
-                                            {#                                            <span class="fw-bold">#}
-                                            {#                                        ({{ current_registration_week_start_date|date:"d/m/Y" }}#}
-                                            {#                                    - {{ current_registration_week_end_date|date:"d/m/Y" }})</span>#}
                                         </label>
                                         <select class="form-select" aria-label="Select distance"
                                                 id="registered_mileage_distance"
