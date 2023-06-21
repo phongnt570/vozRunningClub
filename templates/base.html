@@ -28,9 +28,9 @@
                 </a>
             </div>
             <div class="nav-items">
-                {#                <a href="{% url 'leaderboard' %}"#}
-                {#                   class="nav-item-link{% if request.resolver_match.url_name == 'leaderboard' %} selected{% endif %}">#}
-                {#                    Xếp hạng</a>#}
+                <a href="{% url 'leaderboard' %}"
+                   class="nav-item-link{% if request.resolver_match.url_name == 'leaderboard' %} selected{% endif %}">
+                    Xếp hạng</a>
                 <a href="{% url 'statistics' %}"
                    class="nav-item-link{% if request.resolver_match.url_name == 'statistics' %} selected{% endif %}">
                     Thống kê</a>
