@@ -11944,12 +11944,14 @@ body {
   .my-navbar-container nav.my-navbar .bars {
     display: block;
     position: absolute;
-    right: 0.5rem;
-    top: -0.25rem;
+    right: 0.75rem;
+    top: -0.5rem;
     cursor: pointer;
     background: #e1e3e8;
     padding: 0.25rem 0.5rem;
     border-radius: 0.375rem;
+    font-size: 1.25rem;
+    color: #555395;
   }
   .my-navbar-container nav.my-navbar .nav-items, .my-navbar-container nav.my-navbar .nav-logout {
     display: none;
@@ -11971,11 +11973,6 @@ body {
     color: #6c757d;
   }
 }
-.rank-change {
-  font-weight: bold;
-  display: inline;
-}
-
 .big-search-container {
   text-align: center;
 }
@@ -12144,6 +12141,12 @@ body {
 .leaderboard-table-wrapper .leaderboard-table tbody td {
   padding: 0.8em 1em;
 }
+.leaderboard-table-wrapper .leaderboard-table tbody .voz-name, .leaderboard-table-wrapper .leaderboard-table tbody .pace, .leaderboard-table-wrapper .leaderboard-table tbody .runs {
+  color: #6c757d;
+}
+.leaderboard-table-wrapper .leaderboard-table tbody .voz-name, .leaderboard-table-wrapper .leaderboard-table tbody .pace, .leaderboard-table-wrapper .leaderboard-table tbody .runs, .leaderboard-table-wrapper .leaderboard-table tbody .rank-change, .leaderboard-table-wrapper .leaderboard-table tbody .missing-km {
+  font-size: 0.75rem;
+}
 .leaderboard-table-wrapper .leaderboard-table .rank {
   text-align: center;
   width: 1.5em;
@@ -12183,7 +12186,7 @@ body {
 }
 
 .weekly-post img {
-  max-width: 100%;
+  width: 100%;
 }
 
 /*# sourceMappingURL=style.css.map */

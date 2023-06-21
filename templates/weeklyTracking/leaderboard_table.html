@@ -8,19 +8,10 @@
             <th class="text-center">
                 <div class="rank">#</div>
             </th>
-            {#            {% if rank_changes is not None %}#}
-            {#                <th>#}
-            {#                    <span></span>#}
-            {#                </th>#}
-            {#            {% endif %}#}
             <th>Runner</th>
-            {#            <th class="">Voz</th>#}
-            <th class="text-end">Chạy</th>
-            <th class="text-end">T/độ</th>
-            <th class="text-end">Q/đường</th>
-            <th class="text-end">Đ/ký</th>
-            <th class="text-end">Thiếu</th>
-            <th class="text-end">Đ/góp</th>
+            <th class="text-end">Cự ly</th>
+            <th class="text-end">Đã chạy</th>
+            <th class="text-end">Kết quả</th>
         </tr>
         </thead>
         <tbody>
@@ -29,66 +20,65 @@
                 <td class="text-center">
                     <div class="rank rank-{{ forloop.counter }}">{{ forloop.counter }}</div>
                 </td>
-                {#                {% if rank_changes is not None %}#}
-                {#                    <td>#}
-                {#                        <div class="rank-change">#}
-                {#                            {% if weekly_progress.user.id in rank_changes %}#}
-                {#                                {% with rank_change=rank_changes|get_item:weekly_progress.user.id %}#}
-                {#                                    {% if rank_change > 0 %}#}
-                {#                                        <span class="text-success">#}
-                {#                                        <i class="fa-solid fa-arrow-up"></i>#}
-                {#                                        {{ rank_change }}#}
-                {#                                    </span>#}
-                {#                                    {% elif rank_change < 0 %}#}
-                {#                                        <span class="text-danger">#}
-                {#                                        <i class="fa-solid fa-arrow-down"></i>#}
-                {#                                        {{ rank_change|absolute }}#}
-                {#                                    </span>#}
-                {#                                    {% else %}#}
-                {#                                        <span class="text-secondary">#}
-                {#                                        <i class="fa-solid fa-minus"></i>#}
-                {#                                    </span>#}
-                {#                                    {% endif %}#}
-                {#                                {% endwith %}#}
-                {#                            {% else %}#}
-                {#                                <span class="text-secondary">#}
-                {#                                (new)#}
-                {#                            </span>#}
-                {#                            {% endif %}#}
-                {#                        </div>#}
-                {#                    </td>#}
-                {#                {% endif %}#}
 
                 <td>
-                    <a href="https://strava.com/athletes/{{ user_2_strava_id|get_item:weekly_progress.user.id }}"
-                       target="_blank"
-                       class="text-decoration-none">
-                        {{ weekly_progress.user.get_full_name }}
-                    </a>
-                </td>
-                {#                <td class="">{{ weekly_progress.user.profile.voz_name }}</td>#}
-                <td class="text-end">{{ weekly_progress.runs }}</td>
-                <td class="text-end">{{ weekly_progress.average_pace|pace_format }}</td>
-                <td class="text-end">
-                    {{ weekly_progress.distance|floatformat:1 }}km
-                    {#                    <span class="d-none d-md-inline">km</span>#}
+                    <div class="strava-name" title="Strava account">
+                        <a href="https://strava.com/athletes/{{ user_2_strava_id|get_item:weekly_progress.user.id }}"
+                           target="_blank"
+                           class="text-decoration-none">
+                            {{ weekly_progress.user.get_full_name }}
+                        </a>
+                    </div>
+                    <div class="voz-name" title="Voz account">
+                        {{ weekly_progress.user.profile.voz_name }}
+                    </div>
+                    {#                    {% if rank_changes is not None %}#}
+                    {#                        <div class="rank-change">#}
+                    {#                            {% if weekly_progress.user.id in rank_changes %}#}
+                    {#                                {% with rank_change=rank_changes|get_item:weekly_progress.user.id %}#}
+                    {#                                    {% if rank_change > 0 %}#}
+                    {#                                        <span class="text-success">+{{ rank_change }}</span>#}
+                    {#                                    {% elif rank_change < 0 %}#}
+                    {#                                        <span class="text-danger">{{ rank_change }}</span>#}
+                    {#                                    {% else %}#}
+                    {#                                        <span class="text-secondary">--</span>#}
+                    {#                                    {% endif %}#}
+                    {#                                {% endwith %}#}
+                    {#                            {% else %}#}
+                    {#                                <span class="text-primary">new</span>#}
+                    {#                            {% endif %}#}
+                    {#                        </div>#}
+                    {#                    {% endif %}#}
                 </td>
                 <td class="text-end">
                     {% if weekly_progress.registered_mileage.distance > 0 %}
                         {{ weekly_progress.registered_mileage.distance|floatformat:0 }}km
-                        {#                        <span class="d-none d-md-inline">km</span>#}
                     {% else %}
                         <span class="text-secondary">--</span>
                     {% endif %}
                 </td>
-                <td class="text-end">{{ weekly_progress|missing_distance_str|safe }}</td>
                 <td class="text-end">
-                    {% if weekly_progress.registered_mileage.distance == 0 %}
-                        <span class="text-secondary">--</span>
-                    {% else %}
-                        {{ weekly_progress.donation|intcomma }}₫
-                        {#                        <span class="d-none d-md-inline">₫</span>#}
-                    {% endif %}
+                    <div class="distance" title="Quãng đường">
+                        {{ weekly_progress.distance|floatformat:1 }}km
+                    </div>
+                    <div class="pace" title="Tốc độ">
+                        {{ weekly_progress.average_pace|pace_format }}/km
+                    </div>
+                    {#                    <div class="runs" title="Lần chạy">#}
+                    {#                        {{ weekly_progress.runs }}#}
+                    {#                    </div>#}
+                </td>
+                <td class="text-end">
+                    <div class="donate" title="Đóng góp">
+                        {% if weekly_progress.registered_mileage.distance == 0 %}
+                            <span class="text-secondary">--</span>
+                        {% else %}
+                            {{ weekly_progress.donation|intcomma }}₫
+                        {% endif %}
+                    </div>
+                    <div class="missing-km" title="Km thiếu">
+                        {{ weekly_progress|missing_distance_str:False|safe }}
+                    </div>
                 </td>
             </tr>
         {% endfor %}

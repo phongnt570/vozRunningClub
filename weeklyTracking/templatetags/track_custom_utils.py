@@ -15,15 +15,17 @@ def missing_distance(week_progress: WeeklyProgress):
 
 
 @register.filter
-def missing_distance_str(week_progress: WeeklyProgress):
+def missing_distance_str(week_progress: WeeklyProgress, return_all: bool = True):
     d = max(0.0, week_progress.registered_mileage.distance - week_progress.distance)
     if week_progress.registered_mileage.distance == 0:
-        return "<span class='text-secondary'>--</span>"
-
+        if return_all:
+            return "<span class='text-secondary'>--</span>"
+        else:
+            return ""
     if d == 0:
-        return "Xong!"
+        return "<span class='text-success'>Xong</span>"
 
-    return f"{d:.1f}km"
+    return f"<span class='text-danger'>-{d:.1f}km</span>"
 
 
 @register.filter
