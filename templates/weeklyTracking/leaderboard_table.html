@@ -32,23 +32,31 @@
                     <div class="voz-name" title="Voz account">
                         {{ weekly_progress.user.profile.voz_name }}
                     </div>
-                    {#                    {% if rank_changes is not None %}#}
-                    {#                        <div class="rank-change">#}
-                    {#                            {% if weekly_progress.user.id in rank_changes %}#}
-                    {#                                {% with rank_change=rank_changes|get_item:weekly_progress.user.id %}#}
-                    {#                                    {% if rank_change > 0 %}#}
-                    {#                                        <span class="text-success">+{{ rank_change }}</span>#}
-                    {#                                    {% elif rank_change < 0 %}#}
-                    {#                                        <span class="text-danger">{{ rank_change }}</span>#}
-                    {#                                    {% else %}#}
-                    {#                                        <span class="text-secondary">--</span>#}
-                    {#                                    {% endif %}#}
-                    {#                                {% endwith %}#}
-                    {#                            {% else %}#}
-                    {#                                <span class="text-primary">new</span>#}
-                    {#                            {% endif %}#}
-                    {#                        </div>#}
-                    {#                    {% endif %}#}
+                    {% if request.user.is_authenticated and request.user.id == weekly_progress.user.id %}
+                        {% if rank_changes is not None %}
+                            <div class="rank-change">
+                                {% if weekly_progress.user.id in rank_changes %}
+                                    {% with rank_change=rank_changes|get_item:weekly_progress.user.id %}
+                                        {% if rank_change > 0 %}
+                                            <span class="text-success">
+                                                <i class="fas fa-arrow-up"></i>
+                                                {{ rank_change }}
+                                            </span>
+                                        {% elif rank_change < 0 %}
+                                            <span class="text-danger">
+                                                <i class="fas fa-arrow-down"></i>
+                                                {{ rank_change|absolute }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-secondary">--</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                    {#                                {% else %}#}
+                                    {#                                    <span class="text-primary">new</span>#}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 </td>
                 <td class="text-end d-none d-md-table-cell">
                     {% if weekly_progress.registered_mileage.distance > 0 %}
