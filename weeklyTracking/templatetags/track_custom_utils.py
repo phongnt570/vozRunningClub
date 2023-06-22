@@ -112,6 +112,5 @@ def absolute(value):
 def vnd_format(value: int):
     k = value // 1000
     if k == 0:
-        return f"{value:,}"
-    else:
-        return f"{k:,}k"
+        return ""
+    return f"{k:,}k"
