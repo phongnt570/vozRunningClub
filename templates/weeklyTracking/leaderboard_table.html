@@ -9,7 +9,7 @@
                 <div class="rank">#</div>
             </th>
             <th>Runner</th>
-            <th class="text-end">Cự ly</th>
+            <th class="text-end d-none d-md-table-cell">Cự ly</th>
             <th class="text-end">Đã chạy</th>
             <th class="text-end">Kết quả</th>
         </tr>
@@ -50,7 +50,7 @@
                     {#                        </div>#}
                     {#                    {% endif %}#}
                 </td>
-                <td class="text-end">
+                <td class="text-end d-none d-md-table-cell">
                     {% if weekly_progress.registered_mileage.distance > 0 %}
                         {{ weekly_progress.registered_mileage.distance|floatformat:0 }}km
                     {% else %}
@@ -59,10 +59,10 @@
                 </td>
                 <td class="text-end">
                     <div class="distance" title="Quãng đường">
-                        {{ weekly_progress.distance|floatformat:1 }}km
+                        {{ weekly_progress.distance|floatformat:1 }}<span class="d-none d-md-inline">km</span>
                     </div>
                     <div class="pace" title="Tốc độ">
-                        {{ weekly_progress.average_pace|pace_format }}/km
+                        {{ weekly_progress.average_pace|pace_format }}<span class="d-none d-md-inline">/km</span>
                     </div>
                     {#                    <div class="runs" title="Lần chạy">#}
                     {#                        {{ weekly_progress.runs }}#}
@@ -73,11 +73,21 @@
                         {% if weekly_progress.registered_mileage.distance == 0 %}
                             <span class="text-secondary">--</span>
                         {% else %}
-                            {{ weekly_progress.donation|intcomma }}₫
+                            <span class="d-none d-md-inline">
+                                {{ weekly_progress.donation|intcomma }}₫
+                            </span>
+                            <span class="d-inline d-md-none">
+                                {{ weekly_progress.donation|vnd_format }}
+                            </span>
                         {% endif %}
                     </div>
                     <div class="missing-km" title="Km thiếu">
-                        {{ weekly_progress|missing_distance_str:False|safe }}
+                        <span class="d-none d-md-inline">
+                            {{ weekly_progress|missing_distance_str:False|safe }}
+                        </span>
+                        <span class="d-inline d-md-none">
+                            {{ weekly_progress|missing_distance_sm_str:False|safe }}
+                        </span>
                     </div>
                 </td>
             </tr>

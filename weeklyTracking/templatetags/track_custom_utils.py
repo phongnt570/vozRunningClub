@@ -29,6 +29,20 @@ def missing_distance_str(week_progress: WeeklyProgress, return_all: bool = True)
 
 
 @register.filter
+def missing_distance_sm_str(week_progress: WeeklyProgress, return_all: bool = True):
+    d = max(0.0, week_progress.registered_mileage.distance - week_progress.distance)
+    if week_progress.registered_mileage.distance == 0:
+        if return_all:
+            return "<span class='text-secondary'>--</span>"
+        else:
+            return ""
+    if d == 0:
+        return "<span class='text-success'>Xong</span>"
+
+    return f"<span class='text-danger'>-{d:.1f}</span>"
+
+
+@register.filter
 def pace_format(seconds: int):
     return f"{int(seconds // 60)}:{int(seconds % 60):02d}"
 
@@ -92,3 +106,12 @@ def week_time_str(year: int, week_num: int) -> str:
 @register.filter
 def absolute(value):
     return abs(value)
+
+
+@register.filter
+def vnd_format(value: int):
+    k = value // 1000
+    if k == 0:
+        return f"{value:,}"
+    else:
+        return f"{k:,}k"
