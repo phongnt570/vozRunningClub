@@ -10,12 +10,13 @@ from social_django.models import UserSocialAuth
 from .forms import WeeklyRegistrationForm, UserProfileForm
 from .models import WeeklyProgress, SettingClubDescription, SettingRegisteredMileage, UserProfile, SettingStravaClub, \
     WeeklyPost, ActualDonation
+from .templatetags.track_custom_utils import week_time_str
 from .utils.donation import update_donation
 from .utils.generics import get_available_weeks_in_db
 from .utils.ranking import get_ranked_users, user_rank_change
 from .utils.registration import is_registration_open, get_current_registration_week, create_or_get_weekly_progress
 from .utils.strava_auth_model import get_strava_profile, check_strava_connection, check_strava_club_joined
-from .utils.time import validate_year_week, get_last_week_year_and_week_num
+from .utils.time import validate_year_week
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -70,18 +71,7 @@ def leaderboard(request):
 
     available_weeks = {}
     for year, week_num in sorted(get_available_weeks_in_db(), reverse=True):
-        if year == this_year and week_num == this_week_num:
-            value = "Tuần này"
-        else:
-            start_date = datetime.datetime.fromisocalendar(year, week_num, 1)
-            end_date = datetime.datetime.fromisocalendar(year, week_num, 7)
-            if end_date == this_week_start + datetime.timedelta(days=-1):
-                value = "Tuần trước"
-            elif start_date == this_week_start + datetime.timedelta(days=7):
-                value = "Tuần sau"
-            else:
-                value = f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
-
+        value = week_time_str(year=year, week_num=week_num)
         available_weeks[(year, week_num)] = value
 
     # create a week summary
@@ -236,7 +226,7 @@ def profile(request):
 
     this_year = datetime.date.today().isocalendar()[0]
     this_week_num = datetime.date.today().isocalendar()[1]
-    current_week = create_or_get_weekly_progress(user=request.user, week_num=this_week_num, year=this_year)
+    # current_week = create_or_get_weekly_progress(user=request.user, week_num=this_week_num, year=this_year)
 
     # total_donation_till_now = 0
     # for wp in WeeklyProgress.objects.filter(user=request.user):
@@ -252,7 +242,7 @@ def profile(request):
         "strava_club_joined": strava_club_joined,
         "strava_club_url": strava_club_url,
         "strava_profile": strava_profile,
-        "current_week": current_week,
+        # "current_week": current_week,
         # "total_donation_till_now": total_donation_till_now,
         "weekly_progresses": weekly_progresses,
     })
@@ -275,7 +265,6 @@ def update_profile(request):
 
 def statistics(request):
     this_year, this_week_num, _ = datetime.date.today().isocalendar()
-    last_week_year, last_week_num = get_last_week_year_and_week_num()
 
     week_summaries = {}
 
@@ -283,14 +272,7 @@ def statistics(request):
         key = (wp.year, wp.week_num)
 
         if key not in week_summaries:
-            start_date = datetime.datetime.fromisocalendar(wp.year, wp.week_num, 1)
-            end_date = datetime.datetime.fromisocalendar(wp.year, wp.week_num, 7)
-
-            time = f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
-            if wp.week_num == this_week_num and wp.year == this_year:
-                time = "Tuần này"
-            elif wp.week_num == last_week_num and wp.year == last_week_year:
-                time = "Tuần trước"
+            time = week_time_str(year=wp.year, week_num=wp.week_num)
 
             week_summaries[key] = {
                 "year": wp.year,

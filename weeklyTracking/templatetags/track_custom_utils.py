@@ -100,6 +100,12 @@ def week_time_str(year: int, week_num: int) -> str:
     if year == last_week_year and week_num == last_week_num:
         return "Tuần trước"
 
+    start_date_year = start_date.year
+    end_date_year = end_date.year
+
+    if start_date_year == end_date_year:
+        return f"{start_date.strftime('%d/%m')} - {end_date.strftime('%d/%m/%Y')}"
+
     return f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
 
 
