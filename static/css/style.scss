@@ -5,7 +5,7 @@ $font-family-sans-serif: 'Be Vietnam Pro', system-ui, -apple-system, "Segoe UI",
 // stylelint-enable value-keyword-case
 
 $primary: #555395;
-$primary-text-emphasis-dark: #8887b5;
+$primary-text-emphasis-dark: #8582ea;
 
 $light: #e1e3e8;
 $border-color: #c4c4c4;
@@ -14,13 +14,13 @@ $strava-orange: #fc4c02;
 $strava-orange-dark: #e63a00;
 
 $body-bg-color-light: #f7f7f8;
-$body-bg-color-dark: #474747;
+$body-bg-color-dark: #212121;
 
 $navbar-bg-color-light: #fff;
-$navbar-bg-color-dark: #1f1f1f;
+$navbar-bg-color-dark: #121212;
 
-$table-bg-color-dark: #292929;
-$table-header-bg-color-dark: #1f1f1f;
+$table-header-bg-color-dark: #2F3034;
+$table-bg-color-dark: #121212;
 
 @import "bootstrap/bootstrap";
 
@@ -142,6 +142,11 @@ body {
 
     .nav-logout .nav-item-link {
       background: $light;
+
+      [data-bs-theme=dark] & {
+        color: $light;
+        background: $light-bg-subtle-dark;
+      }
     }
 
     .nav-login .nav-item-link {
@@ -447,22 +452,22 @@ body {
         transition: all 0.3s ease;
 
         &:hover {
-          @extend .bg-light;
+          background: $light;
         }
 
         [data-bs-theme="dark"] & {
           &:hover {
-            @extend .bg-dark;
+            background: $table-header-bg-color-dark;
           }
         }
       }
 
       tr.focused-row {
-        @extend .bg-light;
+        background: $light;
       }
 
       [data-bs-theme="dark"] & tr.focused-row {
-        @extend .bg-dark;
+        background: $table-header-bg-color-dark;
       }
 
       tr:last-child {
