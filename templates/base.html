@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,6 +49,9 @@
                     <a href="{% url 'logout' %}" class="nav-item-link">
                         Đăng xuất
                     </a>
+                    <a href="javascript:void(0);" id="toggle-theme" class="nav-item-link theme-btn"
+                       onclick="toggleTheme();">
+                    </a>
                 </div>
             {% else %}
                 <div class="nav-login">
@@ -56,12 +59,14 @@
                        class="nav-item-link{% if request.resolver_match.url_name == 'registration' %} selected{% endif %}">
                         Đăng ký
                     </a>
+                    <a href="javascript:void(0);" id="toggle-theme" class="nav-item-link theme-btn"
+                       onclick="toggleTheme();">
+                    </a>
                 </div>
             {% endif %}
 
-
             <div class="bars">
-                <a href="javascript:void(0);" onclick="toggleNavbar()">
+                <a href="javascript:void(0);" onclick="toggleNavbar();">
                     <i class="fa-solid fa-bars"></i>
                 </a>
             </div>
@@ -83,7 +88,42 @@
 <div class="py-5">
 </div>
 
-{% block body %}{% endblock %}
+<div id="main-content">
+    {% block body %}{% endblock %}
+</div>
+
+<script>
+    const getStoredTheme = () => localStorage.getItem('theme');
+    const setStoredTheme = theme => localStorage.setItem('theme', theme);
+
+    const getPreferredTheme = () => {
+        const storedTheme = getStoredTheme();
+        if (storedTheme) {
+            return storedTheme;
+        }
+
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    const setTheme = theme => {
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        setStoredTheme(theme);
+
+        const toggleThemeButton = document.getElementById('toggle-theme');
+        toggleThemeButton.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        toggleThemeButton.title = theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối';
+    }
+
+    setTheme(getPreferredTheme());
+</script>
+
+<script>
+    const toggleTheme = () => {
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+    }
+</script>
 
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>

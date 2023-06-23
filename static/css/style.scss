@@ -5,18 +5,48 @@ $font-family-sans-serif: 'Be Vietnam Pro', system-ui, -apple-system, "Segoe UI",
 // stylelint-enable value-keyword-case
 
 $primary: #555395;
+$primary-text-emphasis-dark: #8887b5;
+
 $light: #e1e3e8;
 $border-color: #c4c4c4;
-$title-color: #333;
 
 $strava-orange: #fc4c02;
 $strava-orange-dark: #e63a00;
+
+$body-bg-color-light: #f7f7f8;
+$body-bg-color-dark: #474747;
+
+$navbar-bg-color-light: #fff;
+$navbar-bg-color-dark: #1f1f1f;
+
+$table-bg-color-dark: #292929;
+$table-header-bg-color-dark: #1f1f1f;
 
 @import "bootstrap/bootstrap";
 
 body {
   overflow-y: scroll; /* Show vertical scrollbar */
-  background: #F7F7F8;
+  background: $body-bg-color-light;
+}
+
+@include color-mode(dark) {
+  body {
+    background: $body-bg-color-dark;
+  }
+
+  .my-navbar-container {
+    background: $navbar-bg-color-dark;
+  }
+
+  #main-content {
+    .text-primary {
+      color: $primary-text-emphasis-dark !important;
+    }
+
+    .text-secondary {
+      color: $secondary-text-emphasis-dark !important;
+    }
+  }
 }
 
 .text-strava {
@@ -40,7 +70,7 @@ body {
 }
 
 .my-navbar-container {
-  background: white;
+  background: $navbar-bg-color-light;
   padding: 1.375em 0;
   border-bottom: 1px solid $border-color;
 
@@ -60,6 +90,10 @@ body {
       text-decoration: none;
       padding: 0.25rem 0.5rem;
       margin: 0 0.25rem;
+
+      [data-bs-theme=dark] & {
+        color: $secondary-text-emphasis-dark;
+      }
     }
 
     .nav-home {
@@ -79,12 +113,35 @@ body {
       .nav-item-link {
         border-radius: 0.375rem;
         padding: 0.375rem 0.75rem;
+
+        [data-bs-theme=dark] & {
+          color: $secondary;
+        }
+      }
+
+      .nav-item-link.theme-btn {
+        color: $secondary;
+        background: none;
+
+        &:hover {
+          color: $primary !important;
+          background: none;
+        }
+
+        [data-bs-theme=dark] & {
+          color: $secondary-text-emphasis-dark;
+          background: $navbar-bg-color-dark;
+
+          &:hover {
+            background: $navbar-bg-color-dark;
+            color: $primary-text-emphasis-dark !important
+          }
+        }
       }
     }
 
     .nav-logout .nav-item-link {
       background: $light;
-      color: $title-color;
     }
 
     .nav-login .nav-item-link {
@@ -101,10 +158,20 @@ body {
         color: $white !important;
         background: $strava-orange;
       }
+
+      [data-bs-theme=dark] & {
+        color: $white;
+      }
     }
 
     .nav-item-link.selected, .nav-item-link:hover {
-      color: $primary !important;
+      @extend .text-primary;
+    }
+
+    [data-bs-theme=dark] & {
+      .nav-item-link.selected, .nav-item-link:hover {
+        color: $primary-text-emphasis-dark;
+      }
     }
 
     .nav-item-link.selected {
@@ -140,6 +207,11 @@ body {
         color: $primary;
       }
 
+      [data-bs-theme=dark] & .bars {
+        color: $primary-text-emphasis-dark;
+        background: $navbar-bg-color-dark;
+      }
+
       .nav-items, .nav-logout, .nav-login {
         display: none;
       }
@@ -156,16 +228,38 @@ body {
         .nav-item-link {
           display: block;
           float: none;
-          text-align: left;
+          text-align: center;
           background: $light;
           border-radius: 0.375rem;
           margin: 0.5rem;
           transition: filter 1s linear 0s;
           color: $secondary;
+          padding: 0.25rem 0.5rem;
 
           &.selected, &:hover {
             font-weight: 600;
             color: $primary !important;
+          }
+        }
+
+        [data-bs-theme=dark] & {
+          .nav-item-link {
+            background: $navbar-bg-color-dark;
+            color: $secondary-text-emphasis-dark;
+
+            &.selected, &:hover {
+              color: $primary-text-emphasis-dark !important;
+            }
+          }
+        }
+      }
+
+      .nav-login, .nav-logout {
+        .nav-item-link.theme-btn {
+          background: $light;
+
+          [data-bs-theme=dark] & {
+            background: $navbar-bg-color-dark;
           }
         }
       }
@@ -342,7 +436,6 @@ body {
 
       th {
         font-weight: bold;
-        color: $title-color;
         padding: 0.8em 1em;
       }
     }
@@ -354,14 +447,22 @@ body {
         transition: all 0.3s ease;
 
         &:hover {
-          background-color: $light;
+          @extend .bg-light;
         }
 
-
+        [data-bs-theme="dark"] & {
+          &:hover {
+            @extend .bg-dark;
+          }
+        }
       }
 
       tr.focused-row {
-        background-color: $light;
+        @extend .bg-light;
+      }
+
+      [data-bs-theme="dark"] & tr.focused-row {
+        @extend .bg-dark;
       }
 
       tr:last-child {
@@ -373,7 +474,7 @@ body {
       }
 
       .voz-name, .pace, .runs {
-        color: $secondary;
+        @extend .text-secondary;
       }
 
       .voz-name, .pace, .runs, .rank-change, .missing-km {
@@ -408,6 +509,22 @@ body {
   }
 }
 
+@include color-mode(dark) {
+  .leaderboard-table-wrapper {
+    thead {
+      th {
+        background: $table-header-bg-color-dark;
+      }
+    }
+
+    tbody {
+      tr {
+        background: $table-bg-color-dark;
+      }
+    }
+  }
+}
+
 /* /end Leaderboard Results */
 
 .statistic-box {
@@ -418,14 +535,17 @@ body {
   text-align: center;
 
   .statistic-title {
-    color: $title-color;
     font-size: 0.875em;
   }
 
   .statistic-value {
     font-size: 1.375em;
     font-weight: bold;
-    color: $primary;
+    @extend .text-primary;
+  }
+
+  [data-bs-theme="dark"] & {
+    background-color: $table-bg-color-dark;
   }
 }
 
