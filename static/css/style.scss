@@ -78,6 +78,8 @@ body {
   top: 0;
   width: 100%;
 
+  z-index: 500;
+
   nav.my-navbar {
     position: relative;
 
@@ -429,6 +431,15 @@ body {
   border-radius: 0.375em;
   overflow: auto;
 
+  &.limit-height {
+    max-height: 600px;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
 
   .leaderboard-table {
     width: 100%;
@@ -531,6 +542,33 @@ body {
 }
 
 /* /end Leaderboard Results */
+
+.table-show-all-wrapper {
+  position: absolute;
+  top: 85%;
+  left: 0;
+  right: 0;
+  height: 15%;
+  cursor: pointer;
+  z-index: 100;
+  background: linear-gradient(to bottom, rgba(102, 102, 102, 0) 0%, rgba(102, 102, 102, 1) 100%);
+  border-radius: 0 0 0.375em 0.375em;
+  border: 1px solid $border-color;
+  border-top: none;
+
+  .show-all-btn {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    @extend .text-warning;
+    text-decoration: none;
+  }
+
+  [data-bs-theme="dark"] & {
+    background: linear-gradient(to bottom, rgba(153, 153, 153, 0) 0%, rgba(153, 153, 153, 1) 100%);
+  }
+}
 
 .statistic-box {
   background-color: $light;

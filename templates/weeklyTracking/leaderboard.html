@@ -58,13 +58,13 @@
                     <div class="tab-pane fade show active" id="all-runners-leaderboard" role="tabpanel"
                          aria-labelledby="pills-all-runners-tab"
                          tabindex="0">
-                        {% include "weeklyTracking/leaderboard_table.html" with data=requested_week_progresses rank_changes=rank_changes %}
+                        {% include "weeklyTracking/leaderboard_table.html" with data=requested_week_progresses rank_changes=rank_changes table_id="all-runners-leaderboard-table" %}
                     </div>
                     {% for reg_dis, data in distance2weekly_progress_list.items %}
                         <div class="tab-pane fade" id="{{ reg_dis }}-km-runners-leaderboard" role="tabpanel"
                              aria-labelledby="pills-{{ reg_dis }}-km-runners-tab"
                              tabindex="0">
-                            {% include "weeklyTracking/leaderboard_table.html" with data=data rank_changes=distance2rank_change|get_item:reg_dis %}
+                            {% include "weeklyTracking/leaderboard_table.html" with data=data rank_changes=distance2rank_change|get_item:reg_dis table_id=reg_dis|stringformat:"s"|add:"-km-runners-leaderboard-table" %}
                         </div>
                     {% endfor %}
                 </div>
