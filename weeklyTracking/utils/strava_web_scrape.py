@@ -3,6 +3,8 @@ import logging
 import os
 from typing import List, Dict
 
+import selenium
+
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
 from selenium import webdriver
@@ -43,9 +45,18 @@ def get_strava_leaderboards():
 
     if "GOOGLE_CHROME_BIN" in os.environ:  # Heroku
         chrome_options.binary_location = os.environ["GOOGLE_CHROME_BIN"]
-        driver = webdriver.Chrome(executable_path=os.environ["CHROMEDRIVER_PATH"], chrome_options=chrome_options)
+
+        if selenium.__version__.split(".")[0] == '4':
+            from selenium.webdriver.chrome.service import Service
+            service = Service(executable_path=os.environ["CHROMEDRIVER_PATH"])
+            driver = webdriver.Chrome(service=service, options=chrome_options)
+        else:
+            driver = webdriver.Chrome(executable_path=os.environ["CHROMEDRIVER_PATH"], chrome_options=chrome_options)
     else:
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+        if selenium.__version__.split(".")[0] == '4':
+            driver = webdriver.Chrome(options=chrome_options)
+        else:
+            driver = webdriver.Chrome(chrome_options=chrome_options)
 
     # get URL of Strava club
     club_url = SettingStravaClub.objects.get().club_url
