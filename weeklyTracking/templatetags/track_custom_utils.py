@@ -93,12 +93,16 @@ def week_time_str(year: int, week_num: int) -> str:
 
     this_year, this_week_num, _ = datetime.datetime.now().isocalendar()
     last_week_year, last_week_num = get_last_week_year_and_week_num()
+    next_week_year, next_week_num, _ = (datetime.datetime.now() + datetime.timedelta(days=7)).isocalendar()
 
     if year == this_year and week_num == this_week_num:
         return "Tuần này"
 
     if year == last_week_year and week_num == last_week_num:
         return "Tuần trước"
+
+    if year == next_week_year and week_num == next_week_num:
+        return "Tuần sau"
 
     start_date_year = start_date.year
     end_date_year = end_date.year
