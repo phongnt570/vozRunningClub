@@ -30,6 +30,10 @@
             </div>
         </div>
 
+        <div class="mb-4" id="statistics-chart-container">
+            <canvas id="chart"></canvas>
+        </div>
+
         <div class="leaderboard-table-wrapper">
             <table class="leaderboard-table">
                 <thead>
@@ -94,4 +98,88 @@
             </table>
         </div>
     </div>
+
+    <script>
+        const allData = JSON.parse("{{ week_summaries_json|escapejs }}");
+    </script>
+
+    <script src="{% static 'js/chart.umd.js' %}"></script>
+
+    <script>
+        const ctx = document.getElementById("chart");
+        const chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: allData.map((d) => d.week_num + "/" + d.year),
+                datasets: [
+                    {
+                        label: "Quãng đường",
+                        data: allData.map((d) => d.distance),
+                        yAxisID: 'y',
+                        fill: false,
+                        cubicInterpolationMode: 'monotone',
+                        tension: 0.4,
+                    },
+                    {
+                        label: "Đã đóng góp",
+                        data: allData.map((d) => d.actual_donation),
+                        yAxisID: 'y1',
+                        fill: false,
+                        cubicInterpolationMode: 'monotone',
+                        tension: 0.4,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                stacked: false,
+                plugins: {
+                    title: {
+                        display: false,
+                        text: 'Chart.js Line Chart - Multi Axis'
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            text: 'Quãng đường',
+                            display: false,
+                        },
+                        ticks: {
+                            callback: function (value, index, values) {
+                                return value.toLocaleString() + ' km';
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+
+                        // grid line settings
+                        grid: {
+                            drawOnChartArea: false, // only want the grid lines for one axis to show up
+                        },
+                        title: {
+                            text: 'Đã đóng góp',
+                            display: false,
+                        },
+
+                        ticks: {
+                            callback: function (value, index, values) {
+                                return value.toLocaleString() + ' ₫';
+                            }
+                        }
+                    },
+                }
+            },
+        });
+    </script>
 {% endblock %}

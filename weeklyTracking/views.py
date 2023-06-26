@@ -1,4 +1,5 @@
 import datetime
+import json
 import logging
 
 from django.contrib.auth.decorators import login_required
@@ -311,9 +312,12 @@ def statistics(request):
         "actual_donation": sum([ws["actual_donation"] for _, ws in week_summaries.items()]),
     }
 
+    sorted_week_summaries = sorted(week_summaries.values(), key=lambda x: (x["year"], x["week_num"]), reverse=True)
+
     context = {
         "all_time": all_time,
-        "week_summaries": sorted(week_summaries.values(), key=lambda x: (x["year"], x["week_num"]), reverse=True),
+        "week_summaries": sorted_week_summaries,
+        "week_summaries_json": json.dumps([w for w in reversed(sorted_week_summaries)]),
     }
 
     return render(request, "weeklyTracking/statistics.html", context=context)
