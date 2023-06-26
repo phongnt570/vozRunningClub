@@ -1,110 +1,111 @@
 {% load humanize %}
 {% load track_custom_utils %}
 
-<div class="position-relative">
-    <div class="leaderboard-table-wrapper" id="{{ table_id }}">
-        <table class="leaderboard-table">
-            <thead>
-            <tr>
-                <th class="text-center">
-                    <div class="rank">#</div>
-                </th>
-                <th>Runner</th>
-                <th class="text-end d-none d-md-table-cell">Cự ly</th>
-                <th class="text-end">Đã chạy</th>
-                <th class="text-end">Kết quả</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for weekly_progress in data %}
-                <tr class="{% if weekly_progress.user.id == user.id %}focused-row{% endif %}{% if forloop.counter > 6 %} d-none{% endif %}">
-                    <td class="text-center">
-                        <div class="rank rank-{{ forloop.counter }}">{{ forloop.counter }}</div>
-                    </td>
+{#<div class="position-relative">#}
+<div class="leaderboard-table-wrapper" id="{{ table_id }}">
+    <table class="leaderboard-table">
+        <thead>
+        <tr>
+            <th class="text-center">
+                <div class="rank">#</div>
+            </th>
+            <th>Runner</th>
+            <th class="text-end d-none d-md-table-cell">Cự ly</th>
+            <th class="text-end">Đã chạy</th>
+            <th class="text-end">Kết quả</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for weekly_progress in data %}
+            {#                <tr class="{% if weekly_progress.user.id == user.id %}focused-row{% endif %}{% if forloop.counter > 6 %} d-none{% endif %}">#}
+            <tr class="{% if weekly_progress.user.id == user.id %}focused-row{% endif %}">
+                <td class="text-center">
+                    <div class="rank rank-{{ forloop.counter }}">{{ forloop.counter }}</div>
+                </td>
 
-                    <td>
-                        <div class="strava-name" title="Strava account">
-                            <a href="https://strava.com/athletes/{{ user_2_strava_id|get_item:weekly_progress.user.id }}"
-                               target="_blank"
-                               class="text-decoration-none">
-                                {{ weekly_progress.user.get_full_name }}
-                            </a>
-                        </div>
-                        <div class="voz-name" title="Voz account">
-                            {{ weekly_progress.user.profile.voz_name }}
-                        </div>
-                        {% if request.user.is_authenticated and request.user.id == weekly_progress.user.id %}
-                            {% if rank_changes is not None %}
-                                <div class="rank-change">
-                                    {% if weekly_progress.user.id in rank_changes %}
-                                        {% with rank_change=rank_changes|get_item:weekly_progress.user.id %}
-                                            {% if rank_change > 0 %}
-                                                <span class="text-success">
+                <td>
+                    <div class="strava-name" title="Strava account">
+                        <a href="https://strava.com/athletes/{{ user_2_strava_id|get_item:weekly_progress.user.id }}"
+                           target="_blank"
+                           class="text-decoration-none">
+                            {{ weekly_progress.user.get_full_name }}
+                        </a>
+                    </div>
+                    <div class="voz-name" title="Voz account">
+                        {{ weekly_progress.user.profile.voz_name }}
+                    </div>
+                    {% if request.user.is_authenticated and request.user.id == weekly_progress.user.id %}
+                        {% if rank_changes is not None %}
+                            <div class="rank-change">
+                                {% if weekly_progress.user.id in rank_changes %}
+                                    {% with rank_change=rank_changes|get_item:weekly_progress.user.id %}
+                                        {% if rank_change > 0 %}
+                                            <span class="text-success">
                                                 <i class="fas fa-arrow-up"></i>
                                                 {{ rank_change }}
                                             </span>
-                                            {% elif rank_change < 0 %}
-                                                <span class="text-danger">
+                                        {% elif rank_change < 0 %}
+                                            <span class="text-danger">
                                                 <i class="fas fa-arrow-down"></i>
                                                 {{ rank_change|absolute }}
                                             </span>
-                                            {% endif %}
-                                        {% endwith %}
-                                    {% endif %}
-                                </div>
-                            {% endif %}
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endif %}
+                            </div>
                         {% endif %}
-                    </td>
-                    <td class="text-end d-none d-md-table-cell">
-                        {% if weekly_progress.registered_mileage.distance > 0 %}
-                            {{ weekly_progress.registered_mileage.distance|floatformat:0 }}km
-                        {% else %}
+                    {% endif %}
+                </td>
+                <td class="text-end d-none d-md-table-cell">
+                    {% if weekly_progress.registered_mileage.distance > 0 %}
+                        {{ weekly_progress.registered_mileage.distance|floatformat:0 }}km
+                    {% else %}
+                        <span class="text-secondary">--</span>
+                    {% endif %}
+                </td>
+                <td class="text-end">
+                    <div class="distance" title="Quãng đường">
+                        {{ weekly_progress.distance|floatformat:1 }}<span class="d-none d-md-inline">km</span>
+                    </div>
+                    <div class="pace" title="Tốc độ">
+                        {{ weekly_progress.average_pace|pace_format }}<span class="d-none d-md-inline">/km</span>
+                    </div>
+                    {#                    <div class="runs" title="Lần chạy">#}
+                    {#                        {{ weekly_progress.runs }}#}
+                    {#                    </div>#}
+                </td>
+                <td class="text-end">
+                    <div class="donate" title="Đóng góp">
+                        {% if weekly_progress.registered_mileage.distance == 0 %}
                             <span class="text-secondary">--</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-end">
-                        <div class="distance" title="Quãng đường">
-                            {{ weekly_progress.distance|floatformat:1 }}<span class="d-none d-md-inline">km</span>
-                        </div>
-                        <div class="pace" title="Tốc độ">
-                            {{ weekly_progress.average_pace|pace_format }}<span class="d-none d-md-inline">/km</span>
-                        </div>
-                        {#                    <div class="runs" title="Lần chạy">#}
-                        {#                        {{ weekly_progress.runs }}#}
-                        {#                    </div>#}
-                    </td>
-                    <td class="text-end">
-                        <div class="donate" title="Đóng góp">
-                            {% if weekly_progress.registered_mileage.distance == 0 %}
-                                <span class="text-secondary">--</span>
-                            {% else %}
-                                <span class="d-none d-md-inline">
+                        {% else %}
+                            <span class="d-none d-md-inline">
                                 {{ weekly_progress.donation|intcomma }}₫
                             </span>
-                                <span class="d-inline d-md-none">
+                            <span class="d-inline d-md-none">
                                 {{ weekly_progress.donation|vnd_format }}
                             </span>
-                            {% endif %}
-                        </div>
-                        <div class="missing-km" title="Km thiếu">
+                        {% endif %}
+                    </div>
+                    <div class="missing-km" title="Km thiếu">
                         <span class="d-none d-md-inline">
                             {{ weekly_progress|missing_distance_str:False|safe }}
                         </span>
-                            <span class="d-inline d-md-none">
+                        <span class="d-inline d-md-none">
                             {{ weekly_progress|missing_distance_sm_str:False|safe }}
                         </span>
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    {% if data|length > 6 %}
-        <div class="table-show-all-wrapper"
-             onclick="$('#{{ table_id }} tr').removeClass('d-none');$(this).addClass('d-none');">
-            <span class="show-all-btn">Xem toàn bộ...</span>
-        </div>
-    {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
+
+{#    {% if data|length > 6 %}#}
+{#        <div class="table-show-all-wrapper"#}
+{#             onclick="$('#{{ table_id }} tr').removeClass('d-none');$(this).addClass('d-none');">#}
+{#            <span class="show-all-btn">Xem toàn bộ...</span>#}
+{#        </div>#}
+{#    {% endif %}#}
+{#</div>#}
