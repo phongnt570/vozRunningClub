@@ -124,7 +124,8 @@
                     },
                     {
                         label: "Đã đóng góp",
-                        data: allData.map((d) => d.actual_donation),
+                        // cumulative sum of actual_donation
+                        data: allData.map((d, i) => allData.slice(0, i + 1).reduce((a, b) => a + b.actual_donation, 0)),
                         yAxisID: 'y1',
                         fill: false,
                         cubicInterpolationMode: 'monotone',
