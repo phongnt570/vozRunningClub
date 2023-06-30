@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load humanize %}
 {% load track_custom_utils %}
 
@@ -80,8 +81,13 @@
                     </form>
                 </div>
                 <div class="col-12 col-lg-8">
-                    <div class="mt-4 mt-lg-0">
+                    <div class="mb-5 mt-4 mt-lg-0">
                         <h3>Lịch sử chạy</h3>
+                        <div class="chart-container chart-container-sm">
+                            <canvas id="chart"></canvas>
+                        </div>
+                    </div>
+                    <div>
                         <div class="leaderboard-table-wrapper">
                             <table class="leaderboard-table">
                                 <thead>
@@ -110,9 +116,6 @@
                                             <div class="pace" title="Tốc độ">
                                                 {{ weekly_progress.average_pace|pace_format }}/km
                                             </div>
-                                            {#                    <div class="runs" title="Lần chạy">#}
-                                            {#                        {{ weekly_progress.runs }}#}
-                                            {#                    </div>#}
                                         </td>
                                         <td class="text-end">
                                             <div class="donate" title="Đóng góp">
@@ -179,4 +182,58 @@
             {% include "strava-connect.html" %}
         {% endif %}
     </div>
+
+    <script>
+        const allData = JSON.parse("{{ weekly_progresses_json|escapejs }}");
+    </script>
+
+    <script src="{% static 'js/chart.umd.js' %}"></script>
+
+    <script>
+        Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue("--bs-secondary");
+        Chart.defaults.borderColor = getComputedStyle(document.documentElement).getPropertyValue("--bs-light");
+        const ctx = document.getElementById("chart");
+        const chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: allData.map((d) => d.week_num + "/" + d.year),
+                datasets: [
+                    {
+                        label: "Quãng đường",
+                        data: allData.map((d) => d.distance),
+                        yAxisID: 'y',
+                        fill: false,
+                    },
+                    {
+                        label: "Cự ly",
+                        data: allData.map((d) => d.registered_mileage),
+                        yAxisID: 'y',
+                        fill: false,
+                    }
+                ]
+            },
+            options: {
+                color: getComputedStyle(document.documentElement).getPropertyValue("--bs-secondary"),
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                stacked: false,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        ticks: {
+                            callback: function (value, index, values) {
+                                return value.toLocaleString() + ' km';
+                            },
+                            stepSize: 10,
+                        },
+                    },
+                }
+            },
+        });
+    </script>
 {% endblock %}

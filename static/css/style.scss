@@ -603,10 +603,14 @@ img.strava-logo {
   height: 3rem;
 }
 
-#statistics-chart-container {
+.chart-container {
   width: 800px;
   max-width: 100%;
   position: relative;
   display: block;
   margin: 0 auto;
+
+  &.chart-container-sm {
+    width: 600px;
+  }
 }
