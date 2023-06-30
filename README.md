@@ -35,6 +35,12 @@ bash release-tasks.sh
 python manage.py runserver
 ```
 
+8. Setup a cron job or something similar to run the following command every 5/10/15 minutes:
+
+```bash
+python manage.py update_leaderboard --time_aware
+```
+
 ## TODO
 
 - [x] Local CSS/JS files
