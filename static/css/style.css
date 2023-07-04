@@ -11922,12 +11922,18 @@ body {
   color: #a7acb1;
 }
 .my-navbar-container nav.my-navbar .nav-home {
-  font-size: 1.25rem;
-  font-weight: bold;
-  font-variant: small-caps;
   position: absolute;
   left: 2%;
   top: -0.25rem;
+}
+.my-navbar-container nav.my-navbar .nav-home svg {
+  height: 2rem;
+}
+.my-navbar-container nav.my-navbar .nav-home svg .st0 {
+  fill: #555395;
+}
+[data-bs-theme=dark] .my-navbar-container nav.my-navbar .nav-home svg .st0 {
+  fill: #8582ea;
 }
 .my-navbar-container nav.my-navbar .nav-logout, .my-navbar-container nav.my-navbar .nav-login {
   position: absolute;
@@ -11996,7 +12002,6 @@ body {
   }
   .my-navbar-container nav.my-navbar .nav-home {
     position: relative;
-    left: 0;
   }
   .my-navbar-container nav.my-navbar .bars {
     display: block;

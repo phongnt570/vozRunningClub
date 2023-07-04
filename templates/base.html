@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="icon" href="{% static 'img/favicon-white.png' %}"/>
+    <link rel="icon" href="{% static 'img/logo-voz.svg' %}"/>
+    <link rel="apple-touch-icon" href="{% static 'img/logo-voz.svg' %}"/>
 
     <title>{% block pagetitle %}{% endblock %}</title>
 
@@ -22,12 +23,11 @@
     <nav class="my-navbar">
         <div>
             <div class="nav-home">
-                <a href="{% url 'index' %}"
-                   class="nav-item-link selected">
-                    Voz Running Club
+                <a href="{% url 'index' %}" title="Voz Running Club">
+                    {% include 'logo-voz.svg' %}
                 </a>
             </div>
-            <div class="nav-items">
+            <div class=" nav-items">
                 <a href="{% url 'leaderboard' %}"
                    class="nav-item-link{% if request.resolver_match.url_name == 'leaderboard' %} selected{% endif %}">
                     Xếp hạng</a>

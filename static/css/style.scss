@@ -99,12 +99,24 @@ body {
     }
 
     .nav-home {
-      font-size: 1.25rem;
-      font-weight: bold;
-      font-variant: small-caps;
+      //font-size: 1.25rem;
+      //font-weight: bold;
+      //font-variant: small-caps;
       position: absolute;
       left: 2%;
       top: -.25rem;
+
+      svg {
+        height: 2rem;
+
+        .st0 {
+          fill: $primary;
+
+          [data-bs-theme=dark] & {
+            fill: $primary-text-emphasis-dark;
+          }
+        }
+      }
     }
 
     .nav-logout, .nav-login {
@@ -198,7 +210,7 @@ body {
     nav.my-navbar {
       .nav-home {
         position: relative;
-        left: 0;
+        //left: 0;
       }
 
       .bars {
