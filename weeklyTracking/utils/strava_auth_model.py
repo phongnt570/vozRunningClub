@@ -56,7 +56,7 @@ def check_strava_club_joined(user: User, save: bool = True) -> bool:
             backend = strava_profile.get_backend_instance(strategy)
             user_clubs = backend.get_json(
                 "https://www.strava.com/api/v3/athlete/clubs",
-                params={"access_token": access_token},
+                params={"access_token": access_token, "per_page": 100},
             )
             for club in user_clubs:
                 if club["id"] == strava_club_id:
