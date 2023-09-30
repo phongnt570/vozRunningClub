@@ -23,8 +23,8 @@ The app is hosted on Heroku and uses Heroku Postgres as the database.
     ```bash
     python manage.py update_leaderboard --time_aware
     ```
-7. Add domain name
-8. Optional: Import old database:
+   
+7. Optional: Import old database:
    - Clone the repo
    - Create a private_settings.py under `vozRunningClub` folder
    - Copy contents from `settings.py` to `private_settings.py`
@@ -34,6 +34,7 @@ The app is hosted on Heroku and uses Heroku Postgres as the database.
        ```bash
        DJANGO_SETTINGS_MODULE=vozRunningClub.private_settings python manage.py loaddata --format=json -i -e contenttypes db_from_server_16-09-23.json 
        ```
+8. Add domain names: `www.vozrun.club` and `vozrun.club`. Enable SSL. Go to Cloudflare and add DNS records.
 
 
 ## Local Development
